@@ -1,0 +1,44 @@
+{
+    "name": "reel-talk-frontend",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "dev": "next dev",
+        "build": "next build",
+        "start": "next start",
+        "lint": "next lint"
+    },
+    "dependencies": {
+        "@radix-ui/react-popover": "^1.0.7",
+        "@radix-ui/react-scroll-area": "^1.0.5",
+        "class-variance-authority": "^0.7.0",
+        "clsx": "^2.0.0",
+        "firebase": "^10.4.0",
+        "hamburger-react": "^2.5.0",
+        "lodash": "^4.17.21",
+        "lucide-react": "^0.284.0",
+        "next": "latest",
+        "react": "latest",
+        "react-dom": "latest",
+        "react-hot-toast": "^2.4.1",
+        "react-slick": "^0.29.0",
+        "slick-carousel": "^1.8.1",
+        "tailwind-merge": "^1.14.0",
+        "tailwindcss-animate": "^1.0.7"
+    },
+    "devDependencies": {
+        "@types/lodash": "^4.14.199",
+        "@types/node": "latest",
+        "@types/react": "latest",
+        "@types/react-dom": "latest",
+        "@types/react-slick": "^0.23.10",
+        "autoprefixer": "latest",
+        "eslint": "latest",
+        "eslint-config-next": "latest",
+        "postcss": "latest",
+        "prettier": "^3.0.3",
+        "prettier-plugin-tailwindcss": "^0.5.4",
+        "tailwindcss": "latest",
+        "typescript": "latest"
+    }
+}
