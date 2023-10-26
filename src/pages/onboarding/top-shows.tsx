@@ -21,12 +21,15 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 
 // Util
 import suggestedShows from '@/lib/suggestedShows';
+import { useAuthRequired } from '@/hooks/routeProtection';
+import { useUserContext } from '@/lib/context';
 
 //
 //
 //
 //
 const TopShows = () => {
+    useAuthRequired();
     const [movies, setMovies] = useState<
         {
             id: number;
@@ -84,6 +87,10 @@ const TopShows = () => {
             return output;
         });
     }
+
+    // Route Protection
+    const { user } = useUserContext();
+    if (!user) return;
 
     return (
         <>

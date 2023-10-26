@@ -18,8 +18,10 @@ import Buttons from '@/components/onboarding/Buttons';
 import GreenCheckIcon from '@/components/onboarding/GreenCheckIcon';
 import EyeIcon from '@/components/onboarding/EyeIcon';
 import EyeSlashIcon from '@/components/onboarding/EyeSlashIcon';
+import { useRedirectIfAuthenticated } from '@/hooks/routeProtection';
 
 const CreateWithEmail = () => {
+    useRedirectIfAuthenticated();
     const auth = getAuth();
     const router = useRouter();
 
@@ -104,6 +106,7 @@ const CreateWithEmail = () => {
                 }
             });
     }
+
     return (
         <section className='mx-auto px-[17.5px] py-12 md:max-w-[544px] md:px-0'>
             {/* Progress Image Container */}
@@ -124,6 +127,18 @@ const CreateWithEmail = () => {
                 <h3 className='text-[28px] font-medium leading-normal tracking-[-0.42px] md:text-4xl'>
                     Create your account
                 </h3>
+
+                <p className='mt-4 text-sm leading-normal tracking-[0.07px]'>
+                    By continuing, you agree to our{' '}
+                    <Link className='text-primary' href={'/legal/terms'}>
+                        User Agreement
+                    </Link>{' '}
+                    and{' '}
+                    <Link className='text-primary' href={'/legal/privacy'}>
+                        Privacy Policy
+                    </Link>
+                    .
+                </p>
 
                 <form className='mx-auto mt-[40px] flex max-w-xs flex-col gap-6'>
                     <input
@@ -189,14 +204,10 @@ const CreateWithEmail = () => {
                     </div>
                 </form>
 
-                <p className='mx-auto mt-10 max-w-[277px] text-sm leading-normal tracking-[0.07px] md:mt-14 md:max-w-none'>
-                    By continuing, you agree to our{' '}
-                    <Link className='text-primary' href={'/'}>
-                        User Agreement
-                    </Link>{' '}
-                    and{' '}
-                    <Link className='text-primary' href={'/'}>
-                        Privacy Policy
+                <p className='mt-10 text-sm leading-normal tracking-[0.07px] md:mt-14'>
+                    Already have an account?{' '}
+                    <Link className='text-primary' href={'/login'}>
+                        Log in
                     </Link>
                     .
                 </p>

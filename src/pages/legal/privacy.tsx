@@ -59,7 +59,7 @@ const PrivacyPage = () => {
                         your general location information, for example by using
                         your internet protocol (IP) address.
                     </div>
-                    <p className='mt-6'>
+                    <div className='mt-6'>
                         <div className={subheading}>
                             Information Related to App and Website Use.
                         </div>{' '}
@@ -68,8 +68,8 @@ const PrivacyPage = () => {
                         opportunities, contact information, interests, profile
                         photo, race, minority affiliations, and similar
                         information.
-                    </p>
-                    <p className='mt-6'>
+                    </div>
+                    <div className='mt-6'>
                         <div className={subheading}>Communications.</div> If you
                         contact us directly, we may receive additional
                         information about you. For example, when you contact our
@@ -78,27 +78,27 @@ const PrivacyPage = () => {
                         email address, phone number, the contents of a message
                         or attachments that you may send to us, and other
                         information you choose to provide.
-                    </p>
-                    <p className='mt-6'>
+                    </div>
+                    <div className='mt-6'>
                         <div className={subheading}>Forums.</div> If you post on
                         one of our community forums, we collect the information
                         you choose to provide, including comments, messages, and
                         posts.
-                    </p>
-                    <p className='mt-6'>
+                    </div>
+                    <div className='mt-6'>
                         <div className={subheading}>Payment Information.</div>{' '}
                         If a user makes a purchase through the Services,
                         payment-related information, such as credit card or
                         other financial information, is collected by our third
                         party payment processor on our behalf.
-                    </p>
+                    </div>
                 </div>
 
                 <div>
                     <h3 className={h3}>
                         B. Information We Collect When You Use Our Services.{' '}
                     </h3>
-                    <p className='mt-2'>
+                    <div className='mt-2'>
                         <div className={subheading}>Device Information.</div> We
                         receive information about the device and software you
                         use to access our Services, including IP address, web
@@ -106,8 +106,8 @@ const PrivacyPage = () => {
                         and manufacturer, application installations, device
                         identifiers, mobile advertising identifiers, and push
                         notification tokens. 
-                    </p>
-                    <p className='mt-6'>
+                    </div>
+                    <div className='mt-6'>
                         <div className={subheading}>Usage Information.</div> To
                         help us understand how you use our Services and to help
                         us improve them, we automatically receive information
@@ -115,14 +115,14 @@ const PrivacyPage = () => {
                         pages or other content you view, the searches you
                         conduct, locations and listings you follow, any content
                         you post, and the dates and times of your visits.
-                    </p>
-                    <p className='mt-6'>
+                    </div>
+                    <div className='mt-6'>
                         <div className={subheading}>Your Contacts.</div> We
                         collect information about your contacts if you invite
                         them to use our Services or share information or content
                         with them from our Services.
-                    </p>
-                    <p className='mt-6'>
+                    </div>
+                    <div className='mt-6'>
                         <div className={subheading}>
                             Information from Cookies and Similar Technologies.
                         </div>{' '}
@@ -138,14 +138,14 @@ const PrivacyPage = () => {
                         A persistent cookie remains after you close your browser
                         and may be used by your browser on subsequent visits to
                         our Services.
-                    </p>
-                    <p className='mt-6'>
+                    </div>
+                    <div className='mt-6'>
                         Please review your web browser’s “Help” file to learn
                         the proper way to modify your cookie settings. Please
                         note that if you delete or choose not to accept cookies
                         from the Service, you may not be able to utilize the
                         features of the Service to their fullest potential.
-                    </p>
+                    </div>
                 </div>
 
                 <div>
@@ -205,23 +205,23 @@ const PrivacyPage = () => {
                         How We Share the Information We Collect{' '}
                     </h2>
                     <div>
-                        <p className='mt-2'>
+                        <div className='mt-2'>
                             <div className={subheading}>Users.</div> We may
                             share users’ information with other users in order
                             to match said users with prospective connections and
                             significant others. We provide you with settings
                             which allow you to choose what information is shared
                             with other users.
-                        </p>
-                        <p className='mt-6'>
+                        </div>
+                        <div className='mt-6'>
                             <div className={subheading}>
                                 Vendors and Service Providers.
                             </div>{' '}
                             We may share any information we receive with vendors
                             and service providers retained in connection with
                             the provision of our Services.
-                        </p>
-                        <p className='mt-6'>
+                        </div>
+                        <div className='mt-6'>
                             <div className={subheading}>User Content.</div> Our
                             Services are social in nature, allowing you to
                             review content posted by others and post content
@@ -232,8 +232,8 @@ const PrivacyPage = () => {
                             Users’ use of available information, so you should
                             carefully consider whether and what to post or how
                             you identify yourself on the Services.
-                        </p>
-                        <p className='mt-6'>
+                        </div>
+                        <div className='mt-6'>
                             <div className={subheading}>
                                 Analytics Partners.
                             </div>{' '}
@@ -260,8 +260,8 @@ const PrivacyPage = () => {
                             >
                                 https://tools.google.com/dlpage/gaoptout.
                             </Link>
-                        </p>
-                        <p className='mt-6'>
+                        </div>
+                        <div className='mt-6'>
                             <div className={subheading}>
                                 Advertising Partners.
                             </div>{' '}
@@ -298,8 +298,8 @@ const PrivacyPage = () => {
                             choosing this setting in your account. If you opt
                             out, you may still see contextual ads that are not
                             tailored to you.
-                        </p>
-                        <p className='mt-6'>
+                        </div>
+                        <div className='mt-6'>
                             <div className={subheading}>
                                 As Required By Law and Similar Disclosures.
                             </div>{' '}
@@ -312,8 +312,8 @@ const PrivacyPage = () => {
                             safety. For the avoidance of doubt, the disclosure
                             of your information may occur if you post any
                             objectionable content on or through the Services.
-                        </p>
-                        <p className='mt-6'>
+                        </div>
+                        <div className='mt-6'>
                             <div className={subheading}>
                                 Merger, Sale, or Other Asset Transfers.
                             </div>{' '}
@@ -328,18 +328,18 @@ const PrivacyPage = () => {
                             will be governed by the provisions of this Privacy
                             Policy in effect at the time the applicable
                             information was collected.
-                        </p>
-                        <p className='mt-6'>
+                        </div>
+                        <div className='mt-6'>
                             <div className={subheading}>Consent.</div> We may
                             also disclose your information with your permission.
-                        </p>
+                        </div>
                     </div>
                 </div>
 
                 <div>
                     <h2 className={h2}>Your Choices</h2>
                     <div>
-                        <p className='mt-2'>
+                        <div className='mt-2'>
                             <div className={subheading}>
                                 Sharing Preferences.
                             </div>
@@ -348,8 +348,8 @@ const PrivacyPage = () => {
                             Services. You may edit certain information, such as
                             the contents of your profile, and you may delete
                             your account.
-                        </p>
-                        <p className='mt-6'>
+                        </div>
+                        <div className='mt-6'>
                             <div className={subheading}>
                                 Marketing Communications.
                             </div>
@@ -357,8 +357,8 @@ const PrivacyPage = () => {
                             the link provided in the emails. Even if you opt-out
                             of receiving promotional messages from us, you will
                             continue to receive administrative messages from us.
-                        </p>
-                        <p className='mt-6'>
+                        </div>
+                        <div className='mt-6'>
                             <div className={subheading}>
                                 Location Information.
                             </div>
@@ -367,7 +367,7 @@ const PrivacyPage = () => {
                             device’s operating system settings. However,
                             location is core to our Services and without it, you
                             may not be able to successfully use our Services.
-                        </p>
+                        </div>
                     </div>
                 </div>
 

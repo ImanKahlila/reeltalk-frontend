@@ -18,8 +18,10 @@ const db = getFirestore(app);
 
 // Genres Data
 import initialGenres from '@/lib/genresData';
+import { useAuthRequired } from '@/hooks/routeProtection';
 
 const TopGenresPage = () => {
+    useAuthRequired();
     const [genresToShow, setGenresToShow] = useState(20);
     const [genres, setGenres] =
         useState<{ name: string; selected: boolean; id: string }[]>(
@@ -83,6 +85,8 @@ const TopGenresPage = () => {
                 .catch(error => console.log(error));
         }
     }
+
+    if (!user) return;
 
     return (
         <section className='mx-auto max-w-sm px-4 py-12 md:max-w-none md:px-0'>

@@ -21,12 +21,15 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 
 // Util
 import suggestedMovies from '@/lib/suggestedMovies';
+import { useAuthRequired } from '@/hooks/routeProtection';
+import { useUserContext } from '@/lib/context';
 
 //
 //
 //
 //
 const TopMovies = () => {
+    useAuthRequired();
     const [movies, setMovies] = useState(suggestedMovies);
     const [moviesToShow, setMoviesToShow] = useState(8);
 
@@ -76,6 +79,9 @@ const TopMovies = () => {
             return output;
         });
     }
+
+    const { user } = useUserContext();
+    if (!user) return;
 
     return (
         <>

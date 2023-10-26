@@ -5,9 +5,10 @@ import Link from 'next/link';
 import { SignInWithApple } from './onboarding';
 import { SignInWithGoogle } from './onboarding';
 import { SignInWithFacebook } from './onboarding';
-import { useAuthRequired } from '@/hooks/useAuthRequired';
+import { useRedirectIfAuthenticated } from '@/hooks/routeProtection';
 
 const LoginPage = () => {
+    useRedirectIfAuthenticated();
     return (
         <section className='mx-auto px-[17.5px] py-12 md:max-w-[544px] md:px-0'>
             {/* Main */}
@@ -17,11 +18,11 @@ const LoginPage = () => {
                 </h3>
                 <p className='mt-4 text-sm leading-normal tracking-[0.07px]'>
                     By continuing, you agree to our{' '}
-                    <Link className='text-primary' href={'/'}>
+                    <Link className='text-primary' href={'/legal/terms'}>
                         User Agreement
                     </Link>{' '}
                     and{' '}
-                    <Link className='text-primary' href={'/'}>
+                    <Link className='text-primary' href={'/legal/privacy'}>
                         Privacy Policy
                     </Link>
                     .

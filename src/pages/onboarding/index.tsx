@@ -22,11 +22,13 @@ import {
 import { getFirestore, collection, doc, setDoc } from 'firebase/firestore';
 import app from '@/firebase/firebase-config';
 import toast from 'react-hot-toast';
+import { useRedirectIfAuthenticated } from '@/hooks/routeProtection';
 
 // Variables
 const auth = getAuth(app);
 
 const CreateAccountPage = () => {
+    useRedirectIfAuthenticated();
     return (
         <section className='mx-auto px-[17.5px] py-12 md:max-w-[544px] md:px-0'>
             {/* Progress Image Container */}
@@ -49,11 +51,11 @@ const CreateAccountPage = () => {
                 </h3>
                 <p className='mt-4 text-sm leading-normal tracking-[0.07px]'>
                     By continuing, you agree to our{' '}
-                    <Link className='text-primary' href={'/'}>
+                    <Link className='text-primary' href={'/legal/terms'}>
                         User Agreement
                     </Link>{' '}
                     and{' '}
-                    <Link className='text-primary' href={'/'}>
+                    <Link className='text-primary' href={'/legal/privacy'}>
                         Privacy Policy
                     </Link>
                     .
@@ -129,14 +131,10 @@ export const SignInWithApple = () => {
             const userId = userCredential.user.uid;
 
             const additionalUserInfo = getAdditionalUserInfo(userCredential);
-            console.log(additionalUserInfo);
 
             // TODO: Will be sending this to backend apple response token
             const responseToken = userCredential._tokenResponse;
 
-            console.log(additionalUserInfo?.isNewUser);
-
-            // TODO: When user doesn't share email with app, onboarding flow gets messed up here
             const db = getFirestore(app);
             const colRef = collection(db, 'users');
             const userDocRef = doc(colRef, userId);

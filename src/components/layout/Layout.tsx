@@ -4,7 +4,6 @@ import NavBarLanding from './NavBarLanding';
 import NavBarApp from './NavBarApp';
 import Footer from './Footer';
 import MobileMenu from './MobileMenu';
-import { useAuthRequired } from '@/hooks/useAuthRequired';
 
 interface ComponentProps {
     children: React.ReactNode;
@@ -18,7 +17,6 @@ const Layout: React.FC<ComponentProps> = ({ children }) => {
     }
 
     const router = useRouter();
-    useAuthRequired();
 
     return (
         <>

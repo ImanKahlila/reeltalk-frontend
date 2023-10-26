@@ -9,12 +9,14 @@ import { useUserContext } from '@/lib/context';
 
 import { getFirestore, setDoc, doc, Timestamp } from 'firebase/firestore';
 import app from '@/firebase/firebase-config';
+import { useAuthRequired } from '@/hooks/routeProtection';
 const db = getFirestore(app);
 
 // Memoize Carousel to prevent uneccessary re-renders when input change handler causes page to rerender
 const MemoizedCarousel = React.memo(Carousel);
 
 const BirthdayPage = () => {
+    useAuthRequired();
     // User Context
     const { user } = useUserContext();
 
@@ -73,6 +75,8 @@ const BirthdayPage = () => {
                 .catch(error => console.log(error));
         }
     }
+
+    if (!user) return;
 
     return (
         <section className='mx-auto px-[17.5px] py-12 md:max-w-[544px] md:px-0'>

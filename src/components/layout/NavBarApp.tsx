@@ -170,14 +170,14 @@ const AuthenticationLinks = () => {
         <div className='hidden h-[34px] w-[207px] items-center justify-between gap-4 lg:flex'>
             <Link
                 className='flex h-full w-fit items-center justify-center rounded px-4 py-1 text-base font-semibold leading-[21.86px] tracking-wider text-secondary'
-                href={'/'}
+                href={'/login'}
                 aria-label='Login'
             >
                 Login
             </Link>
             <Link
                 className='flex h-full w-fit items-center justify-center rounded bg-primary px-4 py-1 text-base font-semibold leading-[21.86px] tracking-wider text-secondary'
-                href={'/'}
+                href={'/onboarding'}
                 aria-label='Sign Up'
             >
                 Signup

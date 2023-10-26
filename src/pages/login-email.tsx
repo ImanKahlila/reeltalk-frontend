@@ -11,8 +11,10 @@ import Buttons from '@/components/onboarding/Buttons';
 import GreenCheckIcon from '@/components/onboarding/GreenCheckIcon';
 import EyeIcon from '@/components/onboarding/EyeIcon';
 import EyeSlashIcon from '@/components/onboarding/EyeSlashIcon';
+import { useRedirectIfAuthenticated } from '@/hooks/routeProtection';
 
 const LoginEmailPage = () => {
+    useRedirectIfAuthenticated();
     const auth = getAuth();
     const router = useRouter();
 
@@ -79,11 +81,11 @@ const LoginEmailPage = () => {
 
                 <p className='mt-4 text-sm leading-normal tracking-[0.07px]'>
                     By continuing, you agree to our{' '}
-                    <Link className='text-primary' href={'/'}>
+                    <Link className='text-primary' href={'/legal/terms'}>
                         User Agreement
                     </Link>{' '}
                     and{' '}
-                    <Link className='text-primary' href={'/'}>
+                    <Link className='text-primary' href={'/legal/privacy'}>
                         Privacy Policy
                     </Link>
                     .
