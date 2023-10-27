@@ -155,7 +155,7 @@ const TopShows = () => {
                     <h2 className='md:trackin-[0.1px] text-center font-semibold tracking-[0.08px] text-high-emphasis md:text-start md:text-xl md:font-medium'>
                         Your top 5 selections
                     </h2>
-                    <div className='mx-auto mt-2 flex w-[272px] justify-between'>
+                    <div className='mx-auto mt-2 flex justify-between gap-3'>
                         {floaterSelection.map(movie => (
                             <MediaSelection
                                 key={movie.id}
