@@ -64,8 +64,10 @@ const CreateWithEmail = () => {
 
     function passwordChangeHandler() {
         const password = passwordRef.current!.value.trim();
+        const passwordRegex =
+            /((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).{8,64})/g;
 
-        if (password.length > 6) {
+        if (passwordRegex.test(password)) {
             setPasswordValid(true);
         } else {
             setPasswordValid(false);
