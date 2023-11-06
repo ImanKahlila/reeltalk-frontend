@@ -1,30 +1,91 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
 import Buttons from '@/components/onboarding/Buttons';
 import GreenCheckIcon from '@/components/onboarding/GreenCheckIcon';
 import Carousel from '@/components/onboarding/Carousel';
+import toast from 'react-hot-toast';
 
 import { useRouter } from 'next/router';
 import { useUserContext } from '@/lib/context';
 
-import { getFirestore, setDoc, doc, Timestamp } from 'firebase/firestore';
+import {
+    getFirestore,
+    setDoc,
+    doc,
+    Timestamp,
+    collection,
+} from 'firebase/firestore';
 import app from '@/firebase/firebase-config';
 import { useAuthRequired } from '@/hooks/routeProtection';
+import {
+    getAuth,
+    isSignInWithEmailLink,
+    signInWithEmailLink,
+    getAdditionalUserInfo,
+    updateProfile,
+} from 'firebase/auth';
 const db = getFirestore(app);
 
 // Memoize Carousel to prevent uneccessary re-renders when input change handler causes page to rerender
 const MemoizedCarousel = React.memo(Carousel);
 
 const BirthdayPage = () => {
+    const router = useRouter();
+
+    // Magic Link passwordless Sign In Check
+    useEffect(() => {
+        async function passwordlessSignIn() {
+            const auth = getAuth();
+            let email = window.localStorage.getItem('emailForSignIn');
+
+            if (isSignInWithEmailLink(auth, window.location.href)) {
+                if (!email) {
+                    email = window.prompt(
+                        'Please provide your email for confirmation',
+                    );
+                }
+
+                try {
+                    const credential = await signInWithEmailLink(
+                        auth,
+                        email!,
+                        window.location.href,
+                    );
+                    window.localStorage.removeItem('emailForSignIn');
+                    const additionalInfo = getAdditionalUserInfo(credential);
+                    if (!additionalInfo?.isNewUser) {
+                        router.push('/dashboard');
+                    } else {
+                        const userId = credential.user.uid;
+                        const db = getFirestore(app);
+                        const colRef = collection(db, 'users');
+                        const userDocRef = doc(colRef, userId);
+                        let displayName = credential.user.email?.split('@')[0];
+
+                        await updateProfile(credential.user, {
+                            displayName: displayName,
+                        });
+                        await setDoc(
+                            userDocRef,
+                            { displayName: displayName },
+                            { merge: true },
+                        );
+                        router.push('/onboarding/birthday');
+                    }
+                } catch (error: any) {
+                    toast.error(error.message);
+                }
+            }
+        }
+
+        passwordlessSignIn();
+        //eslint-disable-next-line
+    }, []);
+
     useAuthRequired();
+
     // User Context
     const { user } = useUserContext();
-
-    // URL state
-    const router = useRouter();
-    const displayName = router.query;
-    // We use the URL state because the Firebase user auth may not be immediately available
-    // after creating the user. Passing the displayName through the URL allows us to use it in the BirthdayPage.
 
     const [inputValue, setInputValue] = useState('');
     const [birthdayValid, setBirthdayValid] = useState(false);
@@ -97,10 +158,7 @@ const BirthdayPage = () => {
             <div className=' mx-auto mt-14 max-w-[343px] md:max-w-[572px]'>
                 <form className='w-full text-center text-high-emphasis'>
                     <h1 className='text-[28px] font-medium tracking-[-0.42px] '>
-                        Welcome{' '}
-                        {user?.displayName
-                            ? user!.displayName
-                            : displayName.displayName}
+                        Welcome {user?.displayName ? user!.displayName : 'User'}
                         !
                         <br className='hidden md:block' /> Mind sharing your
                         birthdate?

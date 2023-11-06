@@ -1,6 +1,10 @@
 import { useEffect } from 'react';
 import app from '@/firebase/firebase-config';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import {
+    getAuth,
+    isSignInWithEmailLink,
+    onAuthStateChanged,
+} from 'firebase/auth';
 import { useRouter } from 'next/router';
 
 export const useAuthRequired = () => {
@@ -8,7 +12,7 @@ export const useAuthRequired = () => {
     const auth = getAuth(app);
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, user => {
-            if (!user) {
+            if (!user && !isSignInWithEmailLink(auth, window.location.href)) {
                 router.push('/login'); // Redirect to login if not authenticated
             }
         });

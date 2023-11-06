@@ -66,7 +66,7 @@ const CreateAccountPage = () => {
                     <SignInWithGoogle />
                     <SignInWithFacebook />
                     <Link
-                        href={'/onboarding/create-email'}
+                        href={'/onboarding/magic-link'}
                         className='mt-[22px] flex h-12 w-64 items-center justify-center rounded-lg border-2 border-solid border-high-emphasis'
                     >
                         Continue with Email
