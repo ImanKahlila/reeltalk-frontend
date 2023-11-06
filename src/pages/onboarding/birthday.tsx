@@ -158,7 +158,12 @@ const BirthdayPage = () => {
             <div className=' mx-auto mt-14 max-w-[343px] md:max-w-[572px]'>
                 <form className='w-full text-center text-high-emphasis'>
                     <h1 className='text-[28px] font-medium tracking-[-0.42px] '>
-                        Welcome {user?.displayName ? user!.displayName : 'User'}
+                        Welcome
+                        {user?.displayName
+                            ? user.displayName.charAt(0).toUpperCase() +
+                              user.displayName.slice(1)
+                            : 'User'}
+                        {/* Code above is capitalizing the username string */}
                         !
                         <br className='hidden md:block' /> Mind sharing your
                         birthdate?

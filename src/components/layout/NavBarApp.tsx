@@ -26,12 +26,6 @@ interface ComponentProps {
 }
 
 const NavBarApp = ({ onToggleMobileMenu }: ComponentProps) => {
-    // URL state
-    const router = useRouter();
-    const displayName = router.query;
-    // We use the URL state because the Firebase user auth may not be immediately available
-    // after creating the user. Passing the displayName through the URL allows us to use it in the BirthdayPage.
-
     // UserContext
     const { user } = useUserContext();
 
@@ -62,10 +56,7 @@ const NavBarApp = ({ onToggleMobileMenu }: ComponentProps) => {
                         <p className='text-base tracking-[0.08px]'>Watchlist</p>
 
                         {/* SHADCN/UI POPOVER */}
-                        <AccountDropDown
-                            user={user}
-                            displayName={displayName}
-                        />
+                        <AccountDropDown user={user} />
                     </div>
                 ) : (
                     <AuthenticationLinks />
@@ -113,7 +104,7 @@ const NavigationLinks = () => {
 };
 
 // User Authenticated DropDown to view account details
-const AccountDropDown = ({ user, displayName }: any) => {
+const AccountDropDown = ({ user }: { user: User }) => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const router = useRouter();
 
@@ -128,9 +119,8 @@ const AccountDropDown = ({ user, displayName }: any) => {
                         ) : (
                             <p className='text-xl font-medium tracking-[0.1px] text-pure-white'>
                                 {user.displayName
-                                    ? user.displayName![0]
-                                    : displayName.displayName?.toString()[0]}
-                                {/* If displayname is null, use displayName from URL query state */}
+                                    ? user.displayName![0].toUpperCase()
+                                    : '?'}
                             </p>
                         )}
                     </div>
