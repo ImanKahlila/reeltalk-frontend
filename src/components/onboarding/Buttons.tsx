@@ -10,7 +10,6 @@ type ComponentProps = {
     prevPage: string; // A required string representing the URL of the previous page
     lastStep?: boolean;
     className?: string;
-    connect?: boolean; // boolean indicating to display a certain string for the continue button
 };
 
 const Buttons = ({
@@ -21,7 +20,6 @@ const Buttons = ({
     prevPage = '/',
     lastStep = false,
     className,
-    connect = false,
 }: ComponentProps) => {
     return (
         <div
@@ -41,7 +39,7 @@ const Buttons = ({
                         onClick={onPageSubmit}
                         className='w-full min-w-[160px] rounded-lg bg-primary font-semibold  leading-normal tracking-[0.08px] text-black md:min-w-[256px]'
                     >
-                        {lastStep ? 'Done' : connect ? 'Connect' : 'Next'}
+                        {lastStep ? 'Done' : 'Next'}
                     </button>
                 ) : (
                     <Link
@@ -56,22 +54,11 @@ const Buttons = ({
                     onClick={onPageSubmit}
                     className='w-full min-w-[160px] rounded-lg bg-primary font-semibold leading-normal tracking-[0.08px]  text-black transition-colors duration-300 md:min-w-[256px]'
                 >
-                    {lastStep ? 'Done' : connect ? 'Connect' : 'Next'}
+                    {lastStep ? 'Done' : 'Next'}
                 </button>
             ) : (
                 <button className='w-full min-w-[160px] cursor-not-allowed rounded-lg bg-[#6d6d6d] p-[10px] font-medium tracking-[0.1px]  text-disabled md:min-w-[256px]'>
-                    {lastStep ? (
-                        'Done'
-                    ) : connect ? (
-                        <span>
-                            Connect{' '}
-                            <span className='hidden md:inline'>
-                                your account
-                            </span>
-                        </span>
-                    ) : (
-                        'Next'
-                    )}
+                    {lastStep ? 'Done' : 'Next'}
                 </button>
             )}
         </div>
