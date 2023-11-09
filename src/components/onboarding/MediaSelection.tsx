@@ -2,21 +2,27 @@ import React from 'react';
 import Image from 'next/image';
 
 interface MediaSelectionProps {
-    id?: number;
+    id?: number | string;
     poster: string;
-    removeSelectionHandler?: (id: number, newVal: boolean) => void;
+    removeSelectionHandler?: (
+        id: number | string,
+        newVal: boolean,
+        isApi: boolean,
+    ) => void;
+    isApi: boolean;
 }
 
 const MediaSelection = ({
     id,
     poster,
     removeSelectionHandler,
+    isApi,
 }: MediaSelectionProps) => {
     return (
         <div className='relative h-[72px] w-12 cursor-pointer outline-dashed outline-2 outline-medium-emphasis'>
             {poster ? (
                 <Image
-                    onClick={() => removeSelectionHandler!(id!, false)}
+                    onClick={() => removeSelectionHandler!(id!, false, isApi)}
                     src={poster}
                     fill
                     alt=''

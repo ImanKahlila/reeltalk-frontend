@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 // Components
 import SearchIcon from '@/components/layout/SearchIcon';
@@ -16,82 +17,113 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from '@/components/ui/popover';
-
 import { ScrollArea } from '@/components/ui/scroll-area';
+
+// Firebase
+import { getFirestore, setDoc, doc } from 'firebase/firestore';
+import app from '@/firebase/firebase-config';
+
+const db = getFirestore(app);
 
 // Util
 import suggestedShows from '@/lib/suggestedShows';
 import { useAuthRequired } from '@/hooks/routeProtection';
 import { useUserContext } from '@/lib/context';
+import axios from 'axios';
+import { debounce } from 'lodash';
+import toast from 'react-hot-toast';
 
 //
 //
 //
 //
 const TopShows = () => {
+    const router = useRouter();
     useAuthRequired();
-    const [movies, setMovies] = useState<
-        {
-            id: number;
-            selected: boolean;
-            title: string;
-            releaseYear: string | number;
-            poster: string;
-        }[]
-    >(suggestedShows);
+    const [movies, setMovies] = useState(suggestedShows);
     const [moviesToShow, setMoviesToShow] = useState(8);
 
-    // Arr to hold selected values
+    // Arr to hold selected media
     const [floaterSelection, setFloaterSelection] = useState<
-        { id: number; title: string; poster: string }[]
+        { id: number | string; title: string; poster: string; isApi: boolean }[]
     >([]);
 
-    // Placeholder tracker
+    // Placeholder tracker, tracks how many placeholders needed for selectionFloater
     const selectionPlaceholder = [];
     for (let i = 0; i < 5 - floaterSelection.length; i++) {
         selectionPlaceholder.push({ id: i, title: '', poster: '' });
     }
 
-    // FN to add a selection
+    // Function to add a media selection
     function addSelectionHandler(
-        id: number,
+        id: number | string,
         title: string,
-        poster: string,
-        newVal: boolean,
+        poster: string, // poster Url
+        newVal: boolean, // boolean for suggestedMovies indicating if selected
+        isApi: boolean, // boolean flag indicating if movie selection is from API
     ) {
-        setMovies(prev => {
-            let newState = [...prev];
-            let index = newState.findIndex(el => el.id === id);
-            newState[index].selected = newVal;
-            return newState;
-        });
-        const selected = { id, title, poster };
+        if (!isApi) {
+            // Updates the Suggested Movies
+            setMovies(prev => {
+                let newState = [...prev];
+                let index = newState.findIndex(el => el.id === id);
+                newState[index].selected = newVal;
+                return newState;
+            });
+        }
+        const selected = { id, title, poster, isApi };
         setFloaterSelection(prev => {
             let newState = [...prev];
+            let movieIndex = newState.findIndex(el => el.id === id);
+            if (movieIndex > -1) return newState; // If movie already selected return prev state
             newState.push(selected);
             return newState;
         });
     }
 
-    // FN to remove a selection
-    function removeSelectionHandler(id: number, newVal: boolean) {
-        setMovies(prev => {
-            let newState = [...prev];
-            let index = newState.findIndex(el => el.id === id);
-            newState[index].selected = newVal;
-            return newState;
-        });
+    // Function to remove a media selection
+    function removeSelectionHandler(
+        id: number | string,
+        newVal: boolean,
+        isApi: boolean, // boolean flag indicating if movie selection is from API
+    ) {
+        if (!isApi) {
+            setMovies(prev => {
+                let newState = [...prev];
+                let index = newState.findIndex(el => el.id === id);
+                newState[index].selected = newVal;
+                return newState;
+            });
+        }
         setFloaterSelection(prev => {
             let newState = [...prev];
-            let output = newState.filter(el => el.id !== id);
+            let output = newState.filter(element => element.id !== id);
             return output;
         });
     }
 
-    // Route Protection
+    // Submit Selections to DB
+    function onPageSubmitHandler() {
+        if (user) {
+            const docRef = doc(db, 'users', user!.uid);
+
+            setDoc(
+                docRef,
+                {
+                    top5Shows: floaterSelection,
+                },
+                { merge: true },
+            )
+                .then(() => {
+                    router.push('/dashboard');
+                })
+                .catch(error => console.log(error));
+        }
+    }
+
+    // Display's nothing if user is not authenticated
     const { user } = useUserContext();
     if (!user) return;
-
     return (
         <>
             <section
@@ -113,13 +145,15 @@ const TopShows = () => {
                 </picture>
 
                 {/* Header */}
-                {/* TODO: implement */}
-                <Header inputChangeHandler={() => {}} />
+                <Header
+                    addSelectionHandler={addSelectionHandler}
+                    selectedLength={floaterSelection.length}
+                />
 
                 {/* Suggested Movies */}
                 <div className='mx-auto mt-14 max-w-[343px] md:max-w-none '>
                     <h2 className='text-xl font-medium leading-normal tracking-[0.1px] text-high-emphasis'>
-                        Tv-shows you might like
+                        Movies you might like
                     </h2>
 
                     <div className='mt-4 grid w-full grid-cols-3-auto justify-items-center gap-x-[27.5px] gap-y-4 md:grid-cols-6 md:gap-6'>
@@ -145,12 +179,14 @@ const TopShows = () => {
 
                 <Buttons
                     className='md:hidden'
-                    prevPage='onboarding/top-genres'
+                    prevPage='onboarding/top-movies'
+                    onPageSubmit={onPageSubmitHandler}
+                    valid={floaterSelection.length === 5}
                 />
             </section>
 
-            {/* Selections */}
-            <div className='glass mt-6 h-fit w-screen justify-center bg-[#333333] p-4 md:fixed md:bottom-0 md:flex md:gap-12 md:border-t-[1px] md:border-first-surface md:bg-primary-rgba md:p-6'>
+            {/* FLOATING SELECTION */}
+            <div className='glass mt-6 h-fit w-screen justify-center bg-[#333333] p-4 pb-[22px] md:fixed md:bottom-0 md:flex md:gap-12 md:border-t-[1px] md:border-first-surface md:bg-primary-rgba md:p-6'>
                 <div className='flex flex-col gap-6'>
                     <h2 className='md:trackin-[0.1px] text-center font-semibold tracking-[0.08px] text-high-emphasis md:text-start md:text-xl md:font-medium'>
                         Your top 5 selections
@@ -162,10 +198,15 @@ const TopShows = () => {
                                 id={movie.id}
                                 poster={movie.poster}
                                 removeSelectionHandler={removeSelectionHandler}
+                                isApi={movie.isApi}
                             />
                         ))}
                         {selectionPlaceholder.map(movie => (
-                            <MediaSelection key={movie.id} poster={''} />
+                            <MediaSelection
+                                key={movie.id}
+                                poster={''}
+                                isApi={false}
+                            />
                         ))}
                     </div>
                 </div>
@@ -177,12 +218,21 @@ const TopShows = () => {
                     >
                         Back
                     </Link>
-                    <Link
-                        href={'/onboarding/top-shows'}
-                        className=' w-full rounded-lg border-2 border-high-emphasis p-[10px] text-center font-semibold tracking-[0.08px] text-high-emphasis'
-                    >
-                        Skip
-                    </Link>
+                    {floaterSelection.length === 5 ? (
+                        <button
+                            onClick={onPageSubmitHandler}
+                            className='w-full rounded-lg border-2 border-primary bg-primary p-[10px] text-center font-semibold tracking-[0.08px] text-black'
+                        >
+                            Next
+                        </button>
+                    ) : (
+                        <Link
+                            href={'/onboarding/top-shows'}
+                            className='w-full rounded-lg border-2 border-high-emphasis p-[10px] text-center font-semibold tracking-[0.08px] text-high-emphasis'
+                        >
+                            Skip
+                        </Link>
+                    )}
                 </div>
             </div>
         </>
@@ -196,12 +246,90 @@ export default TopShows;
 //
 //
 interface HeaderProps {
-    inputChangeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    addSelectionHandler: (
+        id: number | string,
+        title: string,
+        poster: string,
+        newVal: boolean,
+        isApi: boolean,
+    ) => void;
+    selectedLength: number;
 }
 
-const Header = ({ inputChangeHandler }: HeaderProps) => {
+const Header = ({ addSelectionHandler, selectedLength }: HeaderProps) => {
     // Controls open state of popover
     const [inputFocus, setInputFocus] = useState(false);
+
+    //
+    //
+    // Input Api Movie Search logic
+    const [queryMovies, setQueryMovies] = useState<any[]>([]);
+    const [fetching, setFetching] = useState(false);
+
+    const searchInputChangeHandler = debounce(
+        (e: React.ChangeEvent<HTMLInputElement>) => {
+            const queryParam = e.target.value.trim();
+            if (!queryParam) {
+                setQueryMovies([]);
+                return;
+            }
+
+            // Create an array to store the promises for the two Axios requests
+            const promises = [
+                axios.post('http://localhost:8080/movies/search', {
+                    input: queryParam,
+                    titleType: 'tvSeries',
+                    info: 'base_info',
+                }),
+                axios.post('http://localhost:8080/movies/search', {
+                    input: queryParam,
+                    titleType: 'tvSeries',
+                    info: 'creators_directors_writers',
+                }),
+            ];
+
+            setFetching(true);
+
+            Promise.all(promises)
+                .then(([moviesResponse, creditsResponse]) => {
+                    const moviesData = moviesResponse.data;
+                    const creditsData = creditsResponse.data;
+
+                    // Create a new array to store the mapped values
+                    const mappedArray = [];
+
+                    if (moviesData.length === creditsData.length) {
+                        for (let i = 0; i < moviesData.length; i++) {
+                            const movieValue = moviesData[i];
+                            const directorName =
+                                creditsData[i].creators[0]?.credits[0]?.name
+                                    .nameText.text;
+
+                            const mappedValue = { ...movieValue, directorName };
+
+                            mappedArray.push(mappedValue);
+                        }
+
+                        // Filter and sort the mappedArray
+                        const filteredAndSortedArray = mappedArray
+                            .filter(
+                                (media: any) =>
+                                    media.primaryImage !== null &&
+                                    media.ratingsSummary.voteCount > 300,
+                            )
+                            .sort(
+                                (a: any, b: any) =>
+                                    b.ratingsSummary.voteCount -
+                                    a.ratingsSummary.voteCount,
+                            );
+                        setQueryMovies(filteredAndSortedArray);
+                    }
+                })
+                .catch(error => toast.error(error.message))
+                .finally(() => setFetching(false));
+        },
+        500,
+    );
 
     return (
         <header className='mx-auto mt-14 max-w-[600px] text-center'>
@@ -217,12 +345,12 @@ const Header = ({ inputChangeHandler }: HeaderProps) => {
             <Popover open={inputFocus}>
                 <PopoverTrigger className='w-full'>
                     <div className='mx-auto mt-6 flex h-14 max-w-[344px] items-center justify-start gap-[10px] rounded-lg bg-first-surface px-6 py-[6px] focus-within:bg-high-emphasis md:mt-8 md:max-w-[544px]'>
-                        <SearchIcon />
+                        {fetching ? <Spinner /> : <SearchIcon />}
                         <input
                             className='w-full border-none bg-transparent py-[11px] text-pure-white outline-none focus:text-secondary'
                             type='text'
                             placeholder='Search'
-                            onChange={inputChangeHandler}
+                            onChange={searchInputChangeHandler}
                             onFocus={() => setInputFocus(true)}
                             onBlur={() => setInputFocus(false)}
                         />
@@ -232,17 +360,25 @@ const Header = ({ inputChangeHandler }: HeaderProps) => {
                     className='relative bottom-3 w-[344px] rounded-t-none p-0 md:w-[544px]'
                     onOpenAutoFocus={(event: Event) => event.preventDefault()}
                 >
-                    <ScrollArea className='h-[288px]'>
-                        {/* Popover Options */}
-                        {suggestedShows.map(show => (
-                            <SearchOption
-                                key={show.id}
-                                title={show.title}
-                                posterUrl={show.poster}
-                                year={show.releaseYear}
-                            />
-                        ))}
-                    </ScrollArea>
+                    {queryMovies.length === 0 ? (
+                        <div className='p-4'>No results...</div>
+                    ) : (
+                        <ScrollArea className='h-[288px]'>
+                            {/* Popover Options */}
+                            {queryMovies.map(movie => (
+                                <SearchOption
+                                    key={movie.id}
+                                    id={movie.id}
+                                    title={movie.originalTitleText.text}
+                                    posterUrl={movie.primaryImage?.url}
+                                    year={movie.releaseYear?.year}
+                                    director={movie.directorName}
+                                    addSelectionHandler={addSelectionHandler}
+                                    selectedLength={selectedLength}
+                                />
+                            ))}
+                        </ScrollArea>
+                    )}
                 </PopoverContent>
             </Popover>
         </header>
@@ -276,5 +412,14 @@ const ShowMoreButton = ({
                 </div>
             ) : null}
         </>
+    );
+};
+
+const Spinner = () => {
+    return (
+        <div className='spinner_container' aria-label='Loading...'>
+            <i className='spinner_item spinner_item--warning'></i>
+            <i className='spinner_item spinner_item--warning'></i>
+        </div>
     );
 };

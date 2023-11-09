@@ -4,7 +4,7 @@ const suggestedMovies = [
         selected: false,
         title: 'The Shawshank Redemption',
         releaseYear: 1994,
-        poster: 'https://m.media-amazon.com/images/I/81O1wR9ohtL._AC_UY327_FMwebp_QL65_.jpg',
+        poster: 'https://m.media-amazon.com/images/M/MV5BMDFkYTc0MGEtZmNhMC00ZDIzLWFmNTEtODM1ZmRlYWMwMWFmXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_.jpg',
     },
     {
         id: 2,
@@ -25,14 +25,14 @@ const suggestedMovies = [
         selected: false,
         title: 'WALL-E',
         releaseYear: 2008,
-        poster: 'https://m.media-amazon.com/images/I/91vYNYvKXvL._AC_UL480_FMwebp_QL65_.jpg',
+        poster: 'https://m.media-amazon.com/images/M/MV5BMjExMTg5OTU0NF5BMl5BanBnXkFtZTcwMjMxMzMzMw@@._V1_.jpg',
     },
     {
         id: 5,
         selected: false,
         title: 'Flipped',
         releaseYear: 2010,
-        poster: 'https://m.media-amazon.com/images/I/81ts3Y5pfDL._AC_UY327_FMwebp_QL65_.jpg',
+        poster: 'https://m.media-amazon.com/images/M/MV5BMTU2NjQ1Nzc4MF5BMl5BanBnXkFtZTcwNTM0NDk1Mw@@._V1_.jpg',
     },
     {
         id: 6,

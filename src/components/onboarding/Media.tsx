@@ -9,12 +9,17 @@ interface MediaProps {
     year: number | string; // media release year
     posterUrl: string; //url string of media poster
     addSelectionHandler: (
-        id: number,
+        id: number | string,
         title: string,
         poster: string,
         newVal: boolean,
+        isApi: boolean,
     ) => void; // Fn to add medias to selection onclick
-    removeSelectionHandler: (id: number, newVal: boolean) => void; // Fn to remove medias from selection on click
+    removeSelectionHandler: (
+        id: number,
+        newVal: boolean,
+        isApi: boolean,
+    ) => void; // Fn to remove medias from selection on click
     selectedLength: number; //Number of medias selected so far
     selected: boolean;
 }
@@ -38,9 +43,9 @@ const Media = ({
 
     function toggleMedia() {
         if (selectedLength < 5 && !selected) {
-            addSelectionHandler(id, title, posterUrl, true);
+            addSelectionHandler(id, title, posterUrl, true, false);
         } else if (selected) {
-            removeSelectionHandler(id, false);
+            removeSelectionHandler(id, false, false);
         } else {
             toast.error('Oops! select only 5 options');
         }
@@ -65,7 +70,7 @@ const Media = ({
                     <Skeleton className='h-[142.127px] w-24 rounded' />
                 )}
             </picture>
-            <p className='text-center text-xs leading-normal tracking-[0.06px] text-high-emphasis'>{`${title} (${year})`}</p>
+            <p className='mx-auto text-center text-xs leading-normal tracking-[0.06px] text-high-emphasis'>{`${title} (${year})`}</p>
             <svg
                 xmlns='http://www.w3.org/2000/svg'
                 width='37'
