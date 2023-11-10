@@ -1,13 +1,18 @@
 import React, { useRef, useState, useEffect } from 'react';
-import Image from 'next/image';
+
+// Components
 import Buttons from '@/components/onboarding/Buttons';
 import GreenCheckIcon from '@/components/onboarding/GreenCheckIcon';
 import Carousel from '@/components/onboarding/Carousel';
+
+// Util
+import { useUserContext } from '@/lib/context';
+import { useRouter } from 'next/router';
+import Image from 'next/image';
+import { useAuthRequired } from '@/hooks/routeProtection';
 import toast from 'react-hot-toast';
 
-import { useRouter } from 'next/router';
-import { useUserContext } from '@/lib/context';
-
+// Firebase
 import {
     getFirestore,
     setDoc,
@@ -16,7 +21,6 @@ import {
     collection,
 } from 'firebase/firestore';
 import app from '@/firebase/firebase-config';
-import { useAuthRequired } from '@/hooks/routeProtection';
 import {
     getAuth,
     isSignInWithEmailLink,
@@ -24,6 +28,11 @@ import {
     getAdditionalUserInfo,
     updateProfile,
 } from 'firebase/auth';
+
+// Google Analytics
+import { logEvent } from 'firebase/analytics';
+import { analytics } from '../../firebase/firebase-config';
+
 const db = getFirestore(app);
 
 // Memoize Carousel to prevent uneccessary re-renders when input change handler causes page to rerender
@@ -53,7 +62,9 @@ const BirthdayPage = () => {
                     );
                     window.localStorage.removeItem('emailForSignIn');
                     const additionalInfo = getAdditionalUserInfo(credential);
+
                     if (!additionalInfo?.isNewUser) {
+                        logEvent(analytics, 'user_logged_in'); // Google Analytics
                         router.push('/dashboard');
                     } else {
                         const userId = credential.user.uid;
@@ -70,6 +81,11 @@ const BirthdayPage = () => {
                             { displayName: displayName },
                             { merge: true },
                         );
+
+                        // Google Analytics
+                        logEvent(analytics, 'signed_up', {
+                            provider: 'email',
+                        });
                         router.push('/onboarding/birthday');
                     }
                 } catch (error: any) {

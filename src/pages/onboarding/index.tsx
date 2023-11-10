@@ -21,6 +21,12 @@ import {
 } from 'firebase/auth';
 import { getFirestore, collection, doc, setDoc } from 'firebase/firestore';
 import app from '@/firebase/firebase-config';
+
+// Google Analytics
+import { logEvent } from 'firebase/analytics';
+import { analytics } from '../../firebase/firebase-config';
+
+// util
 import toast from 'react-hot-toast';
 import { useRedirectIfAuthenticated } from '@/hooks/routeProtection';
 
@@ -28,7 +34,7 @@ import { useRedirectIfAuthenticated } from '@/hooks/routeProtection';
 const auth = getAuth(app);
 
 const CreateAccountPage = () => {
-    useRedirectIfAuthenticated();
+    // useRedirectIfAuthenticated(); TODO: Causing a bug redirect before account creation
     return (
         <section className='mx-auto px-[17.5px] py-12 md:max-w-[544px] md:px-0'>
             {/* Progress Image Container */}
@@ -148,8 +154,14 @@ export const SignInWithApple = () => {
                     { displayName: responseToken?.displayName },
                     { merge: true },
                 );
+
+                // Google Analytics
+                logEvent(analytics, 'signed_up', {
+                    provider: 'apple',
+                });
                 router.push('/onboarding/birthday');
             } else {
+                logEvent(analytics, 'user_logged_in'); // Google Analytics
                 router.push('/dashboard');
             }
         } catch (error: any) {
@@ -196,8 +208,14 @@ export const SignInWithGoogle = () => {
                     { displayName: userCredential.user.displayName },
                     { merge: true },
                 );
+
+                // Google Analytics
+                logEvent(analytics, 'signed_up', {
+                    provider: 'google',
+                });
                 router.push('/onboarding/birthday');
             } else {
+                logEvent(analytics, 'user_logged_in'); // Google Analytics
                 router.push('/dashboard');
             }
         } catch (error: any) {
@@ -245,8 +263,14 @@ export const SignInWithFacebook = () => {
                     { displayName: userCredential.user.displayName },
                     { merge: true },
                 );
+
+                // Google Analytics
+                logEvent(analytics, 'signed_up', {
+                    provider: 'facebook',
+                });
                 router.push('/onboarding/birthday');
             } else {
+                logEvent(analytics, 'user_logged_in'); // Google Analytics
                 router.push('/dashboard');
             }
         } catch (error: any) {

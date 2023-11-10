@@ -8,7 +8,7 @@ import { SignInWithFacebook } from './onboarding';
 import { useRedirectIfAuthenticated } from '@/hooks/routeProtection';
 
 const LoginPage = () => {
-    useRedirectIfAuthenticated();
+    // useRedirectIfAuthenticated(); TODO: Causing a login redirect bug
     return (
         <section className='mx-auto px-[17.5px] py-12 md:max-w-[544px] md:px-0'>
             {/* Main */}
