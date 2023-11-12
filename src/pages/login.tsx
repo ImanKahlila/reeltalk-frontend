@@ -5,10 +5,8 @@ import Link from 'next/link';
 import { SignInWithApple } from './onboarding';
 import { SignInWithGoogle } from './onboarding';
 import { SignInWithFacebook } from './onboarding';
-import { useRedirectIfAuthenticated } from '@/hooks/routeProtection';
 
 const LoginPage = () => {
-    useRedirectIfAuthenticated();
     return (
         <section className='mx-auto px-[17.5px] py-12 md:max-w-[544px] md:px-0'>
             {/* Main */}

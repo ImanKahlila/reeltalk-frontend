@@ -28,13 +28,11 @@ import { analytics } from '../../firebase/firebase-config';
 
 // util
 import toast from 'react-hot-toast';
-import { useRedirectIfAuthenticated } from '@/hooks/routeProtection';
 
 // Variables
 const auth = getAuth(app);
 
 const CreateAccountPage = () => {
-    useRedirectIfAuthenticated();
     return (
         <section className='mx-auto px-[17.5px] py-12 md:max-w-[544px] md:px-0'>
             {/* Progress Image Container */}
@@ -144,7 +142,6 @@ export const SignInWithApple = () => {
             const db = getFirestore(app);
             const colRef = collection(db, 'users');
             const userDocRef = doc(colRef, userId);
-
             if (additionalUserInfo?.isNewUser) {
                 await updateProfile(userCredential.user, {
                     displayName: responseToken?.displayName,

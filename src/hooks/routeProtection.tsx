@@ -24,9 +24,3 @@ export const useAuthRequired = () => {
 
     return auth.currentUser;
 };
-
-export const useRedirectIfAuthenticated = () => {
-    const router = useRouter();
-    const { user } = useUserContext();
-    if (user) router.push('/dashboard');
-};
