@@ -8,10 +8,8 @@ import { getAuth, sendSignInLinkToEmail } from 'firebase/auth';
 // Components
 import Buttons from '@/components/onboarding/Buttons';
 import GreenCheckIcon from '@/components/onboarding/GreenCheckIcon';
-import { useRedirectIfAuthenticated } from '@/hooks/routeProtection';
 
 const ContinueWithMagicLink = () => {
-    useRedirectIfAuthenticated();
     const auth = getAuth();
 
     // Input Validation
