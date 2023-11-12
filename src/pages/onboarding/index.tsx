@@ -34,7 +34,7 @@ import { useRedirectIfAuthenticated } from '@/hooks/routeProtection';
 const auth = getAuth(app);
 
 const CreateAccountPage = () => {
-    // useRedirectIfAuthenticated(); TODO: Causing a bug redirect before account creation
+    useRedirectIfAuthenticated();
     return (
         <section className='mx-auto px-[17.5px] py-12 md:max-w-[544px] md:px-0'>
             {/* Progress Image Container */}
