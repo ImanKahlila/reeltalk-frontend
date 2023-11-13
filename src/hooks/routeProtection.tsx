@@ -6,7 +6,6 @@ import {
     onAuthStateChanged,
 } from 'firebase/auth';
 import { useRouter } from 'next/router';
-import { useUserContext } from '@/lib/context';
 
 export const useAuthRequired = () => {
     const router = useRouter();
