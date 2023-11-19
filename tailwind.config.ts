@@ -28,6 +28,7 @@ const config: Config = {
                 'high-emphasis': 'rgba(255, 255, 255, 0.92)',
                 'medium-emphasis': 'rgba(255, 255, 255, 0.6)',
                 'first-surface': 'rgba(255, 255, 255, 0.08)',
+                'second-surface': '#3D3D3D',
                 disabled: 'rgba(255,255,255,0.38)',
                 border: 'hsl(var(--border))',
                 input: 'hsl(var(--input))',
@@ -80,6 +81,9 @@ const config: Config = {
                     from: { height: 'var(--radix-accordion-content-height)' },
                     to: { height: '0' },
                 },
+            },
+            letterSpacing: {
+                eight: '0.08px',
             },
             animation: {
                 'accordion-down': 'accordion-down 0.2s ease-out',

@@ -29,9 +29,10 @@ const db = getFirestore(app);
 import suggestedMovies from '@/lib/suggestedMovies';
 import { useAuthRequired } from '@/hooks/routeProtection';
 import { useUserContext } from '@/lib/context';
-import axios from 'axios';
 import { debounce } from 'lodash';
-import toast from 'react-hot-toast';
+
+// Hooks
+import useMediaSearch from '@/hooks/useMediaSearch';
 
 //
 //
@@ -60,7 +61,7 @@ const TopMovies = () => {
         title: string,
         poster: string, // poster Url
         newVal: boolean, // boolean for suggestedMovies indicating if selected
-        isApi: boolean, // boolean flag indicating if movie selection is from API
+        isApi: boolean, // boolean flag indicating if media selection is from API
     ) {
         if (!isApi) {
             // Updates the Suggested Movies
@@ -75,7 +76,7 @@ const TopMovies = () => {
         setFloaterSelection(prev => {
             let newState = [...prev];
             let movieIndex = newState.findIndex(el => el.id === id);
-            if (movieIndex > -1) return newState; // If movie already selected return prev state
+            if (movieIndex > -1) return newState; // If media already selected return prev state
             newState.push(selected);
             return newState;
         });
@@ -85,7 +86,7 @@ const TopMovies = () => {
     function removeSelectionHandler(
         id: number | string,
         newVal: boolean,
-        isApi: boolean, // boolean flag indicating if movie selection is from API
+        isApi: boolean, // boolean flag indicating if media selection is from API
     ) {
         if (!isApi) {
             setMovies(prev => {
@@ -158,15 +159,15 @@ const TopMovies = () => {
                     </h2>
 
                     <div className='mt-4 grid w-full grid-cols-3-auto justify-items-center gap-x-[27.5px] gap-y-4 md:grid-cols-6 md:gap-6'>
-                        {movies.slice(0, moviesToShow).map(movie => (
+                        {movies.slice(0, moviesToShow).map(media => (
                             <Media
-                                key={movie.id}
-                                id={movie.id}
-                                title={movie.title}
-                                year={movie.releaseYear}
-                                posterUrl={movie.poster}
+                                key={media.id}
+                                id={media.id}
+                                title={media.title}
+                                year={media.releaseYear}
+                                posterUrl={media.poster}
                                 addSelectionHandler={addSelectionHandler}
-                                selected={movie.selected}
+                                selected={media.selected}
                                 selectedLength={floaterSelection.length}
                                 removeSelectionHandler={removeSelectionHandler}
                             />
@@ -180,7 +181,8 @@ const TopMovies = () => {
 
                 <Buttons
                     className='md:hidden'
-                    prevPage='onboarding/top-genres'
+                    prevPage='/onboarding/top-genres'
+                    nextPage='/onboarding/top-shows'
                     onPageSubmit={onPageSubmitHandler}
                     valid={floaterSelection.length === 5}
                 />
@@ -193,18 +195,18 @@ const TopMovies = () => {
                         Your top 5 selections
                     </h2>
                     <div className='mx-auto mt-2 flex justify-between gap-3'>
-                        {floaterSelection.map(movie => (
+                        {floaterSelection.map(media => (
                             <MediaSelection
-                                key={movie.id}
-                                id={movie.id}
-                                poster={movie.poster}
+                                key={media.id}
+                                id={media.id}
+                                poster={media.poster}
                                 removeSelectionHandler={removeSelectionHandler}
-                                isApi={movie.isApi}
+                                isApi={media.isApi}
                             />
                         ))}
-                        {selectionPlaceholder.map(movie => (
+                        {selectionPlaceholder.map(media => (
                             <MediaSelection
-                                key={movie.id}
+                                key={media.id}
                                 poster={''}
                                 isApi={false}
                             />
@@ -228,7 +230,7 @@ const TopMovies = () => {
                         </button>
                     ) : (
                         <Link
-                            href={'/dashboard'}
+                            href={'/onboarding/top-shows'}
                             className='w-full rounded-lg border-2 border-high-emphasis p-[10px] text-center font-semibold tracking-[0.08px] text-high-emphasis'
                         >
                             Skip
@@ -261,74 +263,13 @@ const Header = ({ addSelectionHandler, selectedLength }: HeaderProps) => {
     // Controls open state of popover
     const [inputFocus, setInputFocus] = useState(false);
 
-    //
-    //
-    // Input Api Movie Search logic
-    const [queryMovies, setQueryMovies] = useState<any[]>([]);
-    const [fetching, setFetching] = useState(false);
+    // Custom hook for searching Media from API
+    const { queryMedia, searchMedia, fetching } = useMediaSearch();
 
     const searchInputChangeHandler = debounce(
         (e: React.ChangeEvent<HTMLInputElement>) => {
             const queryParam = e.target.value.trim();
-            if (!queryParam) {
-                setQueryMovies([]);
-                return;
-            }
-
-            // Create an array to store the promises for the two Axios requests
-            const promises = [
-                axios.post('http://localhost:8080/movies/search', {
-                    input: queryParam,
-                    titleType: 'movie',
-                    info: 'base_info',
-                }),
-                axios.post('http://localhost:8080/movies/search', {
-                    input: queryParam,
-                    titleType: 'movie',
-                    info: 'creators_directors_writers',
-                }),
-            ];
-
-            setFetching(true);
-
-            Promise.all(promises)
-                .then(([moviesResponse, creditsResponse]) => {
-                    const moviesData = moviesResponse.data;
-                    const creditsData = creditsResponse.data;
-
-                    // Create a new array to store the mapped values
-                    const mappedArray = [];
-
-                    if (moviesData.length === creditsData.length) {
-                        for (let i = 0; i < moviesData.length; i++) {
-                            const movieValue = moviesData[i];
-                            const directorName =
-                                creditsData[i].directors[0]?.credits[0]?.name
-                                    .nameText.text;
-
-                            const mappedValue = { ...movieValue, directorName };
-
-                            mappedArray.push(mappedValue);
-                        }
-
-                        // Filter and sort the mappedArray
-                        const filteredAndSortedArray = mappedArray
-                            .filter(
-                                (media: any) =>
-                                    media.primaryImage !== null &&
-                                    media.ratingsSummary.voteCount > 300,
-                            )
-                            .sort(
-                                (a: any, b: any) =>
-                                    b.ratingsSummary.voteCount -
-                                    a.ratingsSummary.voteCount,
-                            );
-
-                        setQueryMovies(filteredAndSortedArray);
-                    }
-                })
-                .catch(error => toast.error(error.message))
-                .finally(() => setFetching(false));
+            searchMedia(queryParam, 'movie');
         },
         500,
     );
@@ -362,21 +303,23 @@ const Header = ({ addSelectionHandler, selectedLength }: HeaderProps) => {
                     className='relative bottom-3 w-[344px] rounded-t-none p-0 md:w-[544px]'
                     onOpenAutoFocus={(event: Event) => event.preventDefault()}
                 >
-                    {queryMovies.length === 0 ? (
+                    {queryMedia.length === 0 ? (
                         <div className='p-4'>No results...</div>
                     ) : (
                         <ScrollArea className='h-[288px]'>
                             {/* Popover Options */}
-                            {queryMovies.map(movie => (
+                            {queryMedia.map(media => (
                                 <SearchOption
-                                    key={movie.id}
-                                    id={movie.id}
-                                    title={movie.originalTitleText.text}
-                                    posterUrl={movie.primaryImage?.url}
-                                    year={movie.releaseYear?.year}
-                                    director={movie.directorName}
+                                    key={media.id}
+                                    id={media.id}
+                                    title={media.originalTitleText.text}
+                                    posterUrl={media.primaryImage?.url}
+                                    year={media.releaseYear?.year}
+                                    director={media.directorName}
+                                    creator={media.creatorName}
                                     addSelectionHandler={addSelectionHandler}
                                     selectedLength={selectedLength}
+                                    maxSelection={5}
                                 />
                             ))}
                         </ScrollArea>
