@@ -179,3 +179,9 @@ dialog::backdrop {
 .spinner_item--warning {
     border-bottom-color: rgb(0, 112, 240);
 }
+
+/* CUSTOM RADIO BUTTON STYLING for create-community page */
+#private:checked + .radio,
+#public:checked + .radio {
+    @apply border-none bg-primary;
+}

@@ -1,5 +1,3 @@
-// Search option in the combobox on top 5 movies/shows page
-
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { Skeleton } from '../ui/skeleton';
@@ -10,6 +8,7 @@ interface ComponentProps {
     year: number | string;
     posterUrl: string;
     director: string;
+    creator: string;
     id: string;
     addSelectionHandler: (
         id: number | string,
@@ -19,6 +18,7 @@ interface ComponentProps {
         isApi: boolean,
     ) => void;
     selectedLength: number; //Number of medias selected so far
+    maxSelection: number; // Maximum title selections allowed
 }
 
 const SearchOption = ({
@@ -27,8 +27,10 @@ const SearchOption = ({
     title,
     year,
     director,
+    creator,
     addSelectionHandler,
     selectedLength,
+    maxSelection,
 }: ComponentProps) => {
     const [imageLoaded, setImageLoaded] = useState(false);
 
@@ -38,7 +40,7 @@ const SearchOption = ({
     };
 
     const selectMovieHandler = () => {
-        if (selectedLength < 5) {
+        if (selectedLength < maxSelection) {
             addSelectionHandler(id, title, posterUrl, false, true);
             toast.success(
                 <div>
@@ -47,7 +49,7 @@ const SearchOption = ({
                 { position: 'bottom-center' },
             );
         } else {
-            toast.error('Oops! select only 5 options');
+            toast.error(`Oops! select only ${maxSelection} options`);
         }
     };
 
@@ -70,7 +72,9 @@ const SearchOption = ({
                 <h2 className='text-base tracking-[0.08px] text-secondary'>
                     {title} ({year})
                 </h2>
-                <p className='tracking-[0.08px] text-gray'>{director}</p>
+                <p className='tracking-[0.08px] text-gray'>
+                    {director || creator}
+                </p>
             </div>
         </div>
     );
