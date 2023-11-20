@@ -64,7 +64,9 @@ const BirthdayPage = () => {
                     const additionalInfo = getAdditionalUserInfo(credential);
 
                     if (!additionalInfo?.isNewUser) {
-                        logEvent(analytics, 'user_logged_in'); // Google Analytics
+                        logEvent(analytics, 'user_logged_in', {
+                            method: 'email',
+                        }); // Google Analytics
                         router.push('/dashboard');
                     } else {
                         const userId = credential.user.uid;
@@ -84,7 +86,7 @@ const BirthdayPage = () => {
 
                         // Google Analytics
                         logEvent(analytics, 'signed_up', {
-                            provider: 'email',
+                            method: 'email',
                         });
                         router.push('/onboarding/birthday');
                     }

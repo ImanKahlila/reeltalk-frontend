@@ -7,6 +7,7 @@ interface ComponentProps {
     selected: boolean;
     onSelect: (newVal: boolean, id: string) => void;
     totalSelected: number;
+    emoji: string;
 }
 
 const Genre = ({
@@ -15,6 +16,7 @@ const Genre = ({
     selected,
     onSelect,
     totalSelected,
+    emoji,
 }: ComponentProps) => {
     const [isChecked, setIsChecked] = useState(selected);
 
@@ -39,7 +41,7 @@ const Genre = ({
             }`}
         >
             <span className='text-[14px] font-semibold tracking-[0.07px] text-secondary'>
-                {name}
+                {emoji} {name}
             </span>
             <input
                 className='sr-only'

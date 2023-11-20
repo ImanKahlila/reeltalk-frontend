@@ -136,7 +136,6 @@ export const SignInWithApple = () => {
 
             const additionalUserInfo = getAdditionalUserInfo(userCredential);
 
-            // TODO: Will be sending this to backend apple response token
             const responseToken = userCredential._tokenResponse;
 
             const db = getFirestore(app);
@@ -154,11 +153,11 @@ export const SignInWithApple = () => {
 
                 // Google Analytics
                 logEvent(analytics, 'signed_up', {
-                    provider: 'apple',
+                    method: 'apple',
                 });
                 router.push('/onboarding/birthday');
             } else {
-                logEvent(analytics, 'user_logged_in'); // Google Analytics
+                logEvent(analytics, 'user_logged_in', { method: 'apple' }); // Google Analytics
                 router.push('/dashboard');
             }
         } catch (error: any) {
@@ -208,11 +207,11 @@ export const SignInWithGoogle = () => {
 
                 // Google Analytics
                 logEvent(analytics, 'signed_up', {
-                    provider: 'google',
+                    method: 'google',
                 });
                 router.push('/onboarding/birthday');
             } else {
-                logEvent(analytics, 'user_logged_in'); // Google Analytics
+                logEvent(analytics, 'user_logged_in', { method: 'google' }); // Google Analytics
                 router.push('/dashboard');
             }
         } catch (error: any) {
@@ -263,11 +262,11 @@ export const SignInWithFacebook = () => {
 
                 // Google Analytics
                 logEvent(analytics, 'signed_up', {
-                    provider: 'facebook',
+                    method: 'facebook',
                 });
                 router.push('/onboarding/birthday');
             } else {
-                logEvent(analytics, 'user_logged_in'); // Google Analytics
+                logEvent(analytics, 'user_logged_in', { method: 'facebook' }); // Google Analytics
                 router.push('/dashboard');
             }
         } catch (error: any) {

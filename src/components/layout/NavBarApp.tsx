@@ -76,6 +76,7 @@ export default NavBarApp;
 
 // Navigation Links and Reel Talk Logo
 const NavigationLinks = () => {
+    const router = useRouter();
     return (
         <ul className='flex list-none items-center gap-4'>
             {/* Logo-Link */}
@@ -90,13 +91,29 @@ const NavigationLinks = () => {
                     REEL TALK
                 </h1>
             </Link>
-            <li className='hidden text-base font-normal text-secondary lg:block'>
+            <li
+                className={`hidden text-base  text-secondary lg:block ${
+                    router.pathname == '/browse' ? 'font-medium' : 'font-normal'
+                }`}
+            >
                 <Link href={'/'}>Browse</Link>
             </li>
-            <li className='hidden text-base font-normal text-secondary lg:block'>
-                <Link href={'/'}>Community</Link>
+            <li
+                className={`hidden text-base  text-secondary lg:block ${
+                    router.pathname == '/community'
+                        ? 'font-medium'
+                        : 'font-normal'
+                }`}
+            >
+                <Link href={'/community'}>Community</Link>
             </li>
-            <li className='hidden text-base font-normal text-secondary lg:block'>
+            <li
+                className={`hidden text-base  text-secondary lg:block ${
+                    router.pathname == '/discussions'
+                        ? 'font-medium'
+                        : 'font-normal'
+                }`}
+            >
                 <Link href={'/'}>Discussions</Link>
             </li>
         </ul>

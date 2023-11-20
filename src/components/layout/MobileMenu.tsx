@@ -29,7 +29,7 @@ const MobileMenu = ({ isOpen }: ComponentProps) => {
                 <li>
                     <Link
                         className='text-base font-normal tracking-wide'
-                        href={'/'}
+                        href={'/community'}
                     >
                         Community
                     </Link>

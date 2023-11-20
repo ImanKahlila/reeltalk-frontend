@@ -12,21 +12,22 @@ import debounce from 'lodash/debounce';
 
 // Firebase
 import { getFirestore, setDoc, doc } from 'firebase/firestore';
-import app from '@/firebase/firebase-config';
+import app, { analytics } from '@/firebase/firebase-config';
 
 const db = getFirestore(app);
 
 // Genres Data
 import initialGenres from '@/lib/genresData';
 import { useAuthRequired } from '@/hooks/routeProtection';
+import { logEvent } from 'firebase/analytics';
 
 const TopGenresPage = () => {
     useAuthRequired();
     const [genresToShow, setGenresToShow] = useState(20);
     const [genres, setGenres] =
-        useState<{ name: string; selected: boolean; id: string }[]>(
-            initialGenres,
-        );
+        useState<
+            { name: string; selected: boolean; id: string; emoji: string }[]
+        >(initialGenres);
 
     // filtered genres to display when searching
     const [filteredData, setFilteredData] = useState(initialGenres);
@@ -72,6 +73,8 @@ const TopGenresPage = () => {
                 .filter(genre => genre.selected === true)
                 .map(genre => genre.name);
             const docRef = doc(db, 'users', user!.uid);
+            logEvent(analytics, 'genre_selected', { fav_genres: top5Genres }); // Google Analytics
+            logEvent(analytics, 'profile_created'); // Google Analytics
             setDoc(
                 docRef,
                 {
@@ -116,6 +119,7 @@ const TopGenresPage = () => {
                         selected={genre.selected}
                         onSelect={toggleSelectedGenre}
                         totalSelected={totalSelected}
+                        emoji={genre.emoji}
                     />
                 ))}
             </div>
