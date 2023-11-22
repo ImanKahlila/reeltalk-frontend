@@ -68,7 +68,7 @@ const SearchOption = ({
                 ></Image>
                 {!imageLoaded && <Skeleton className='h-[84px] rounded-none' />}
             </picture>
-            <div className='flex flex-col justify-center gap-3'>
+            <div className='flex flex-col items-start justify-center gap-3'>
                 <h2 className='text-base tracking-[0.08px] text-secondary'>
                     {title} ({year})
                 </h2>

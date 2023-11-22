@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 
 // Components
@@ -8,11 +8,6 @@ import SearchIcon from '@/components/layout/SearchIcon';
 import PlusIcon from '@/components/Icons/plusIcon';
 
 // ShadCN/UI
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 // util
@@ -22,7 +17,6 @@ import { debounce } from 'lodash';
 import useMediaSearch from '@/hooks/useMediaSearch';
 
 const CreateCommunityPage = () => {
-    const tagInputRef = useRef<HTMLInputElement | null>(null);
     const [relatedTitlesSelection, setRelatedTitlesSelection] = useState<
         { id: string | number; title: string; poster: string; isApi: boolean }[]
     >([]);
@@ -62,15 +56,12 @@ const CreateCommunityPage = () => {
     // Tags logic
     const [tags, setTags] = useState<string[]>([]);
 
-    function addTagHandler(e: React.FormEvent<HTMLFormElement>) {
-        e.preventDefault();
-        const inputValue = tagInputRef.current!.value.trim();
+    function addTagHandler(query: string) {
         setTags(prev => {
             let newState = [...prev];
-            newState.push(inputValue);
+            newState.push(query);
             return newState;
         });
-        tagInputRef.current!.value = '';
     }
 
     function removeTagHandler(index: number) {
@@ -250,20 +241,12 @@ const CreateCommunityPage = () => {
                         <h2 className='mb-2 font-medium tracking-eight text-high-emphasis'>
                             Tags (optional)
                         </h2>
-                        <form
-                            onSubmit={addTagHandler}
-                            className='mb-5 flex h-14 items-center justify-start gap-[10px] rounded-lg bg-first-surface px-6 py-[6px] focus-within:outline focus-within:outline-2 focus-within:outline-pure-white'
-                        >
-                            <SearchIcon />
-                            <input
-                                className='w-full border-none bg-transparent text-pure-white outline-none'
-                                type='text'
-                                placeholder='Search'
-                                maxLength={50}
-                                ref={tagInputRef}
-                            />
-                            <button className='sr-only' type='submit'></button>
-                        </form>
+
+                        <TagSearchInput
+                            fetching={false} //TODO: Fix when implement tag searching
+                            addTagHandler={addTagHandler}
+                        />
+
                         <div className='flex flex-wrap gap-x-3 gap-y-[14px]'>
                             {tags.map((tag, index) => (
                                 <Tag
@@ -296,7 +279,7 @@ export default CreateCommunityPage;
 //
 //
 //
-interface SearchRelatedMediaInputProps {
+interface ISearchRelatedMediaInput {
     addSelectionHandler: (
         id: string | number,
         title: string,
@@ -310,7 +293,7 @@ interface SearchRelatedMediaInputProps {
 function SearchRelatedMediaInput({
     addSelectionHandler,
     selectedLength,
-}: SearchRelatedMediaInputProps) {
+}: ISearchRelatedMediaInput) {
     // Controls open state of popover
     const [inputFocus, setInputFocus] = useState(false);
 
@@ -326,51 +309,61 @@ function SearchRelatedMediaInput({
     );
 
     return (
-        <Popover open={inputFocus}>
-            <PopoverTrigger className='w-full min-w-[343px] md:min-w-[352px]'>
-                <div className='mx-auto mt-2 flex h-14 w-[343px] items-center justify-start gap-[10px] rounded-lg bg-first-surface px-6 py-[6px] focus-within:bg-high-emphasis md:w-[352px] md:max-w-[544px]'>
-                    {fetching ? <Spinner /> : <SearchIcon />}
-                    <input
-                        className='w-full border-none bg-transparent py-[11px] tracking-eight text-pure-white outline-none focus:text-secondary'
-                        type='text'
-                        placeholder='Search'
-                        onChange={searchInputChangeHandler}
-                        onFocus={() => setInputFocus(true)}
-                        onBlur={() => setInputFocus(false)}
-                    />
-                </div>
-            </PopoverTrigger>
-            <PopoverContent
-                className='relative bottom-3 w-[343px] rounded-t-none p-0 md:w-[352px]'
-                onOpenAutoFocus={(event: Event) => event.preventDefault()}
+        // Container
+        <div className='relative mx-auto w-fit'>
+            {/* Trigger */}
+            <div className='relative mx-auto mt-2 flex h-14 w-[343px] items-center justify-start gap-[10px] rounded-lg bg-first-surface px-6 py-[6px] transition-colors duration-700 focus-within:bg-pure-white md:w-[352px]'>
+                {fetching ? <Spinner /> : <SearchIcon />}
+                <input
+                    className='w-full border-none bg-transparent py-[11px] tracking-eight text-pure-white outline-none focus:text-secondary'
+                    type='text'
+                    placeholder='Search'
+                    onChange={searchInputChangeHandler}
+                    onFocus={() => setInputFocus(true)}
+                    onBlur={() => setInputFocus(false)}
+                />
+            </div>
+
+            {/* Trigger Content */}
+            <div
+                className={`collapsible-dropdown absolute top-12 z-20 w-full max-w-md rounded-b-md ${
+                    inputFocus ? 'dropdown-active' : ''
+                }`}
             >
-                {queryMedia.length === 0 ? (
-                    <div className='p-4'>No results...</div>
-                ) : (
-                    <ScrollArea className='h-[444px]'>
-                        {/* Popover Options */}
-                        {queryMedia.map(media => (
-                            <SearchOption
-                                key={media.id}
-                                id={media.id}
-                                title={media.originalTitleText.text}
-                                posterUrl={media.primaryImage?.url}
-                                year={media.releaseYear?.year}
-                                director={media.directorName || ''}
-                                creator={media.creatorName || ''}
-                                addSelectionHandler={addSelectionHandler}
-                                selectedLength={selectedLength}
-                                maxSelection={4}
-                            />
-                        ))}
-                    </ScrollArea>
-                )}
-            </PopoverContent>
-        </Popover>
+                <div
+                    className={`dropdown-content flex flex-col gap-4 rounded-md rounded-t-none border-none bg-secondary transition-colors duration-700 ${
+                        inputFocus ? 'bg-white' : ''
+                    } outline-none`}
+                >
+                    {/* Only Children allow to have padding else it will become visible */}
+                    {queryMedia.length === 0 ? (
+                        <div className='p-4'>No results...</div>
+                    ) : (
+                        <ScrollArea className='h-[444px]'>
+                            {/* Popover Options */}
+                            {queryMedia.map(media => (
+                                <SearchOption
+                                    key={media.id}
+                                    id={media.id}
+                                    title={media.originalTitleText.text}
+                                    posterUrl={media.primaryImage?.url}
+                                    year={media.releaseYear?.year}
+                                    director={media.directorName || ''}
+                                    creator={media.creatorName || ''}
+                                    addSelectionHandler={addSelectionHandler}
+                                    selectedLength={selectedLength}
+                                    maxSelection={4}
+                                />
+                            ))}
+                        </ScrollArea>
+                    )}
+                </div>
+            </div>
+        </div>
     );
 }
 
-interface RelatedMediaSelectionProps {
+interface IRelatedMediaSelection {
     id: number | string;
     poster: string;
     removeSelectionHandler: (id: number | string) => void;
@@ -380,7 +373,7 @@ function RelatedMediaSelection({
     id,
     poster,
     removeSelectionHandler,
-}: RelatedMediaSelectionProps) {
+}: IRelatedMediaSelection) {
     return (
         <div
             onClick={() => removeSelectionHandler(id)}
@@ -393,13 +386,13 @@ function RelatedMediaSelection({
     );
 }
 
-interface TagProps {
+interface ITags {
     index: number;
     tag: string;
     removeTagHandler: (index: number) => void;
 }
 
-function Tag({ index, tag, removeTagHandler }: TagProps) {
+function Tag({ index, tag, removeTagHandler }: ITags) {
     return (
         <div
             key={index}
@@ -409,6 +402,85 @@ function Tag({ index, tag, removeTagHandler }: TagProps) {
             {tag}
             <CrossIconSVG className='absolute -right-3 -top-3 ' />
         </div>
+    );
+}
+
+interface ITagSearchInput {
+    fetching: boolean;
+    addTagHandler: (query: string) => void;
+}
+
+function TagSearchInput({ fetching = false, addTagHandler }: ITagSearchInput) {
+    const [tagQuery, setTagQuery] = useState<string>('');
+    const [inputFocus, setInputFocus] = useState(false);
+
+    function onChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
+        const query = e.currentTarget.value.trimStart();
+        setTagQuery(query as string);
+    }
+
+    function onSubmitTag(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        addTagHandler(tagQuery);
+        setTagQuery('');
+    }
+
+    return (
+        // Container
+        <form onSubmit={onSubmitTag} className='relative mx-auto mb-4 w-fit'>
+            {/* Trigger */}
+            <div className='relative mx-auto mt-2 flex h-14 w-[343px] items-center justify-start gap-[10px] rounded-lg bg-first-surface px-6 py-[6px] transition-colors duration-700 focus-within:bg-pure-white md:w-[352px]'>
+                {fetching ? <Spinner /> : <SearchIcon />}
+                <input
+                    className='w-full border-none bg-transparent py-[11px] tracking-eight text-pure-white outline-none focus:text-secondary'
+                    type='text'
+                    placeholder='Search'
+                    // onChange={searchInputChangeHandler}
+                    onChange={onChangeHandler}
+                    value={tagQuery}
+                    onFocus={() => setInputFocus(true)}
+                    onBlur={() => setInputFocus(false)}
+                    maxLength={24}
+                />
+            </div>
+
+            {/* Trigger Content */}
+            <div
+                className={`collapsible-dropdown absolute top-12 z-20 w-full max-w-md rounded-b-md ${
+                    inputFocus ? 'dropdown-active' : ''
+                }`}
+            >
+                <div
+                    className={`dropdown-content flex flex-col gap-4 rounded-md rounded-t-none border-none bg-secondary transition-colors duration-700 ${
+                        inputFocus ? 'bg-white' : ''
+                    } outline-none`}
+                >
+                    {/* Only Children allow to have padding else hidden content will become visible */}
+                    {tagQuery.length < 1 ? (
+                        <div className='px-6 py-[13px]'>No Results...</div>
+                    ) : (
+                        <ScrollArea className='h-fit min-h-[48px]'>
+                            {/* Create new Tag */}
+                            {tagQuery ? (
+                                <button
+                                    type='submit'
+                                    className='flex w-full cursor-pointer items-center justify-between px-6 py-[13px] transition-colors duration-300 hover:bg-neutral-400'
+                                >
+                                    <span className='tracking-eight'>
+                                        {tagQuery}
+                                    </span>{' '}
+                                    <span className='tracking-eight text-gray'>
+                                        create tag
+                                    </span>
+                                </button>
+                            ) : null}
+                            {/* TODO: Queried tags */}
+                            {/* Some Code */}
+                        </ScrollArea>
+                    )}
+                </div>
+            </div>
+        </form>
     );
 }
 
