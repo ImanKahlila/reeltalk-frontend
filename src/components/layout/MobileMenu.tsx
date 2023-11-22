@@ -8,8 +8,9 @@ const auth = getAuth(app);
 
 interface ComponentProps {
     isOpen: boolean;
+    toggleMobileMenu: () => void;
 }
-const MobileMenu = ({ isOpen }: ComponentProps) => {
+const MobileMenu = ({ isOpen, toggleMobileMenu }: ComponentProps) => {
     const router = useRouter();
     return (
         <nav
@@ -22,6 +23,7 @@ const MobileMenu = ({ isOpen }: ComponentProps) => {
                     <Link
                         className='text-base font-normal tracking-wide'
                         href={'/'}
+                        onClick={toggleMobileMenu}
                     >
                         Browse
                     </Link>
@@ -30,6 +32,7 @@ const MobileMenu = ({ isOpen }: ComponentProps) => {
                     <Link
                         className='text-base font-normal tracking-wide'
                         href={'/community'}
+                        onClick={toggleMobileMenu}
                     >
                         Community
                     </Link>
@@ -38,6 +41,7 @@ const MobileMenu = ({ isOpen }: ComponentProps) => {
                     <Link
                         className='text-base font-normal tracking-wide'
                         href={'/'}
+                        onClick={toggleMobileMenu}
                     >
                         Discussions
                     </Link>

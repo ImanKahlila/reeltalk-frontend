@@ -23,9 +23,10 @@ const auth = getAuth(app);
 // Component Props
 interface ComponentProps {
     onToggleMobileMenu: () => void;
+    isOpen: boolean;
 }
 
-const NavBarApp = ({ onToggleMobileMenu }: ComponentProps) => {
+const NavBarApp = ({ onToggleMobileMenu, isOpen }: ComponentProps) => {
     // UserContext
     const { user } = useUserContext();
 
@@ -65,6 +66,7 @@ const NavBarApp = ({ onToggleMobileMenu }: ComponentProps) => {
                 {/* Mobile Buttons */}
                 <MobileButtons
                     user={user}
+                    isOpen={isOpen}
                     onToggleMobileMenu={onToggleMobileMenu}
                 />
             </menu>
@@ -194,7 +196,7 @@ const AuthenticationLinks = () => {
 };
 
 // Buttons for Mobile screen size
-const MobileButtons = ({ user, onToggleMobileMenu }: any) => {
+const MobileButtons = ({ user, onToggleMobileMenu, isOpen }: any) => {
     return (
         <div className='flex items-center lg:hidden'>
             {!user ? (
@@ -217,6 +219,7 @@ const MobileButtons = ({ user, onToggleMobileMenu }: any) => {
                     direction='left'
                     distance='lg'
                     duration={0.5}
+                    toggled={isOpen}
                 />
             </button>
         </div>

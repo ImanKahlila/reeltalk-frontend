@@ -23,9 +23,12 @@ const Layout: React.FC<ComponentProps> = ({ children }) => {
             {router.pathname === '/' ? (
                 <NavBarLanding />
             ) : (
-                <NavBarApp onToggleMobileMenu={toggleMobileMenu} />
+                <NavBarApp
+                    isOpen={isOpen}
+                    onToggleMobileMenu={toggleMobileMenu}
+                />
             )}
-            <MobileMenu isOpen={isOpen} />
+            <MobileMenu isOpen={isOpen} toggleMobileMenu={toggleMobileMenu} />
             <main className='relative'>{children}</main>
             {router.pathname === '/' ? <Footer /> : null}
         </>
