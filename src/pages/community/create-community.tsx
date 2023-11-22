@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 
 // Components
@@ -72,6 +72,23 @@ const CreateCommunityPage = () => {
         });
     }
 
+    const [communityImage, setCommunityImage] = useState<File | null>();
+    const [communityImagePreview, setCommunityImagePreview] = useState<
+        string | null
+    >();
+
+    useEffect(() => {
+        if (communityImage) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setCommunityImagePreview(reader.result as string);
+            };
+            reader.readAsDataURL(communityImage);
+        } else {
+            setCommunityImagePreview(null);
+        }
+    }, [communityImage]);
+
     return (
         <section className='mx-auto max-w-[904px] p-4 md:pt-[40px] lg:px-0'>
             <header className='mx-auto mb-4 max-w-[343px] md:mx-0'>
@@ -84,11 +101,37 @@ const CreateCommunityPage = () => {
                 {/* COMMUNITY POSTER */}
                 <div className='flex max-w-[120px] flex-col gap-4'>
                     <picture className='relative block h-[153.787px] min-w-[120px] overflow-hidden rounded-md'>
-                        <Image src={'/Pixel-160.png'} fill alt=''></Image>
+                        <Image
+                            className='object-cover'
+                            src={
+                                communityImagePreview
+                                    ? communityImagePreview
+                                    : '/Pixel-160.png'
+                            }
+                            fill
+                            alt=''
+                        ></Image>
                     </picture>
-                    <button className='flex h-[34px] w-full items-center justify-center rounded bg-primary px-4 font-semibold tracking-[0.24px] text-secondary'>
+                    <label
+                        htmlFor='community-image'
+                        className='flex h-[34px] w-full cursor-pointer items-center justify-center rounded bg-primary px-4 font-semibold tracking-[0.24px] text-secondary'
+                    >
                         Edit
-                    </button>
+                    </label>
+                    <input
+                        id='community-image'
+                        type='file'
+                        className='sr-only'
+                        accept='image/*'
+                        onChange={event => {
+                            const file = event.target.files?.[0];
+                            if (file && file.type.substring(0, 5) === 'image') {
+                                setCommunityImage(file);
+                            } else {
+                                setCommunityImage(null);
+                            }
+                        }}
+                    />
                 </div>
 
                 {/* INPUTS + RADIO PUBLIC/PRIVATE */}
