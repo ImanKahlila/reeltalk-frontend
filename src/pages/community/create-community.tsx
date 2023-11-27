@@ -1,5 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 
 // Components
 import SearchOption from '@/components/onboarding/SearchOption';
@@ -11,12 +12,20 @@ import PlusIcon from '@/components/Icons/plusIcon';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 // util
+import toast from 'react-hot-toast';
 import { debounce } from 'lodash';
 
 // Hooks
 import useMediaSearch from '@/hooks/useMediaSearch';
+import axios from 'axios';
+import { useUserContext } from '@/lib/context';
 
 const CreateCommunityPage = () => {
+    // User Context
+    const { user } = useUserContext();
+
+    const router = useRouter();
+
     const [relatedTitlesSelection, setRelatedTitlesSelection] = useState<
         { id: string | number; title: string; poster: string; isApi: boolean }[]
     >([]);
@@ -25,6 +34,14 @@ const CreateCommunityPage = () => {
     const selectionPlaceholder = [];
     for (let i = 0; i < 4 - relatedTitlesSelection.length; i++) {
         selectionPlaceholder.push({ id: i, title: '', poster: '' });
+    }
+
+    const [communityType, setCommunityType] = useState('public');
+
+    function communityTypeChangeHandler(
+        e: React.ChangeEvent<HTMLInputElement>,
+    ) {
+        setCommunityType(e.target.value);
     }
 
     // Function to add media selection
@@ -72,10 +89,89 @@ const CreateCommunityPage = () => {
         });
     }
 
+    const [nameValue, setNameValue] = useState('');
+    const [descriptionValue, setDescriptionValue] = useState('');
+    const [rulesValue, setRulesValue] = useState('');
+
+    const isValid =
+        nameValue.trim() !== '' &&
+        descriptionValue.trim() !== '' &&
+        rulesValue.trim() !== '' &&
+        relatedTitlesSelection.length !== 0;
+
+    function nameInputChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
+        setNameValue(e.currentTarget.value);
+    }
+    function descriptionInputChangeHandler(
+        e: React.ChangeEvent<HTMLTextAreaElement>,
+    ) {
+        setDescriptionValue(e.currentTarget.value);
+    }
+    function rulesInputChangeHandler(
+        e: React.ChangeEvent<HTMLTextAreaElement>,
+    ) {
+        setRulesValue(e.currentTarget.value);
+    }
+
+    const CreateCommunityPage = async () => {
+        if (user) {
+            try {
+                const data = {
+                    name: nameValue,
+                    description: descriptionValue,
+                    rules: rulesValue,
+                    isPublic: communityType === 'public',
+                    content: relatedTitlesSelection,
+                    tags: tags,
+                    userId: user.uid,
+                };
+
+                const formData = new FormData();
+                formData.append('coverPhoto', coverImage as Blob); // Add images to FormData instance
+                formData.append('image', communityImage as Blob);
+
+                // map data to FormData instance
+                Object.entries(data).forEach(([key, value]) => {
+                    formData.append(
+                        key,
+                        Array.isArray(value)
+                            ? JSON.stringify(value)
+                            : String(value),
+                    );
+                });
+
+                const response = await axios.post(
+                    'http://localhost:8080/communities',
+                    formData,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                        },
+                    },
+                );
+                if (response.status === 200) {
+                    toast.success(response.data.message);
+                    toast.success('Please wait to be redirected...');
+                }
+
+                // TODO: Response should have id of newly created community so we can navigate to it after creating it
+                setTimeout(() => {
+                    router.push('/community');
+                }, 200);
+            } catch (error: any) {
+                toast.error(error.message);
+            }
+        }
+    };
+
+    // Image and CoverImage Logic
     const [communityImage, setCommunityImage] = useState<File | null>();
     const [communityImagePreview, setCommunityImagePreview] = useState<
         string | null
     >();
+
+    const [coverImage, setCoverImage] = useState<File | null>();
+    const [coverImagePreview, setCoverImagePreview] = useState<string | null>();
 
     useEffect(() => {
         if (communityImage) {
@@ -88,6 +184,20 @@ const CreateCommunityPage = () => {
             setCommunityImagePreview(null);
         }
     }, [communityImage]);
+
+    useEffect(() => {
+        if (coverImage) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setCoverImagePreview(reader.result as string);
+            };
+            reader.readAsDataURL(coverImage);
+        } else {
+            setCoverImagePreview(null);
+        }
+    }, [coverImage]);
+
+    if (!user) return;
 
     return (
         <section className='mx-auto max-w-[904px] p-4 md:pt-[40px] lg:px-0'>
@@ -151,6 +261,8 @@ const CreateCommunityPage = () => {
                             placeholder='Community Name'
                             type='text'
                             id='community-name'
+                            value={nameValue}
+                            onChange={nameInputChangeHandler}
                         />
                     </div>
                     <div>
@@ -164,6 +276,8 @@ const CreateCommunityPage = () => {
                             className='mt-2 h-24 w-full resize-none rounded-lg border border-medium-emphasis bg-first-surface py-3 pl-6 pr-3 tracking-eight text-high-emphasis placeholder-disabled'
                             placeholder='What is your community about?'
                             id='community-name'
+                            value={descriptionValue}
+                            onChange={descriptionInputChangeHandler}
                         />
                     </div>
                     <div>
@@ -177,8 +291,12 @@ const CreateCommunityPage = () => {
                             className='mt-2 h-24 w-full resize-none rounded-lg border border-medium-emphasis bg-first-surface pb-[14px] pl-6 pr-3 pt-[18px] tracking-eight text-high-emphasis placeholder-disabled placeholder:text-xs'
                             placeholder={`1. Only true fans should join this group\n2. No disrespectful or hateful comments EVER\n3. If your post has a spoiler with no warning, you may be banned`}
                             id='community-name'
+                            value={rulesValue}
+                            onChange={rulesInputChangeHandler}
                         />
                     </div>
+
+                    {/* Radios */}
                     <div>
                         <h2 className='mb-1 font-medium tracking-eight text-high-emphasis'>
                             Community type
@@ -194,8 +312,10 @@ const CreateCommunityPage = () => {
                                     type='radio'
                                     id='public'
                                     name='communityType'
+                                    value='public'
                                     className='sr-only'
                                     defaultChecked
+                                    onChange={communityTypeChangeHandler}
                                 />
                                 <span
                                     role='presentation'
@@ -220,7 +340,9 @@ const CreateCommunityPage = () => {
                                     type='radio'
                                     id='private'
                                     name='communityType'
+                                    value='private'
                                     className='sr-only'
+                                    onChange={communityTypeChangeHandler}
                                 />
                                 <span className='radio inline-flex h-4 w-4 items-center justify-center rounded-full border-2 border-gray'>
                                     <span className='inline-block h-2 w-2 rounded-full bg-secondary'></span>
@@ -274,9 +396,38 @@ const CreateCommunityPage = () => {
                         <h2 className='mb-1 font-medium tracking-eight text-high-emphasis'>
                             Cover photo (optional)
                         </h2>
-                        <div className='flex h-[120px] w-full items-center justify-center border-2 border-dashed border-gray'>
-                            <PlusIcon />
-                        </div>
+                        <label
+                            htmlFor='community-cover'
+                            className='relative flex h-[120px] w-full cursor-pointer items-center justify-center border-2 border-dashed border-gray'
+                        >
+                            <input
+                                id='community-cover'
+                                accept='image/*'
+                                className='sr-only'
+                                type='file'
+                                onChange={event => {
+                                    const file = event.target.files?.[0];
+                                    if (
+                                        file &&
+                                        file.type.substring(0, 5) === 'image'
+                                    ) {
+                                        setCoverImage(file);
+                                    } else {
+                                        setCoverImage(null);
+                                    }
+                                }}
+                            />
+                            {coverImagePreview ? (
+                                <Image
+                                    className='object-cover'
+                                    src={coverImagePreview!}
+                                    fill
+                                    alt=''
+                                ></Image>
+                            ) : (
+                                <PlusIcon />
+                            )}
+                        </label>
                     </div>
 
                     {/* Tags */}
@@ -307,8 +458,9 @@ const CreateCommunityPage = () => {
             {/* Create Community Button */}
             <button
                 type='button'
-                disabled
-                className='mx-auto block h-12 w-64 rounded-lg bg-gray p-[10px] font-medium tracking-eight text-disabled'
+                disabled={!isValid}
+                onClick={CreateCommunityPage}
+                className='mx-auto block h-12 w-64 rounded-lg bg-primary p-[10px] font-semibold tracking-eight text-secondary transition-colors duration-300 disabled:bg-gray disabled:text-disabled'
             >
                 Create community
             </button>
@@ -327,7 +479,6 @@ interface ISearchRelatedMediaInput {
         id: string | number,
         title: string,
         poster: string,
-        newVal: boolean,
         isApi: boolean,
     ) => void;
     selectedLength: number;
@@ -363,7 +514,11 @@ function SearchRelatedMediaInput({
                     placeholder='Search'
                     onChange={searchInputChangeHandler}
                     onFocus={() => setInputFocus(true)}
-                    onBlur={() => setInputFocus(false)}
+                    onBlur={() => {
+                        setTimeout(() => {
+                            setInputFocus(false);
+                        }, 100); //Delay here otherwise selections bug
+                    }}
                 />
             </div>
 
