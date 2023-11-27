@@ -12,11 +12,6 @@ import SearchOption from '@/components/onboarding/SearchOption';
 import MediaSelection from '@/components/onboarding/MediaSelection';
 
 // ShadCN/UI
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 // Firebase
@@ -56,10 +51,10 @@ const TopShows = () => {
         id: number | string,
         title: string,
         poster: string, // poster Url
-        newVal: boolean, // boolean for suggestedMovies indicating if selected
         isApi: boolean, // boolean flag indicating if media selection is from API
+        newVal?: boolean, // boolean for suggestedMovies indicating if selected
     ) {
-        if (!isApi) {
+        if (!isApi && newVal) {
             // Updates the Suggested Movies
             setMovies(prev => {
                 let newState = [...prev];
@@ -288,7 +283,11 @@ const Header = ({ addSelectionHandler, selectedLength }: HeaderProps) => {
                         placeholder='Search'
                         onChange={searchInputChangeHandler}
                         onFocus={() => setInputFocus(true)}
-                        onBlur={() => setInputFocus(false)}
+                        onBlur={() => {
+                            setTimeout(() => {
+                                setInputFocus(false);
+                            }, 100); //Delay here otherwise selections bug
+                        }}
                     />
                 </div>
 

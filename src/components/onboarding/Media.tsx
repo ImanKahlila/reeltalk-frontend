@@ -12,8 +12,8 @@ interface MediaProps {
         id: number | string,
         title: string,
         poster: string,
-        newVal: boolean,
         isApi: boolean,
+        newVal?: boolean,
     ) => void; // Fn to add medias to selection onclick
     removeSelectionHandler: (
         id: number,
@@ -43,7 +43,7 @@ const Media = ({
 
     function toggleMedia() {
         if (selectedLength < 5 && !selected) {
-            addSelectionHandler(id, title, posterUrl, true, false);
+            addSelectionHandler(id, title, posterUrl, false, true);
         } else if (selected) {
             removeSelectionHandler(id, false, false);
         } else {

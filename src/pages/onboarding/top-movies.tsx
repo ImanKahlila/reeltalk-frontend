@@ -12,11 +12,6 @@ import SearchOption from '@/components/onboarding/SearchOption';
 import MediaSelection from '@/components/onboarding/MediaSelection';
 
 // ShadCN/UI
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 // Firebase
@@ -27,7 +22,6 @@ const db = getFirestore(app);
 
 // Util
 import suggestedMovies from '@/lib/suggestedMovies';
-import { useAuthRequired } from '@/hooks/routeProtection';
 import { useUserContext } from '@/lib/context';
 import { debounce } from 'lodash';
 
@@ -40,7 +34,6 @@ import useMediaSearch from '@/hooks/useMediaSearch';
 //
 const TopMovies = () => {
     const router = useRouter();
-    useAuthRequired();
     const [movies, setMovies] = useState(suggestedMovies);
     const [moviesToShow, setMoviesToShow] = useState(8);
 
@@ -60,10 +53,10 @@ const TopMovies = () => {
         id: number | string,
         title: string,
         poster: string, // poster Url
-        newVal: boolean, // boolean for suggestedMovies indicating if selected
         isApi: boolean, // boolean flag indicating if media selection is from API
+        newVal?: boolean, // boolean for suggestedMovies indicating if selected
     ) {
-        if (!isApi) {
+        if (!isApi && newVal) {
             // Updates the Suggested Movies
             setMovies(prev => {
                 let newState = [...prev];
@@ -253,8 +246,8 @@ interface HeaderProps {
         id: number | string,
         title: string,
         poster: string,
-        newVal: boolean,
         isApi: boolean,
+        newVal?: boolean,
     ) => void;
     selectedLength: number;
 }
@@ -296,7 +289,11 @@ const Header = ({ addSelectionHandler, selectedLength }: HeaderProps) => {
                         placeholder='Search'
                         onChange={searchInputChangeHandler}
                         onFocus={() => setInputFocus(true)}
-                        onBlur={() => setInputFocus(false)}
+                        onBlur={() => {
+                            setTimeout(() => {
+                                setInputFocus(false);
+                            }, 100); //Delay here otherwise selections bug
+                        }}
                     />
                 </div>
 

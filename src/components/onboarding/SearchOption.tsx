@@ -14,8 +14,8 @@ interface ComponentProps {
         id: number | string,
         title: string,
         poster: string,
-        newVal: boolean,
         isApi: boolean,
+        newVal?: boolean,
     ) => void;
     selectedLength: number; //Number of medias selected so far
     maxSelection: number; // Maximum title selections allowed
@@ -41,7 +41,7 @@ const SearchOption = ({
 
     const selectMovieHandler = () => {
         if (selectedLength < maxSelection) {
-            addSelectionHandler(id, title, posterUrl, false, true);
+            addSelectionHandler(id, title, posterUrl, true);
             toast.success(
                 <div>
                     <span className='font-bold'>{title}</span> added
@@ -56,7 +56,7 @@ const SearchOption = ({
     return (
         <div
             onClick={selectMovieHandler}
-            className='flex h-24 cursor-pointer gap-3 px-4 py-2 transition-colors duration-150 hover:bg-neutral-400'
+            className='flex h-fit cursor-pointer gap-3 px-4 py-2 transition-colors duration-150 hover:bg-neutral-400'
         >
             <picture className='relative block h-[84px] min-w-[56px]'>
                 <Image
@@ -68,7 +68,7 @@ const SearchOption = ({
                 ></Image>
                 {!imageLoaded && <Skeleton className='h-[84px] rounded-none' />}
             </picture>
-            <div className='flex flex-col items-start justify-center gap-3'>
+            <div className='flex flex-col items-start justify-center gap-3 text-left'>
                 <h2 className='text-base tracking-[0.08px] text-secondary'>
                     {title} ({year})
                 </h2>
