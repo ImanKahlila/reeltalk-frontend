@@ -240,8 +240,8 @@ interface HeaderProps {
         id: number | string,
         title: string,
         poster: string,
-        newVal: boolean,
         isApi: boolean,
+        newVal?: boolean,
     ) => void;
     selectedLength: number;
 }
