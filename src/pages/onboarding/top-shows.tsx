@@ -205,12 +205,12 @@ const TopShows = () => {
                 </div>
 
                 <div className='hidden w-[236px] flex-col gap-4 md:flex md:justify-end'>
-                    <Link
+                    <a
                         href={'/onboarding/top-movies'}
                         className='w-full rounded-lg border-2 border-high-emphasis p-[10px] text-center font-semibold tracking-[0.08px] text-high-emphasis'
                     >
                         Back
-                    </Link>
+                    </a>
                     {floaterSelection.length === 5 ? (
                         <button
                             onClick={onPageSubmitHandler}

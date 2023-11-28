@@ -27,12 +27,12 @@ const Buttons = ({
                 className ? className : ''
             }`}
         >
-            <Link
+            <a
                 href={prevPage}
                 className='flex h-[44px] w-full min-w-[160px] items-center justify-center rounded-lg border-2 border-high-emphasis text-center font-semibold leading-normal tracking-[0.1px] text-pure-white md:h-[48px] md:min-w-[256px]'
             >
                 Back
-            </Link>
+            </a>
             {!required ? (
                 valid ? (
                     <button
