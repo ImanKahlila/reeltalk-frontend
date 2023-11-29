@@ -6,33 +6,30 @@ import Footer from './Footer';
 import MobileMenu from './MobileMenu';
 
 interface ComponentProps {
-    children: React.ReactNode;
+  children: React.ReactNode;
 }
 
 const Layout: React.FC<ComponentProps> = ({ children }) => {
-    const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
-    function toggleMobileMenu() {
-        setIsOpen(!isOpen);
-    }
+  function toggleMobileMenu() {
+    setIsOpen(!isOpen);
+  }
 
-    const router = useRouter();
+  const router = useRouter();
 
-    return (
-        <>
-            {router.pathname === '/' ? (
-                <NavBarLanding />
-            ) : (
-                <NavBarApp
-                    isOpen={isOpen}
-                    onToggleMobileMenu={toggleMobileMenu}
-                />
-            )}
-            <MobileMenu isOpen={isOpen} toggleMobileMenu={toggleMobileMenu} />
-            <main className='relative'>{children}</main>
-            {router.pathname === '/' ? <Footer /> : null}
-        </>
-    );
+  return (
+    <>
+      {router.pathname === '/' ? (
+        <NavBarLanding />
+      ) : (
+        <NavBarApp isOpen={isOpen} onToggleMobileMenu={toggleMobileMenu} />
+      )}
+      <MobileMenu isOpen={isOpen} toggleMobileMenu={toggleMobileMenu} />
+      <main className='relative'>{children}</main>
+      {router.pathname === '/' ? <Footer /> : null}
+    </>
+  );
 };
 
 export default Layout;

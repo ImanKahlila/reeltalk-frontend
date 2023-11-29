@@ -10,14 +10,14 @@ import AppleIcon from '@/components/onboarding/AppleIcon';
 
 // Firebase Auth and Firestore
 import {
-    GoogleAuthProvider,
-    FacebookAuthProvider,
-    getAuth,
-    signInWithPopup,
-    OAuthProvider,
-    updateProfile,
-    UserCredential,
-    getAdditionalUserInfo,
+  GoogleAuthProvider,
+  FacebookAuthProvider,
+  getAuth,
+  signInWithPopup,
+  OAuthProvider,
+  updateProfile,
+  UserCredential,
+  getAdditionalUserInfo,
 } from 'firebase/auth';
 import { getFirestore, collection, doc, setDoc } from 'firebase/firestore';
 import app from '@/firebase/firebase-config';
@@ -33,60 +33,53 @@ import toast from 'react-hot-toast';
 const auth = getAuth(app);
 
 const CreateAccountPage = () => {
-    return (
-        <section className='mx-auto px-[17.5px] py-12 md:max-w-[544px] md:px-0'>
-            {/* Progress Image Container */}
-            <picture className='relative mx-auto block h-5 w-[258px] md:w-[437.75px]'>
-                <source
-                    media='(max-width: 767px)'
-                    srcSet='/Onboarding/mobile-progress-1.png'
-                />
-                <Image
-                    src={'/Onboarding/desktop-progress-1.png'}
-                    fill
-                    alt='progress'
-                ></Image>
-            </picture>
+  return (
+    <section className='mx-auto px-[17.5px] py-12 md:max-w-[544px] md:px-0'>
+      {/* Progress Image Container */}
+      <picture className='relative mx-auto block h-5 w-[258px] md:w-[437.75px]'>
+        <source media='(max-width: 767px)' srcSet='/Onboarding/mobile-progress-1.png' />
+        <Image src={'/Onboarding/desktop-progress-1.png'} fill alt='progress'></Image>
+      </picture>
 
-            {/* Main */}
-            <div className='mx-auto mt-14 max-w-[277px] text-center text-pure-white md:max-w-[448px]'>
-                <h3 className='text-[28px] font-medium leading-normal tracking-[-0.42px] md:text-4xl'>
-                    Create your account
-                </h3>
-                <p className='mt-4 text-sm leading-normal tracking-[0.07px]'>
-                    By continuing, you agree to our{' '}
-                    <Link className='text-primary' href={'/legal/terms'}>
-                        User Agreement
-                    </Link>{' '}
-                    and{' '}
-                    <Link className='text-primary' href={'/legal/privacy'}>
-                        Privacy Policy
-                    </Link>
-                    .
-                </p>
+      {/* Main */}
+      <div className='mx-auto mt-14 max-w-[277px] text-center text-pure-white md:max-w-[448px]'>
+        <h3 className='text-[28px] font-medium leading-normal tracking-[-0.42px] md:text-4xl'>
+          Create your account
+        </h3>
+        <p className='mt-4 text-sm leading-normal tracking-[0.07px]'>
+          By continuing, you agree to our{' '}
+          <Link className='text-primary' href={'/legal/terms'}>
+            User Agreement
+          </Link>{' '}
+          and{' '}
+          <Link className='text-primary' href={'/legal/privacy'}>
+            Privacy Policy
+          </Link>
+          .
+        </p>
 
-                <div className='mt-10 flex flex-col items-center gap-4 md:mt-14'>
-                    <SignInWithApple />
-                    <SignInWithGoogle />
-                    <SignInWithFacebook />
-                    <Link
-                        href={'/onboarding/magic-link'}
-                        className='mt-[22px] flex h-12 w-64 items-center justify-center rounded-lg border-2 border-solid border-high-emphasis'
-                    >
-                        Continue with Email
-                    </Link>
-                </div>
+        <div className='mt-10 flex flex-col items-center gap-4 md:mt-14'>
+          <SignInWithApple />
+          <SignInWithGoogle />
+          <SignInWithFacebook />
+          <Link
+            href={'/onboarding/magic-link'}
+            className='mt-[22px] flex h-12 w-64 items-center justify-center rounded-lg border-2 border-solid border-high-emphasis'
+          >
+            Continue with Email
+          </Link>
+        </div>
 
-                <p className='mt-10 text-sm leading-normal tracking-[0.07px] md:mt-14'>
-                    Already have an account?{' '}
-                    <Link className='text-primary' href={'/login'}>
-                        Log in
-                    </Link>
-                    .
-                </p>
-            </div>
-        </section>
-    );
+        <p className='mt-10 text-sm leading-normal tracking-[0.07px] md:mt-14'>
+          Already have an account?{' '}
+          <Link className='text-primary' href={'/login'}>
+            Log in
+          </Link>
+          .
+        </p>
+      </div>
+    </section>
+  );
 };
 
 export default CreateAccountPage;
@@ -98,196 +91,183 @@ export default CreateAccountPage;
 //
 // Extend Apple Response Token in FireBase User Object
 interface CustomAppleUserCredential extends UserCredential {
-    _tokenResponse?: {
-        context: string;
-        displayName?: string;
-        email: string;
-        emailVerified: boolean;
-        expiresIn: string;
-        federatedId: string;
-        firstName?: string;
-        idToken: string;
-        isNewUser?: boolean;
-        kind: string;
-        lastName?: string;
-        localId: string;
-        oauthAccessToken: string;
-        oauthExpireIn: number;
-        oauthIdToken: string;
-        pendingToken: string;
-        providerId: string;
-        rawUserInfo: string;
-        refreshToken: string;
-    };
+  _tokenResponse?: {
+    context: string;
+    displayName?: string;
+    email: string;
+    emailVerified: boolean;
+    expiresIn: string;
+    federatedId: string;
+    firstName?: string;
+    idToken: string;
+    isNewUser?: boolean;
+    kind: string;
+    lastName?: string;
+    localId: string;
+    oauthAccessToken: string;
+    oauthExpireIn: number;
+    oauthIdToken: string;
+    pendingToken: string;
+    providerId: string;
+    rawUserInfo: string;
+    refreshToken: string;
+  };
 }
 
 export const SignInWithApple = () => {
-    const router = useRouter();
+  const router = useRouter();
 
-    const appleProvider = new OAuthProvider('apple.com');
-    appleProvider.addScope('name');
-    appleProvider.addScope('email');
+  const appleProvider = new OAuthProvider('apple.com');
+  appleProvider.addScope('name');
+  appleProvider.addScope('email');
 
-    const signInWithApple = async () => {
-        try {
-            const userCredential: CustomAppleUserCredential =
-                await signInWithPopup(auth, appleProvider);
-            const userId = userCredential.user.uid;
+  const signInWithApple = async () => {
+    try {
+      const userCredential: CustomAppleUserCredential = await signInWithPopup(auth, appleProvider);
+      const userId = userCredential.user.uid;
 
-            const additionalUserInfo = getAdditionalUserInfo(userCredential);
+      const additionalUserInfo = getAdditionalUserInfo(userCredential);
 
-            const responseToken = userCredential._tokenResponse;
+      const responseToken = userCredential._tokenResponse;
 
-            const db = getFirestore(app);
-            const colRef = collection(db, 'users');
-            const userDocRef = doc(colRef, userId);
-            if (additionalUserInfo?.isNewUser) {
-                await updateProfile(userCredential.user, {
-                    displayName: responseToken?.displayName,
-                });
-                await setDoc(
-                    userDocRef,
-                    { displayName: responseToken?.displayName },
-                    { merge: true },
-                );
+      const db = getFirestore(app);
+      const colRef = collection(db, 'users');
+      const userDocRef = doc(colRef, userId);
+      if (additionalUserInfo?.isNewUser) {
+        await updateProfile(userCredential.user, {
+          displayName: responseToken?.displayName,
+        });
+        await setDoc(userDocRef, { displayName: responseToken?.displayName }, { merge: true });
 
-                // Google Analytics
-                logEvent(analytics, 'signed_up', {
-                    method: 'apple',
-                });
-                router.push('/onboarding/birthday');
-            } else {
-                logEvent(analytics, 'user_logged_in', { method: 'apple' }); // Google Analytics
-                router.push('/dashboard');
-            }
-        } catch (error: any) {
-            let errorCode = error.code;
-            if (errorCode == 'auth/popup-closed-by-user') {
-                toast.error('Popup was closed by user', {
-                    position: 'bottom-right',
-                    ariaProps: { role: 'status', 'aria-live': 'polite' },
-                });
-            } else {
-                toast.error(error.message);
-            }
-        }
-    };
-    return (
-        <button
-            onClick={signInWithApple}
-            className='flex h-12 w-64 items-center justify-center gap-[10px] rounded-lg border-2 border-solid border-high-emphasis'
-        >
-            <AppleIcon />
-            Continue with Apple
-        </button>
-    );
+        // Google Analytics
+        logEvent(analytics, 'signed_up', {
+          method: 'apple',
+        });
+        router.push('/onboarding/birthday');
+      } else {
+        logEvent(analytics, 'user_logged_in', { method: 'apple' }); // Google Analytics
+        router.push('/dashboard');
+      }
+    } catch (error: any) {
+      let errorCode = error.code;
+      if (errorCode == 'auth/popup-closed-by-user') {
+        toast.error('Popup was closed by user', {
+          position: 'bottom-right',
+          ariaProps: { role: 'status', 'aria-live': 'polite' },
+        });
+      } else {
+        toast.error(error.message);
+      }
+    }
+  };
+  return (
+    <button
+      onClick={signInWithApple}
+      className='flex h-12 w-64 items-center justify-center gap-[10px] rounded-lg border-2 border-solid border-high-emphasis'
+    >
+      <AppleIcon />
+      Continue with Apple
+    </button>
+  );
 };
 
 // Google Button
 export const SignInWithGoogle = () => {
-    const router = useRouter();
-    const googleProvider = new GoogleAuthProvider();
+  const router = useRouter();
+  const googleProvider = new GoogleAuthProvider();
 
-    const signInWithGoogle = async () => {
-        try {
-            const userCredential = await signInWithPopup(auth, googleProvider);
-            const additionalUserInfo = getAdditionalUserInfo(userCredential);
+  const signInWithGoogle = async () => {
+    try {
+      const userCredential = await signInWithPopup(auth, googleProvider);
+      const additionalUserInfo = getAdditionalUserInfo(userCredential);
 
-            if (additionalUserInfo?.isNewUser) {
-                const db = getFirestore(app);
-                const colRef = collection(db, 'users');
-                const userId = userCredential.user.uid;
-                const userDocRef = doc(colRef, userId);
+      if (additionalUserInfo?.isNewUser) {
+        const db = getFirestore(app);
+        const colRef = collection(db, 'users');
+        const userId = userCredential.user.uid;
+        const userDocRef = doc(colRef, userId);
 
-                await setDoc(
-                    userDocRef,
-                    { displayName: userCredential.user.displayName },
-                    { merge: true },
-                );
+        await setDoc(userDocRef, { displayName: userCredential.user.displayName }, { merge: true });
 
-                // Google Analytics
-                logEvent(analytics, 'signed_up', {
-                    method: 'google',
-                });
-                router.push('/onboarding/birthday');
-            } else {
-                logEvent(analytics, 'user_logged_in', { method: 'google' }); // Google Analytics
-                router.push('/dashboard');
-            }
-        } catch (error: any) {
-            let errorCode = error.code;
-            if (errorCode == 'auth/popup-closed-by-user') {
-                toast.error('Popup was closed by user', {
-                    position: 'bottom-right',
-                    ariaProps: { role: 'status', 'aria-live': 'polite' },
-                });
-            } else {
-                toast.error(error.message);
-            }
-        }
-    };
+        // Google Analytics
+        logEvent(analytics, 'signed_up', {
+          method: 'google',
+        });
+        router.push('/onboarding/birthday');
+      } else {
+        logEvent(analytics, 'user_logged_in', { method: 'google' }); // Google Analytics
+        router.push('/dashboard');
+      }
+    } catch (error: any) {
+      let errorCode = error.code;
+      if (errorCode == 'auth/popup-closed-by-user') {
+        toast.error('Popup was closed by user', {
+          position: 'bottom-right',
+          ariaProps: { role: 'status', 'aria-live': 'polite' },
+        });
+      } else {
+        toast.error(error.message);
+      }
+    }
+  };
 
-    return (
-        <button
-            onClick={signInWithGoogle}
-            className='flex h-12 w-64 items-center justify-center gap-[10px] rounded-lg border-2 border-solid border-high-emphasis'
-        >
-            <GoogleIcon />
-            Continue with Google
-        </button>
-    );
+  return (
+    <button
+      onClick={signInWithGoogle}
+      className='flex h-12 w-64 items-center justify-center gap-[10px] rounded-lg border-2 border-solid border-high-emphasis'
+    >
+      <GoogleIcon />
+      Continue with Google
+    </button>
+  );
 };
 
 // Facebook Button
 export const SignInWithFacebook = () => {
-    const router = useRouter();
-    const provider = new FacebookAuthProvider();
+  const router = useRouter();
+  const provider = new FacebookAuthProvider();
 
-    async function signInWithFacebook() {
-        try {
-            const userCredential = await signInWithPopup(auth, provider);
-            const additionalUserInfo = getAdditionalUserInfo(userCredential);
+  async function signInWithFacebook() {
+    try {
+      const userCredential = await signInWithPopup(auth, provider);
+      const additionalUserInfo = getAdditionalUserInfo(userCredential);
 
-            if (additionalUserInfo?.isNewUser) {
-                const db = getFirestore(app);
-                const colRef = collection(db, 'users');
-                const userId = userCredential.user.uid;
-                const userDocRef = doc(colRef, userId);
+      if (additionalUserInfo?.isNewUser) {
+        const db = getFirestore(app);
+        const colRef = collection(db, 'users');
+        const userId = userCredential.user.uid;
+        const userDocRef = doc(colRef, userId);
 
-                await setDoc(
-                    userDocRef,
-                    { displayName: userCredential.user.displayName },
-                    { merge: true },
-                );
+        await setDoc(userDocRef, { displayName: userCredential.user.displayName }, { merge: true });
 
-                // Google Analytics
-                logEvent(analytics, 'signed_up', {
-                    method: 'facebook',
-                });
-                router.push('/onboarding/birthday');
-            } else {
-                logEvent(analytics, 'user_logged_in', { method: 'facebook' }); // Google Analytics
-                router.push('/dashboard');
-            }
-        } catch (error: any) {
-            let errorCode = error.code;
-            if (errorCode == 'auth/popup-closed-by-user') {
-                toast.error('Popup was closed by user', {
-                    position: 'bottom-right',
-                    ariaProps: { role: 'status', 'aria-live': 'polite' },
-                });
-            } else {
-                toast.error(error.message);
-            }
-        }
+        // Google Analytics
+        logEvent(analytics, 'signed_up', {
+          method: 'facebook',
+        });
+        router.push('/onboarding/birthday');
+      } else {
+        logEvent(analytics, 'user_logged_in', { method: 'facebook' }); // Google Analytics
+        router.push('/dashboard');
+      }
+    } catch (error: any) {
+      let errorCode = error.code;
+      if (errorCode == 'auth/popup-closed-by-user') {
+        toast.error('Popup was closed by user', {
+          position: 'bottom-right',
+          ariaProps: { role: 'status', 'aria-live': 'polite' },
+        });
+      } else {
+        toast.error(error.message);
+      }
     }
-    return (
-        <button
-            onClick={signInWithFacebook}
-            className='flex h-12 w-64 items-center justify-center gap-[10px] rounded-lg border-2 border-solid border-high-emphasis'
-        >
-            <FacebookIcon />
-            Continue with Facebook
-        </button>
-    );
+  }
+  return (
+    <button
+      onClick={signInWithFacebook}
+      className='flex h-12 w-64 items-center justify-center gap-[10px] rounded-lg border-2 border-solid border-high-emphasis'
+    >
+      <FacebookIcon />
+      Continue with Facebook
+    </button>
+  );
 };
