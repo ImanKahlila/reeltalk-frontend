@@ -6,6 +6,7 @@ import CommunityCoverUpload from '@/components/community/CommunityCoverUploads';
 import CreateCommunityInputs from '@/components/community/CreateCommunityInputs';
 import RelatedMediaSelection from '@/components/community/RelatedMediaSelection';
 import Tags from '@/components/community/Tags';
+import Spinner from '@/components/shared/Spinner';
 
 // util
 import { useRouter } from 'next/router';
@@ -88,12 +89,6 @@ const CreateCommunityPage = () => {
     });
   }
 
-  const [formValues, setFormValues] = useState(initialFormState);
-
-  const isValid =
-    Object.values(formValues).every(value => value.trim() !== '') &&
-    relatedTitlesSelection.length !== 0;
-
   const inputChangeHandler = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.currentTarget;
     setFormValues(prevValues => ({
@@ -102,9 +97,12 @@ const CreateCommunityPage = () => {
     }));
   };
 
+  const [spinnerActive, setSpinnerActive] = useState(false);
+
   const CreateCommunityPage = async () => {
+    setSpinnerActive(true);
     // Extracted request logic into seperate file
-    createCommunity({
+    await createCommunity({
       user,
       nameValue: formValues.name,
       descriptionValue: formValues.description,
@@ -116,13 +114,15 @@ const CreateCommunityPage = () => {
       communityImage,
       router,
     });
+
+    setSpinnerActive(false);
   };
 
   // Image and CoverImage Logic
-  const [communityImage, setCommunityImage] = useState<File | null>();
+  const [communityImage, setCommunityImage] = useState<File | null>(null);
   const [communityImagePreview, setCommunityImagePreview] = useState('/Pixel-160.png');
 
-  const [coverImage, setCoverImage] = useState<File | null>();
+  const [coverImage, setCoverImage] = useState<File | null>(null);
   const [coverImagePreview, setCoverImagePreview] = useState('');
 
   useEffect(() => {
@@ -148,6 +148,13 @@ const CreateCommunityPage = () => {
       setCoverImagePreview('');
     }
   }, [coverImage]);
+
+  const [formValues, setFormValues] = useState(initialFormState);
+
+  const isValid =
+    Object.values(formValues).every(value => value.trim() !== '') &&
+    relatedTitlesSelection.length !== 0 &&
+    communityImage instanceof File;
 
   if (!user) return;
 
@@ -209,9 +216,9 @@ const CreateCommunityPage = () => {
         type='button'
         disabled={!isValid}
         onClick={CreateCommunityPage}
-        className='mx-auto block h-12 w-64 rounded-lg bg-primary p-[10px] font-semibold tracking-eight text-secondary transition-colors duration-300 disabled:bg-gray disabled:text-disabled'
+        className='mx-auto flex h-12 w-64 items-center justify-center rounded-lg bg-primary p-[10px] font-semibold tracking-eight text-secondary transition-colors duration-300 disabled:bg-gray disabled:text-disabled'
       >
-        Create community
+        {spinnerActive ? <Spinner className='scale-150' /> : ' Create community'}
       </button>
     </section>
   );

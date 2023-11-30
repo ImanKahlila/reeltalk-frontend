@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 interface ICommuntyImageUploadProps {
   communityImagePreview: string;
-  setCommunityImage: React.Dispatch<React.SetStateAction<File | null | undefined>>;
+  setCommunityImage: React.Dispatch<React.SetStateAction<File | null>>;
 }
 
 const CommunityImageUpload = ({

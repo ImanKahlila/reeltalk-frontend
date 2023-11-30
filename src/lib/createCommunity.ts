@@ -59,14 +59,10 @@ const createCommunity = async ({
       },
     });
 
-    if (response.status === 200) {
-      toast.success(response.data.message);
-      toast.success('Please wait to be redirected...');
-    }
+    const communityId = response.data.communityId;
 
-    // TODO: Response should have id of newly created community so we can navigate to it after creating it
     setTimeout(() => {
-      router.push('/community');
+      router.push(`/community/${communityId}`);
     }, 200);
   } catch (error: any) {
     toast.error(error.message);

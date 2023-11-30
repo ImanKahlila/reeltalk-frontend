@@ -55,15 +55,19 @@ const CreatedCommunityPage: React.FC<ICreatedCommunityPageProps> = ({ data }) =>
   return (
     <section className='p-4 pb-20 md:px-0 md:pt-0'>
       <header className='relative mx-auto block h-[11.11vw] max-h-[170px] min-h-[160px] max-w-screen-2xl'>
-        <Image
-          className={`object-cover ${!coverImageLoaded ? 'invisible' : 'visible'}`}
-          src={pageData.coverPhoto[0] || ''}
-          onLoadingComplete={handleCoverImageload}
-          onError={handleCoverImageload}
-          fill
-          alt=''
-        ></Image>
-        {!coverImageLoaded && <Skeleton className='absolute h-full w-full rounded-none' />}
+        {pageData.coverPhoto ? (
+          <>
+            <Image
+              className={`object-cover ${!coverImageLoaded ? 'invisible' : 'visible'}`}
+              src={pageData.coverPhoto?.[0] || ''}
+              onLoadingComplete={handleCoverImageload}
+              onError={handleCoverImageload}
+              fill
+              alt=''
+            ></Image>
+            {!coverImageLoaded && <Skeleton className='absolute h-full w-full rounded-none' />}
+          </>
+        ) : null}
         <div className='bg-custom-gradient relative h-full w-full bg-black'></div>
 
         <div className='relative bottom-[126px] mx-auto flex h-[106.667px] max-w-[1120px] gap-3 md:bottom-[107px] md:gap-8 md:pl-4'>

@@ -6,7 +6,7 @@ import PlusIcon from '../Icons/plusIcon';
 
 interface ICommunityCoverUpload {
   coverImagePreview: string;
-  setCoverImage: React.Dispatch<React.SetStateAction<File | null | undefined>>;
+  setCoverImage: React.Dispatch<React.SetStateAction<File | null>>;
 }
 
 const CommunityCoverUpload = ({ coverImagePreview, setCoverImage }: ICommunityCoverUpload) => {
