@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface ISpinnerProps {
-  className: string;
+  className?: string;
 }
 
 const Spinner = ({ className }: ISpinnerProps) => {
