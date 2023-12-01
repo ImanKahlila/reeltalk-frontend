@@ -57,6 +57,7 @@ const createCommunity = async ({
       headers: {
         'Content-Type': 'multipart/form-data',
       },
+      withCredentials: true,
     });
 
     const communityId = response.data.communityId;
