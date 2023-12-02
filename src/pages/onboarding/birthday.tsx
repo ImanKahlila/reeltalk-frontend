@@ -2,7 +2,6 @@ import React, { useRef, useState, useEffect } from 'react';
 
 // Components
 import Buttons from '@/components/onboarding/Buttons';
-import GreenCheckIcon from '@/components/onboarding/GreenCheckIcon';
 import Carousel from '@/components/onboarding/Carousel';
 
 // Util
@@ -26,11 +25,20 @@ import {
 // Google Analytics
 import { logEvent } from 'firebase/analytics';
 import { analytics } from '../../firebase/firebase-config';
+import { BirthdayComboBox } from '@/components/onboarding/BirthdayComboBox';
 
 const db = getFirestore(app);
 
 // Memoize Carousel to prevent uneccessary re-renders when input change handler causes page to rerender
 const MemoizedCarousel = React.memo(Carousel);
+
+// Values for Birthday Inputs
+import { daysOfMonth, monthsOfYear } from '@/lib/inputsData';
+export type Keys = { value: string; label: string }[];
+const years: Keys = [];
+for (let year = 2023; year >= 1923; year--) {
+  years.push({ value: year.toString(), label: year.toString() });
+}
 
 const BirthdayPage = () => {
   const router = useRouter();
@@ -93,32 +101,7 @@ const BirthdayPage = () => {
   const [birthdayValid, setBirthdayValid] = useState(false);
   const birthdayRef = useRef<HTMLInputElement | null>(null);
 
-  function birthdayChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
-    const value = e.currentTarget.value;
-
-    // Check if the length of the current value is smaller than the previous value: Handles backspace
-    if (value.length < inputValue.length) {
-      // Handle backspace by reseting the input
-      setInputValue('');
-      setBirthdayValid(false);
-      return;
-    }
-
-    // Automatically format the input
-    const formattedDate = formatBirthday(value);
-
-    setInputValue(formattedDate);
-
-    // Validate Input
-    const birthday = formattedDate;
-    const birthdayRegex = /^(0?[1-9]|1[0-2])[\/](0?[1-9]|[12]\d|3[01])[\/](19|20)\d{2}$/;
-
-    if (birthdayRegex.test(birthday)) {
-      setBirthdayValid(true);
-    } else {
-      setBirthdayValid(false);
-    }
-  }
+  function birthdayChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {}
 
   function pageSubmitHandler() {
     if (user) {
@@ -164,31 +147,11 @@ const BirthdayPage = () => {
             To personalize your content recommendations and to ensure it&apos;s all age-appropriate,
             could you kindly share your date of birth with us?
           </p>
-          <div
-            className={`mx-auto mt-8 flex max-w-[320px] items-center justify-between gap-[10px] rounded-lg border border-solid bg-first-surface pl-6 pr-3 transition-all duration-500  ${
-              birthdayValid ? 'border-primary' : 'border-medium-emphasis'
-            }`}
-          >
-            <label htmlFor='birthdate' className='sr-only'>
-              Your Birthdate:
-            </label>
-            <input
-              className={`w-full bg-transparent py-[13px] text-base placeholder-gray outline-none`}
-              id='birthdate'
-              type='text'
-              value={inputValue}
-              placeholder='MM/DD/YYYY'
-              ref={birthdayRef}
-              onChange={birthdayChangeHandler}
-              inputMode='numeric'
-            />
-            <div>
-              <GreenCheckIcon
-                className={`opacity-0 transition-opacity duration-500 ${
-                  birthdayValid ? 'opacity-100' : ''
-                }`}
-              />
-            </div>
+
+          <div className='mx-auto mt-4 flex gap-2'>
+            <BirthdayComboBox placeholder={'Day'} keys={daysOfMonth} inputMode='numeric' />
+            <BirthdayComboBox placeholder={'Month'} keys={monthsOfYear} inputMode='text' />
+            <BirthdayComboBox placeholder={'Year'} keys={years} inputMode='numeric' />
           </div>
         </form>
 
@@ -211,21 +174,3 @@ const BirthdayPage = () => {
 };
 
 export default BirthdayPage;
-
-// Helper FN
-function formatBirthday(input: string) {
-  // Format the date as MM/DD/YYYY
-  const sanitizedInput = input.replace(/[^0-9]/g, ''); // Remove non-numeric characters
-  if (sanitizedInput.length >= 2 && sanitizedInput.length < 4) {
-    return sanitizedInput.slice(0, 2) + '/' + sanitizedInput.slice(2);
-  } else if (sanitizedInput.length >= 4) {
-    return (
-      sanitizedInput.slice(0, 2) +
-      '/' +
-      sanitizedInput.slice(2, 4) +
-      '/' +
-      sanitizedInput.slice(4, 8)
-    );
-  }
-  return sanitizedInput;
-}
