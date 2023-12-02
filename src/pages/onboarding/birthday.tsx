@@ -1,4 +1,5 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { isExists } from 'date-fns';
 
 // Components
 import Buttons from '@/components/onboarding/Buttons';
@@ -44,6 +45,7 @@ const BirthdayPage = () => {
   const router = useRouter();
 
   // Magic Link passwordless Sign In Check
+  // TODO: Extract into seperate hook, and possibly do this logic on a redirect page
   useEffect(() => {
     async function passwordlessSignIn() {
       const auth = getAuth();
@@ -97,15 +99,37 @@ const BirthdayPage = () => {
   // User Context
   const { user } = useUserContext();
 
-  const [inputValue, setInputValue] = useState('');
-  const [birthdayValid, setBirthdayValid] = useState(false);
-  const birthdayRef = useRef<HTMLInputElement | null>(null);
+  const [dayValue, setDayValue] = useState('');
+  const [monthValue, setMonthValue] = useState('');
+  const [yearValue, setYearValue] = useState('');
 
-  function birthdayChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {}
+  const [birthdayValid, setBirthdayValid] = useState(false);
+
+  useEffect(() => {
+    const year = +yearValue;
+    const month = new Date(`${monthValue} 1, 2000`).getMonth();
+    const day = +dayValue.replace(/\D/g, '');
+    setBirthdayValid(isExists(year, month, day));
+  }, [dayValue, monthValue, yearValue]);
+
+  function dayInputChangeHandler(value: string) {
+    setDayValue(value);
+  }
+  function monthInputChangeHandler(value: string) {
+    setMonthValue(value);
+  }
+  function yearInputChangeHandler(value: string) {
+    setYearValue(value);
+  }
 
   function pageSubmitHandler() {
+    const year = +yearValue;
+    const month = new Date(`${monthValue} 1, 2000`).getMonth();
+    const day = +dayValue.replace(/\D/g, '');
+    if (!birthdayValid || !isExists(year, month, day)) return;
+
+    const birthday = new Date(year, month, day);
     if (user) {
-      const birthday = new Date(inputValue);
       const docRef = doc(db, 'users', user!.uid);
       setDoc(
         docRef,
@@ -124,7 +148,7 @@ const BirthdayPage = () => {
   if (!user) return;
 
   return (
-    <section className='mx-auto px-[17.5px] py-12 md:max-w-[544px] md:px-0'>
+    <section className='mx-auto px-[17.5px] py-12 md:max-w-[536px] md:px-0'>
       {/* Progress Image Container */}
       <picture className='relative mx-auto block h-5 w-[258px] md:w-[437.75px]'>
         <source media='(max-width: 767px)' srcSet='/Onboarding/mobile-progress-2.png' />
@@ -149,9 +173,24 @@ const BirthdayPage = () => {
           </p>
 
           <div className='mx-auto mt-4 flex gap-2'>
-            <BirthdayComboBox placeholder={'Day'} keys={daysOfMonth} inputMode='numeric' />
-            <BirthdayComboBox placeholder={'Month'} keys={monthsOfYear} inputMode='text' />
-            <BirthdayComboBox placeholder={'Year'} keys={years} inputMode='numeric' />
+            <BirthdayComboBox
+              placeholder={'Day'}
+              keys={daysOfMonth}
+              inputMode='numeric'
+              inputChangeHandler={dayInputChangeHandler}
+            />
+            <BirthdayComboBox
+              placeholder={'Month'}
+              keys={monthsOfYear}
+              inputMode='text'
+              inputChangeHandler={monthInputChangeHandler}
+            />
+            <BirthdayComboBox
+              placeholder={'Year'}
+              keys={years}
+              inputMode='numeric'
+              inputChangeHandler={yearInputChangeHandler}
+            />
           </div>
         </form>
 

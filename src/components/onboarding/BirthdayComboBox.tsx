@@ -20,14 +20,15 @@ export function BirthdayComboBox({
   keys,
   placeholder,
   inputMode,
+  inputChangeHandler,
 }: {
   keys: Keys;
   placeholder: string;
   inputMode: 'numeric' | 'text';
+  inputChangeHandler: (value: string) => void;
 }) {
   const [open, setOpen] = React.useState(false);
   const [inputValue, setInputValue] = React.useState('');
-  //TODO: Pull up the input Value to upper level then manipulate into date to send to backend
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -58,10 +59,11 @@ export function BirthdayComboBox({
             <ScrollArea className='h-52 bg-transparent'>
               {keys.map(key => (
                 <CommandItem
-                  className='cursor-pointer rounded-none text-base text-high-emphasis aria-selected:bg-[#474747] aria-selected:text-high-emphasis'
+                  className='h-12 cursor-pointer rounded-none text-base text-high-emphasis aria-selected:bg-[#474747] aria-selected:text-high-emphasis'
                   key={key.value}
                   value={key.label}
                   onSelect={currentValue => {
+                    inputChangeHandler(currentValue);
                     setInputValue(currentValue);
                     setOpen(false);
                   }}
@@ -69,7 +71,7 @@ export function BirthdayComboBox({
                   <Check
                     className={cn(
                       'mr-2 h-4 w-4',
-                      inputValue === key.label ? 'opacity-100' : 'opacity-0',
+                      inputValue === key.label.toLowerCase() ? 'opacity-100' : 'opacity-0',
                     )}
                   />
                   {key.label}
