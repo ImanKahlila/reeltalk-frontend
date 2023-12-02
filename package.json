@@ -24,6 +24,7 @@
     "lodash": "^4.17.21",
     "lucide-react": "^0.284.0",
     "next": "latest",
+    "nookies": "^2.5.2",
     "react": "latest",
     "react-dom": "latest",
     "react-hot-toast": "^2.4.1",
