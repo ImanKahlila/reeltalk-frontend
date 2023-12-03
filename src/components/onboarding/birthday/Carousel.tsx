@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { Skeleton } from '../ui/skeleton';
+import { Skeleton } from '../../ui/skeleton';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -46,11 +46,16 @@ const Carousel = () => {
     ],
   };
   return (
-    <Slider {...settings} aria-label='Bikes Gallery'>
-      {posters.map((poster, index) => (
-        <Poster key={index} imageUrl={poster} />
-      ))}
-    </Slider>
+    <div className='mx-auto mt-10 flex max-w-[536px] flex-col gap-3 rounded-lg bg-first-surface p-6 pb-[30px]'>
+      <h2 className='mb-4 text-center font-semibold text-high-emphasis'>
+        We love our birthday movies 🎉
+      </h2>
+      <Slider {...settings} aria-label='Bikes Gallery'>
+        {posters.map((poster, index) => (
+          <Poster key={index} imageUrl={poster} />
+        ))}
+      </Slider>
+    </div>
   );
 };
 
