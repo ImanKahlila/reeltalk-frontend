@@ -229,3 +229,25 @@ dialog::backdrop {
   grid-template-rows: 1fr;
   opacity: 1;
 }
+
+/* ===== Scrollbar CSS ===== */
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #ffffff61 transparent;
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #ffffff61;
+  border-radius: 10px;
+  border: 1px solid transparent;
+}
