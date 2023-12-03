@@ -14,18 +14,20 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
-import { Keys } from '@/pages/onboarding/birthday';
+import { Keys } from './Inputs';
 
 export function BirthdayComboBox({
   keys,
   placeholder,
   inputMode,
   inputChangeHandler,
+  inputType,
 }: {
   keys: Keys;
   placeholder: string;
   inputMode: 'numeric' | 'text';
-  inputChangeHandler: (value: string) => void;
+  inputType: 'day' | 'month' | 'year';
+  inputChangeHandler: (inputType: string, value: string) => void;
 }) {
   const [open, setOpen] = React.useState(false);
   const [inputValue, setInputValue] = React.useState('');
@@ -63,7 +65,7 @@ export function BirthdayComboBox({
                   key={key.value}
                   value={key.label}
                   onSelect={currentValue => {
-                    inputChangeHandler(currentValue);
+                    inputChangeHandler(inputType, currentValue);
                     setInputValue(currentValue);
                     setOpen(false);
                   }}
