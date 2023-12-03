@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 
+import { motion } from 'framer-motion';
+
 interface ComponentProps {
   name: string;
   id: string;
   selected: boolean;
-  onSelect: (newVal: boolean, id: string) => void;
+  toggleSelectedGenre: (id: string, newVal: boolean) => void;
   totalSelected: number;
   emoji: string;
 }
 
-const Genre = ({ name, id, selected, onSelect, totalSelected, emoji }: ComponentProps) => {
+const Genre = (props: ComponentProps) => {
+  const { name, id, selected, toggleSelectedGenre, totalSelected, emoji } = props;
   const [isChecked, setIsChecked] = useState(selected);
 
   function onChangeHandler() {
@@ -19,14 +22,19 @@ const Genre = ({ name, id, selected, onSelect, totalSelected, emoji }: Component
       setIsChecked(!isChecked);
 
       // Updates genres array in parent component
-      onSelect(!isChecked, id);
+      toggleSelectedGenre(id, !isChecked);
     } else {
       toast.error('Oops! Select just 5 genres.');
     }
   }
 
   return (
-    <label
+    <motion.label
+      layout
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
       className={`flex h-fit w-full cursor-pointer items-center justify-between rounded-lg border-2 ${
         isChecked ? 'border-primary' : 'border-gray'
       } p-[11px] transition-colors duration-300 ${isChecked ? 'bg-primary' : 'bg-pure-white'}`}
@@ -50,7 +58,7 @@ const Genre = ({ name, id, selected, onSelect, totalSelected, emoji }: Component
           stroke='#000'
         />
       </svg>
-    </label>
+    </motion.label>
   );
 };
 
