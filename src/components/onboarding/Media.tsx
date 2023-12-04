@@ -4,18 +4,18 @@ import toast from 'react-hot-toast';
 import { Skeleton } from '../ui/skeleton';
 
 interface MediaProps {
-  id: number;
+  id: string;
   title: string; // media title
   year: number | string; // media release year
   posterUrl: string; //url string of media poster
   addSelectionHandler: (
-    id: number | string,
+    id: string,
     title: string,
     poster: string,
     isApi: boolean,
     newVal?: boolean,
   ) => void; // Fn to add medias to selection onclick
-  removeSelectionHandler: (id: number, newVal: boolean, isApi: boolean) => void; // Fn to remove medias from selection on click
+  removeSelectionHandler: (id: string, newVal: boolean, isApi: boolean) => void; // Fn to remove medias from selection on click
   selectedLength: number; //Number of medias selected so far
   selected: boolean;
 }

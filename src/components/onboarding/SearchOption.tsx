@@ -11,7 +11,7 @@ interface ComponentProps {
   creator: string;
   id: string;
   addSelectionHandler: (
-    id: number | string,
+    id: string,
     title: string,
     poster: string,
     isApi: boolean,
