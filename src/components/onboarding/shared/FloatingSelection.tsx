@@ -1,13 +1,15 @@
 import React from 'react';
 import Link from 'next/link';
-import MediaSelection from '../MediaSelection';
-import { FloaterSelection } from './TopMovies.hooks';
+import MediaSelection from './MediaSelection';
+import { FloaterSelection } from '../../../hooks/useMediaSelection';
 
 interface IFloatingSelection {
   floaterSelection: FloaterSelection;
   removeSelectionHandler: (id: string, newVal: boolean, isApi: boolean) => void;
   selectionPlaceholder: FloaterSelection;
   onPageSubmitHandler: () => void;
+  prevPage: string;
+  nextPage: string;
 }
 
 const FloatingSelection = ({
@@ -15,6 +17,8 @@ const FloatingSelection = ({
   removeSelectionHandler,
   selectionPlaceholder,
   onPageSubmitHandler,
+  prevPage,
+  nextPage,
 }: IFloatingSelection) => {
   return (
     <div className='glass mt-6 h-fit w-screen justify-center bg-[#333333] p-4 pb-[22px] md:fixed md:bottom-0 md:left-0 md:flex md:gap-12 md:border-t-[1px] md:border-first-surface md:bg-primary-rgba md:p-6'>
@@ -39,12 +43,12 @@ const FloatingSelection = ({
       </div>
 
       <div className='hidden w-[236px] flex-col gap-4 md:flex md:justify-end'>
-        <Link
-          href={'/onboarding/top-genres'}
+        <a
+          href={prevPage}
           className='w-full rounded-lg border-2 border-high-emphasis p-[10px] text-center font-semibold tracking-[0.08px] text-high-emphasis'
         >
           Back
-        </Link>
+        </a>
         {floaterSelection.length === 5 ? (
           <button
             onClick={onPageSubmitHandler}
@@ -54,7 +58,7 @@ const FloatingSelection = ({
           </button>
         ) : (
           <Link
-            href={'/onboarding/top-shows'}
+            href={nextPage}
             className='w-full rounded-lg border-2 border-high-emphasis p-[10px] text-center font-semibold tracking-[0.08px] text-high-emphasis'
           >
             Skip

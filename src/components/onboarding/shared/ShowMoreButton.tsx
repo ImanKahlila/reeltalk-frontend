@@ -4,13 +4,13 @@ import ChevronIcon from '@/components/layout/ChevronIcon';
 
 interface ShowMoreButtonProps {
   onShowMoreHandler: () => void;
-  moviesToShow: number;
+  mediaToShow: number;
 }
 
-const ShowMoreButton = ({ onShowMoreHandler, moviesToShow }: ShowMoreButtonProps) => {
+const ShowMoreButton = ({ onShowMoreHandler, mediaToShow }: ShowMoreButtonProps) => {
   return (
     <>
-      {moviesToShow === 8 ? (
+      {mediaToShow === 8 ? (
         <div className='mb-[64px] flex justify-center'>
           <button
             className='mt-6 flex items-center font-semibold text-medium-emphasis'

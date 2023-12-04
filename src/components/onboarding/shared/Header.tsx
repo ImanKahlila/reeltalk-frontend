@@ -5,7 +5,7 @@ import Spinner from '@/components/shared/Spinner';
 import SearchIcon from '@/components/layout/SearchIcon';
 
 import { ScrollArea } from '@/components/ui/scroll-area';
-import SearchOption from '../SearchOption';
+import SearchOption from './SearchOption';
 
 interface HeaderProps {
   addSelectionHandler: (
@@ -16,28 +16,31 @@ interface HeaderProps {
     newVal?: boolean,
   ) => void;
   selectedLength: number;
+  titleType: 'movie' | 'tvSeries' | null; // passing null will return movies and tvSeries
 }
 
-const Header = ({ addSelectionHandler, selectedLength }: HeaderProps) => {
+const Header = ({ addSelectionHandler, selectedLength, titleType }: HeaderProps) => {
   // Controls open state of popover
   const [inputFocus, setInputFocus] = useState(false);
 
   // Custom hook for searching Media from API
-  const { queryMedia, searchMedia, fetching } = useMediaSearch();
+  const { queryMedia, searchMedia, fetching } = useMediaSearch(titleType);
 
   const searchInputChangeHandler = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
     const queryParam = e.target.value.trim();
-    searchMedia(queryParam, 'movie');
+    searchMedia(queryParam);
   }, 500);
 
   return (
     <header className='mx-auto mt-14 max-w-[600px] text-center'>
       <h1 className='text-[28px] font-medium tracking-[-0.42px] text-high-emphasis'>
-        Select your top 5 movies
+        {`Select your top 5 ${titleType === 'movie' ? 'movies' : 'shows'}`}
       </h1>
       <p className='mt-2 text-base tracking-[0.08px] text-high-emphasis'>
-        Selecting your top 5 movies will enable us to suggest like-minded users and nearby
-        communities for exciting watch parties and movie premiere gatherings.
+        {`Selecting your top 5 ${
+          titleType === 'movie' ? 'movies' : 'TV-shows'
+        } will enable us to suggest like-minded users and nearby
+        communities for exciting watch parties and movie premiere gatherings.`}
       </p>
 
       {/* SEARCH COMBOBOX */}

@@ -19,16 +19,16 @@ import app from '@/firebase/firebase-config';
 import { User } from 'firebase/auth';
 const db = getFirestore(app);
 
-interface ITopMovies {
+interface ITopShowsProps {
   user: User;
 }
 
-const TopMovies = ({ user }: ITopMovies) => {
+const TopShows = ({ user }: ITopShowsProps) => {
   const { push } = useRouter();
   const [mediaToShow, setMediaToShow] = useState(8);
 
   const { media, floaterSelection, addSelectionHandler, removeSelectionHandler } =
-    useMediaSelection('movies');
+    useMediaSelection('series');
 
   // Placeholder tracker, tracks how many placeholders needed for selectionFloater
   const selectionPlaceholder: FloaterSelection = Array.from(
@@ -68,7 +68,7 @@ const TopMovies = ({ user }: ITopMovies) => {
 
       {/* Header */}
       <Header
-        titleType={'movie'}
+        titleType={'tvSeries'} // Determines what type of media will be queried, 'movies' | 'tvSeries'
         addSelectionHandler={addSelectionHandler}
         selectedLength={floaterSelection.length}
       />
@@ -85,8 +85,8 @@ const TopMovies = ({ user }: ITopMovies) => {
 
       <Buttons
         className='md:hidden'
-        prevPage='/onboarding/top-genres'
-        nextPage='/onboarding/top-shows'
+        prevPage='/onboarding/top-movies'
+        nextPage='/dashboard'
         onPageSubmit={onPageSubmitHandler}
         valid={floaterSelection.length === 5}
       />
@@ -96,11 +96,11 @@ const TopMovies = ({ user }: ITopMovies) => {
         removeSelectionHandler={removeSelectionHandler}
         selectionPlaceholder={selectionPlaceholder}
         onPageSubmitHandler={onPageSubmitHandler}
-        prevPage='/onboarding/top-genres'
-        nextPage='/onboarding/top-shows'
+        prevPage='/onboarding/top-movies'
+        nextPage='/dashboard'
       />
     </>
   );
 };
 
-export default TopMovies;
+export default TopShows;

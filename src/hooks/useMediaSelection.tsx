@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import suggestedMovies from '@/lib/suggestedMovies';
+import suggestedShows from '@/lib/suggestedShows';
 
-export type Movies = {
+export type Media = {
   id: string;
   selected: boolean;
   title: string;
-  releaseYear: number;
+  releaseYear: number | string;
   poster: string;
 }[];
 
@@ -16,8 +17,10 @@ export type FloaterSelection = {
   isApi: boolean;
 }[];
 
-const useMovieSelection = () => {
-  const [movies, setMovies] = useState<Movies>(suggestedMovies);
+const useMediaSelection = (mediaType: 'movies' | 'series') => {
+  const suggestedMedia = mediaType === 'movies' ? suggestedMovies : suggestedShows;
+
+  const [media, setMedia] = useState<Media>(suggestedMedia);
   const [floaterSelection, setFloaterSelection] = useState<FloaterSelection>([]);
 
   // Function to add a media selection
@@ -30,7 +33,7 @@ const useMovieSelection = () => {
   ) {
     if (!isApi && newVal) {
       // Updates the Suggested Movies
-      setMovies(prev => {
+      setMedia(prev => {
         let newState = [...prev];
         let index = newState.findIndex(el => el.id === id);
         newState[index].selected = newVal;
@@ -40,8 +43,8 @@ const useMovieSelection = () => {
     const selected = { id, title, poster, isApi };
     setFloaterSelection(prev => {
       let newState = [...prev];
-      let movieIndex = newState.findIndex(el => el.id === id);
-      if (movieIndex > -1) return newState; // If media already selected return prev state
+      let index = newState.findIndex(el => el.id === id);
+      if (index > -1) return newState; // If media already selected return prev state
       newState.push(selected);
       return newState;
     });
@@ -54,7 +57,7 @@ const useMovieSelection = () => {
     isApi: boolean, // boolean flag indicating if media selection is from API
   ) {
     if (!isApi) {
-      setMovies(prev => {
+      setMedia(prev => {
         let newState = [...prev];
         let index = newState.findIndex(el => el.id === id);
         newState[index].selected = newVal;
@@ -67,7 +70,7 @@ const useMovieSelection = () => {
       return output;
     });
   }
-  return { movies, floaterSelection, addSelectionHandler, removeSelectionHandler };
+  return { media, floaterSelection, addSelectionHandler, removeSelectionHandler };
 };
 
-export default useMovieSelection;
+export default useMediaSelection;

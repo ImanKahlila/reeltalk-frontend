@@ -1,11 +1,11 @@
 import React from 'react';
-import Media from '../Media';
+import Media from './Media';
 
-import { Movies, FloaterSelection } from './TopMovies.hooks';
+import { Media as MediaType, FloaterSelection } from '../../../hooks/useMediaSelection';
 
 interface ISuggestedMediaProps {
-  movies: Movies;
-  moviesToShow: number;
+  media: MediaType;
+  mediaToShow: number;
   addSelectionHandler: (
     id: string,
     title: string,
@@ -18,8 +18,8 @@ interface ISuggestedMediaProps {
 }
 
 const SuggestedMedia = ({
-  movies,
-  moviesToShow,
+  media,
+  mediaToShow,
   addSelectionHandler,
   floaterSelection,
   removeSelectionHandler,
@@ -31,7 +31,7 @@ const SuggestedMedia = ({
       </h2>
 
       <div className='mt-4 grid w-full grid-cols-3-auto justify-items-center gap-x-[27.5px] gap-y-4 md:grid-cols-6 md:gap-6'>
-        {movies.slice(0, moviesToShow).map(media => (
+        {media.slice(0, mediaToShow).map(media => (
           <Media
             key={media.id}
             id={media.id}

@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 import { getAuth, sendSignInLinkToEmail } from 'firebase/auth';
 
 // Components
-import Buttons from '@/components/onboarding/Buttons';
+import Buttons from '@/components/onboarding/shared/Buttons';
 import GreenCheckIcon from '@/components/onboarding/GreenCheckIcon';
 
 const ContinueWithMagicLink = () => {
