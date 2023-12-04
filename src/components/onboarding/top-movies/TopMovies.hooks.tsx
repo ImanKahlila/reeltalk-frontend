@@ -20,8 +20,6 @@ const useMovieSelection = () => {
   const [movies, setMovies] = useState<Movies>(suggestedMovies);
   const [floaterSelection, setFloaterSelection] = useState<FloaterSelection>([]);
 
-  console.log(floaterSelection);
-
   // Function to add a media selection
   function addSelectionHandler(
     id: string,

@@ -29,6 +29,8 @@ import { debounce } from 'lodash';
 // Hooks
 import useMediaSearch from '@/hooks/useMediaSearch';
 
+import { FloaterSelection } from '@/components/onboarding/top-movies/TopMovies.hooks';
+
 const TopShows = () => {
   const router = useRouter();
   useAuthRequired();
@@ -36,19 +38,22 @@ const TopShows = () => {
   const [moviesToShow, setMoviesToShow] = useState(8);
 
   // Arr to hold selected media
-  const [floaterSelection, setFloaterSelection] = useState<
-    { id: number | string; title: string; poster: string; isApi: boolean }[]
-  >([]);
+  const [floaterSelection, setFloaterSelection] = useState<FloaterSelection>([]);
 
   // Placeholder tracker, tracks how many placeholders needed for selectionFloater
-  const selectionPlaceholder = [];
-  for (let i = 0; i < 5 - floaterSelection.length; i++) {
-    selectionPlaceholder.push({ id: i, title: '', poster: '' });
-  }
+  const selectionPlaceholder: FloaterSelection = Array.from(
+    { length: 5 - floaterSelection.length },
+    (_, i) => ({
+      id: i.toString(),
+      title: '',
+      poster: '',
+      isApi: false,
+    }),
+  );
 
   // Function to add a media selection
   function addSelectionHandler(
-    id: number | string,
+    id: string,
     title: string,
     poster: string, // poster Url
     isApi: boolean, // boolean flag indicating if media selection is from API
@@ -75,7 +80,7 @@ const TopShows = () => {
 
   // Function to remove a media selection
   function removeSelectionHandler(
-    id: number | string,
+    id: string,
     newVal: boolean,
     isApi: boolean, // boolean flag indicating if media selection is from API
   ) {
@@ -223,7 +228,7 @@ export default TopShows;
 //
 interface HeaderProps {
   addSelectionHandler: (
-    id: number | string,
+    id: string,
     title: string,
     poster: string,
     isApi: boolean,
