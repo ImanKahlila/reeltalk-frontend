@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { Skeleton } from '../ui/skeleton';
+import { Skeleton } from '../../ui/skeleton';
 import toast from 'react-hot-toast';
 
 interface ComponentProps {
@@ -11,7 +11,7 @@ interface ComponentProps {
   creator: string;
   id: string;
   addSelectionHandler: (
-    id: number | string,
+    id: string,
     title: string,
     poster: string,
     isApi: boolean,

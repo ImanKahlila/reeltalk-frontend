@@ -2,14 +2,11 @@ import { useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
-const useMediaSearch = () => {
+const useMediaSearch = (titleType: 'movie' | 'tvSeries' | null) => {
   const [queryMedia, setQueryMedia] = useState<any[]>([]);
   const [fetching, setFetching] = useState(false);
 
-  const searchMedia = (
-    queryParam: string,
-    titleType: 'movie' | 'tvSeries' | null, // null returns movies and tvSeries
-  ) => {
+  const searchMedia = (queryParam: string) => {
     if (!queryParam) {
       setQueryMedia([]);
       return;

@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { isExists } from 'date-fns';
 
 // Components
-import Buttons from '@/components/onboarding/Buttons';
+import Buttons from '@/components/onboarding/shared/Buttons';
 import Carousel from '@/components/onboarding/birthday/Carousel';
 import Header from './Header';
 import Inputs from './Inputs';

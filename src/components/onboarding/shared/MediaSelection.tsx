@@ -2,9 +2,9 @@ import React from 'react';
 import Image from 'next/image';
 
 interface MediaSelectionProps {
-  id?: number | string;
+  id?: string;
   poster: string;
-  removeSelectionHandler?: (id: number | string, newVal: boolean, isApi: boolean) => void;
+  removeSelectionHandler?: (id: string, newVal: boolean, isApi: boolean) => void;
   isApi: boolean;
 }
 

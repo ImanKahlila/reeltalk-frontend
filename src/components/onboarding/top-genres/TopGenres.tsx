@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 
 // Components
-import Buttons from '@/components/onboarding/Buttons';
+import Buttons from '@/components/onboarding/shared/Buttons';
 import SearchHeader from './SearchHeader';
 import Genres from './Genres';
 
