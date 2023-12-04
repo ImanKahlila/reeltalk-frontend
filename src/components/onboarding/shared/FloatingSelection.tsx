@@ -23,9 +23,10 @@ const FloatingSelection = ({
   return (
     <div className='glass mt-6 h-fit w-screen justify-center bg-[#333333] p-4 pb-[22px] md:fixed md:bottom-0 md:left-0 md:flex md:gap-12 md:border-t-[1px] md:border-first-surface md:bg-primary-rgba md:p-6'>
       <div className='flex flex-col gap-6'>
-        <h2 className='md:trackin-[0.1px] text-center font-semibold tracking-[0.08px] text-high-emphasis md:text-start md:text-xl md:font-medium'>
+        <h2 className='text-center font-semibold tracking-[0.08px] text-high-emphasis md:text-start md:text-xl md:font-medium md:tracking-[0.1px]'>
           Your top 5 selections
         </h2>
+
         <div className='mx-auto mt-2 flex justify-between gap-3'>
           {floaterSelection.map(media => (
             <MediaSelection
