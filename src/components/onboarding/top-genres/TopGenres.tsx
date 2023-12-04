@@ -72,7 +72,12 @@ const TopGenres = (props: ITopGenres) => {
     <div>
       <picture className='relative mx-auto block h-5 w-[258px] md:w-[437.75px]'>
         <source media='(max-width: 767px)' srcSet='/Onboarding/mobile-progress-3.png' />
-        <Image src={'/Onboarding/desktop-progress-3.png'} fill alt='progress'></Image>
+        <Image
+          src={'/Onboarding/desktop-progress-3.png'}
+          sizes='(max-width: 767px) 100vw, 437.75px'
+          fill
+          alt='progress'
+        ></Image>
       </picture>
 
       <SearchHeader inputChangeHandler={inputChangeHandler} />

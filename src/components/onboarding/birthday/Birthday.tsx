@@ -57,7 +57,12 @@ const Birthday = (props: IBirthdayProps) => {
       {/* Progress Image Container */}
       <picture className='relative mx-auto block h-5 w-[258px] md:w-[437.75px]'>
         <source media='(max-width: 767px)' srcSet='/Onboarding/mobile-progress-2.png' />
-        <Image src={'/Onboarding/desktop-progress-2.png'} fill alt='progress'></Image>
+        <Image
+          src={'/Onboarding/desktop-progress-2.png'}
+          fill
+          sizes='(max-width: 767px) 100vw, 437.75px'
+          alt='progress'
+        ></Image>
       </picture>
 
       <div className='mx-auto mt-14 max-w-[343px] md:max-w-[536px]'>
