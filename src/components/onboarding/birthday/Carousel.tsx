@@ -77,8 +77,9 @@ const Poster = ({ imageUrl }: PosterProps) => {
         onLoadingComplete={handleImageLoad}
         onError={handleImageLoad}
         fill
+        sizes='(max-width: 72px) 100vw, 72px'
         alt='poster'
-        className={`${!imageLoaded ? 'invisible' : 'visible'}`}
+        className={` max-w-[72px] ${!imageLoaded ? 'invisible' : 'visible'}`}
       ></Image>
       {!imageLoaded && <Skeleton className='h-[109.092px] w-[72px] rounded-none' />}
     </picture>

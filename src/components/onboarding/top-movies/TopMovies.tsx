@@ -63,7 +63,12 @@ const TopMovies = ({ user }: ITopMovies) => {
       {/* Progress Image Container */}
       <picture className='relative mx-auto block h-5 w-[258px] md:w-[437.75px]'>
         <source media='(max-width: 767px)' srcSet='/Onboarding/mobile-progress-4.png' />
-        <Image src={'/Onboarding/desktop-progress-4.png'} fill alt='progress'></Image>
+        <Image
+          sizes='(max-width: 767px) 100vw, 437.75px'
+          src={'/Onboarding/desktop-progress-4.png'}
+          fill
+          alt='progress'
+        ></Image>
       </picture>
 
       {/* Header */}

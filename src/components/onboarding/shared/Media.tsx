@@ -57,6 +57,7 @@ const Media = ({
         <Image
           src={posterUrl}
           fill
+          sizes='(max-width: 767px) 100vw, 96px'
           alt=''
           onLoadingComplete={handleImageLoad}
           onError={handleImageLoad}

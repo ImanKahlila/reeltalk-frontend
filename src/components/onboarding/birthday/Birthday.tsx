@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 
 // Util
 import { isExists } from 'date-fns';
+import { useValidateBirthday } from './Birthday.hooks';
 
 // Components
 import Buttons from '@/components/onboarding/shared/Buttons';
@@ -28,47 +29,11 @@ const Birthday = (props: IBirthdayProps) => {
   const { user } = props;
   const { push } = useRouter();
 
-  const [dayValue, setDayValue] = useState('');
-  const [monthValue, setMonthValue] = useState('');
-  const [yearValue, setYearValue] = useState('');
-
-  const [birthdayValid, setBirthdayValid] = useState(false);
-
-  function validateBirthday() {
-    const { year, month, day } = extractDateValues();
-    setBirthdayValid(isExists(year, month, day));
-  }
-
-  useEffect(() => {
-    validateBirthday();
-    //eslint-disable-next-line
-  }, [dayValue, monthValue, yearValue]);
-
-  function extractDateValues() {
-    const year = +yearValue;
-    const month = new Date(`${monthValue} 1, 2000`).getMonth();
-    const day = +dayValue.replace(/\D/g, '');
-    return { day, month, year };
-  }
-
-  function inputChangeHandler(inputType: string, value: string) {
-    switch (inputType) {
-      case 'day':
-        setDayValue(value);
-        break;
-      case 'month':
-        setMonthValue(value);
-        break;
-      case 'year':
-        setYearValue(value);
-        break;
-      default:
-        break;
-    }
-  }
+  const { birthdayValid, inputChangeHandler, yearValue, monthValue, dayValue } =
+    useValidateBirthday();
 
   function pageSubmitHandler() {
-    const { year, month, day } = extractDateValues();
+    const { year, month, day } = extractDateValues(yearValue, monthValue, dayValue);
     if (!birthdayValid || !isExists(year, month, day)) return;
 
     const birthday = new Date(year, month, day);
@@ -92,7 +57,12 @@ const Birthday = (props: IBirthdayProps) => {
       {/* Progress Image Container */}
       <picture className='relative mx-auto block h-5 w-[258px] md:w-[437.75px]'>
         <source media='(max-width: 767px)' srcSet='/Onboarding/mobile-progress-2.png' />
-        <Image src={'/Onboarding/desktop-progress-2.png'} fill alt='progress'></Image>
+        <Image
+          src={'/Onboarding/desktop-progress-2.png'}
+          fill
+          sizes='(max-width: 767px) 100vw, 437.75px'
+          alt='progress'
+        ></Image>
       </picture>
 
       <div className='mx-auto mt-14 max-w-[343px] md:max-w-[536px]'>
@@ -114,3 +84,10 @@ const Birthday = (props: IBirthdayProps) => {
 };
 
 export default Birthday;
+
+export function extractDateValues(yearValue: string, monthValue: string, dayValue: string) {
+  const year = +yearValue;
+  const month = new Date(`${monthValue} 1, 2000`).getMonth();
+  const day = +dayValue.replace(/\D/g, '');
+  return { day, month, year };
+}
