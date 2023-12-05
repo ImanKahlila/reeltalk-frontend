@@ -2,9 +2,9 @@ import React from 'react';
 import Link from 'next/link';
 
 // SignInButtons
-import { SignInWithApple } from './onboarding';
-import { SignInWithGoogle } from './onboarding';
-import { SignInWithFacebook } from './onboarding';
+import { SignInWithApple } from '@/components/onboarding/shared/SignInWithApple';
+import { SignInWithFacebook } from '@/components/onboarding/shared/SignInWithFacebook';
+import { SignInWithGoogle } from '@/components/onboarding/shared/SignInWithGoogle';
 
 const LoginPage = () => {
   return (
@@ -31,7 +31,7 @@ const LoginPage = () => {
           <SignInWithGoogle />
           <SignInWithFacebook />
           <Link
-            href={'/onboarding/magic-link'}
+            href={'/onboarding/email-link'}
             className='mt-[22px] flex h-12 w-64 items-center justify-center rounded-lg border-2 border-solid border-high-emphasis'
           >
             Continue with Email
