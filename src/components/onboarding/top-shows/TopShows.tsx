@@ -91,7 +91,7 @@ const TopShows = ({ user }: ITopShowsProps) => {
       <Buttons
         className='md:hidden'
         prevPage='/onboarding/top-movies'
-        nextPage='/dashboard'
+        nextPage='/onboarding/guideline-agreement'
         onPageSubmit={onPageSubmitHandler}
         valid={floaterSelection.length === 5}
       />
@@ -102,7 +102,7 @@ const TopShows = ({ user }: ITopShowsProps) => {
         selectionPlaceholder={selectionPlaceholder}
         onPageSubmitHandler={onPageSubmitHandler}
         prevPage='/onboarding/top-movies'
-        nextPage='/dashboard'
+        nextPage='/onboarding/guideline-agreement'
       />
     </>
   );
