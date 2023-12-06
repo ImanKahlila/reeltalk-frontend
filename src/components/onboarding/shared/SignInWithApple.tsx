@@ -1,6 +1,8 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 
+import { handleNewUser, handleExistingUser, handleSignInError } from '@/lib/auth-helpers';
+
 // Firebase Auth and Firestore
 import {
   getAuth,
@@ -8,34 +10,18 @@ import {
   getAdditionalUserInfo,
   UserCredential,
   OAuthProvider,
-  updateProfile,
 } from 'firebase/auth';
-import {
-  getFirestore,
-  collection,
-  doc,
-  setDoc,
-  DocumentReference,
-  getDoc,
-  DocumentData,
-} from 'firebase/firestore';
+import { getFirestore, collection, doc } from 'firebase/firestore';
 import app from '@/firebase/firebase-config';
 
 import AppleIcon from '../AppleIcon';
-
-// Google Analytics
-import { logEvent } from 'firebase/analytics';
-import { analytics } from '../../../firebase/firebase-config';
-
-// util
-import toast from 'react-hot-toast';
 
 // Variables
 const auth = getAuth(app);
 const db = getFirestore(app);
 
 // Extend Apple Response Token in FireBase User Object
-interface CustomAppleUserCredential extends UserCredential {
+export interface CustomAppleUserCredential extends UserCredential {
   _tokenResponse?: {
     context: string;
     displayName?: string;
@@ -77,74 +63,15 @@ export const SignInWithApple = () => {
       const userDocRef = doc(colRef, userId);
 
       if (additionalUserInfo?.isNewUser) {
-        await handleNewUser(userCredential, userDocRef, responseToken);
+        await handleNewUser(userCredential, userDocRef, push, 'apple', responseToken);
       } else {
-        await handleExistingUser(userDocRef);
+        await handleExistingUser(userDocRef, push, 'apple');
       }
     } catch (error: any) {
       handleSignInError(error);
     }
   };
 
-  async function handleNewUser(
-    userCredential: UserCredential,
-    userDocRef: DocumentReference,
-    responseToken: CustomAppleUserCredential['_tokenResponse'],
-  ) {
-    await updateProfile(userCredential.user, {
-      displayName: responseToken?.displayName,
-    });
-
-    await setDoc(userDocRef, { displayName: responseToken?.displayName }, { merge: true });
-
-    logEvent(analytics, 'signed_up', {
-      method: 'apple',
-    });
-
-    push('/onboarding/birthday');
-  }
-
-  async function handleExistingUser(userDocRef: DocumentReference) {
-    logEvent(analytics, 'user_logged_in', { method: 'apple' });
-
-    const userData = (await getDoc(userDocRef)).data();
-    if (!userData) {
-      push('/login');
-      return;
-    }
-
-    verifyOnboardingComplete(userData);
-  }
-
-  function handleSignInError(error: any) {
-    if (error.code === 'auth/popup-closed-by-user') {
-      toast.error('Popup was closed by user', {
-        position: 'bottom-right',
-        ariaProps: { role: 'status', 'aria-live': 'polite' },
-      });
-    } else {
-      toast.error(error.message);
-    }
-  }
-
-  function verifyOnboardingComplete(userData: DocumentData) {
-    // Redirect to unfinished onboarding step as long as the user hasn't agreed to the guideline
-    if (!userData['agreedToGuideline']) {
-      if (!userData['birthday']) {
-        push('/onboarding/birthday');
-      } else if (!userData['topGenres']) {
-        push('/onboarding/top-genres');
-      } else if (!userData['top5Movies']) {
-        push('/onboarding/top-movies');
-      } else if (!userData['top5Shows']) {
-        push('/onboarding/top-shows');
-      } else {
-        push('/onboarding/guideline-agreement');
-      }
-    } else {
-      push('/community');
-    }
-  }
   return (
     <button
       onClick={signInWithApple}

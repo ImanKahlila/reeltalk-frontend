@@ -4,34 +4,20 @@ import { useRouter } from 'next/router';
 // Util
 import { extractDateValues } from './Birthday';
 import { isExists, subYears, isAfter, isBefore, isEqual } from 'date-fns';
-import toast from 'react-hot-toast';
+import { handleSignInError, handleExistingUser, handleNewUser } from '@/lib/auth-helpers';
 
 // Firebase
-import {
-  getFirestore,
-  setDoc,
-  doc,
-  collection,
-  DocumentReference,
-  DocumentData,
-  getDoc,
-} from 'firebase/firestore';
+import { getFirestore, doc, collection } from 'firebase/firestore';
 import app from '@/firebase/firebase-config';
 import {
   getAuth,
   isSignInWithEmailLink,
   signInWithEmailLink,
   getAdditionalUserInfo,
-  updateProfile,
-  UserCredential,
 } from 'firebase/auth';
 
 const db = getFirestore(app);
 const auth = getAuth();
-
-// Google Analytics
-import { logEvent } from 'firebase/analytics';
-import { analytics } from '../../../firebase/firebase-config';
 
 export const usePasswordlessSignin = () => {
   const { push } = useRouter();
@@ -43,7 +29,6 @@ export const usePasswordlessSignin = () => {
         if (!email) {
           email = window.prompt('Please provide your email for confirmation');
         }
-
         try {
           const userCredential = await signInWithEmailLink(auth, email!, window.location.href);
           window.localStorage.removeItem('emailForSignIn');
@@ -54,9 +39,9 @@ export const usePasswordlessSignin = () => {
           const userDocRef = doc(colRef, userId);
 
           if (additionalInfo?.isNewUser) {
-            handleNewUser(userCredential, userDocRef);
+            handleNewUser(userCredential, userDocRef, push, 'email');
           } else {
-            await handleExistingUser(userDocRef);
+            await handleExistingUser(userDocRef, push, 'email');
           }
         } catch (error: any) {
           handleSignInError(error);
@@ -67,63 +52,6 @@ export const usePasswordlessSignin = () => {
     passwordlessSignIn();
     //eslint-disable-next-line
   }, []);
-
-  async function handleNewUser(userCredential: UserCredential, userDocRef: DocumentReference) {
-    let displayName = userCredential.user.email?.split('@')[0];
-
-    await updateProfile(userCredential.user, {
-      displayName: displayName,
-    });
-    await setDoc(userDocRef, { displayName: displayName }, { merge: true });
-
-    // Google Analytics
-    logEvent(analytics, 'signed_up', {
-      method: 'email',
-    });
-    push('/onboarding/birthday');
-  }
-
-  async function handleExistingUser(userDocRef: DocumentReference) {
-    logEvent(analytics, 'user_logged_in', { method: 'email' });
-
-    const userData = (await getDoc(userDocRef)).data();
-    if (!userData) {
-      push('/login');
-      return;
-    }
-
-    verifyOnboardingComplete(userData);
-  }
-
-  function handleSignInError(error: any) {
-    if (error.code === 'auth/popup-closed-by-user') {
-      toast.error('Popup was closed by user', {
-        position: 'bottom-right',
-        ariaProps: { role: 'status', 'aria-live': 'polite' },
-      });
-    } else {
-      toast.error(error.message);
-    }
-  }
-
-  function verifyOnboardingComplete(userData: DocumentData) {
-    // Redirect to unfinished onboarding step as long as the user hasn't agreed to the guideline
-    if (!userData['agreedToGuideline']) {
-      if (!userData['birthday']) {
-        push('/onboarding/birthday');
-      } else if (!userData['topGenres']) {
-        push('/onboarding/top-genres');
-      } else if (!userData['top5Movies']) {
-        push('/onboarding/top-movies');
-      } else if (!userData['top5Shows']) {
-        push('/onboarding/top-shows');
-      } else {
-        push('/onboarding/guideline-agreement');
-      }
-    } else {
-      push('/community');
-    }
-  }
 };
 
 export const useValidateBirthday = () => {

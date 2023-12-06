@@ -11,7 +11,7 @@ const TopShowsPage = () => {
   if (!user) return;
 
   return (
-    <section className='relative mx-auto px-4 pt-12 md:max-w-[696px] md:px-0 md:pb-48'>
+    <section className='relative mx-auto pt-12 md:max-w-[696px] md:px-0 md:pb-48'>
       <TopShows user={user} />
     </section>
   );
