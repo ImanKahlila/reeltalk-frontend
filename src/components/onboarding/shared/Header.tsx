@@ -32,7 +32,7 @@ const Header = ({ addSelectionHandler, selectedLength, titleType }: HeaderProps)
   }, 500);
 
   return (
-    <header className='mx-auto mt-14 max-w-[600px] text-center'>
+    <header className='mx-auto mt-14 max-w-[600px] px-4 text-center'>
       <h1 className='text-[28px] font-medium tracking-[-0.42px] text-high-emphasis'>
         {`Select your top 5 ${titleType === 'movie' ? 'movies' : 'shows'}`}
       </h1>

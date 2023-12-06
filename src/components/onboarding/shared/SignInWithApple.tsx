@@ -10,7 +10,15 @@ import {
   OAuthProvider,
   updateProfile,
 } from 'firebase/auth';
-import { getFirestore, collection, doc, setDoc } from 'firebase/firestore';
+import {
+  getFirestore,
+  collection,
+  doc,
+  setDoc,
+  DocumentReference,
+  getDoc,
+  DocumentData,
+} from 'firebase/firestore';
 import app from '@/firebase/firebase-config';
 
 import AppleIcon from '../AppleIcon';
@@ -64,38 +72,79 @@ export const SignInWithApple = () => {
       const additionalUserInfo = getAdditionalUserInfo(userCredential);
       const responseToken = userCredential._tokenResponse;
 
+      const colRef = collection(db, 'users');
+      const userId = userCredential.user.uid;
+      const userDocRef = doc(colRef, userId);
+
       if (additionalUserInfo?.isNewUser) {
-        const colRef = collection(db, 'users');
-        const userId = userCredential.user.uid;
-        const userDocRef = doc(colRef, userId);
-
-        await updateProfile(userCredential.user, {
-          displayName: responseToken?.displayName,
-        });
-
-        await setDoc(userDocRef, { displayName: responseToken?.displayName }, { merge: true });
-
-        // Google Analytics
-        logEvent(analytics, 'signed_up', {
-          method: 'apple',
-        });
-        push('/onboarding/birthday');
+        await handleNewUser(userCredential, userDocRef, responseToken);
       } else {
-        logEvent(analytics, 'user_logged_in', { method: 'apple' }); // Google Analytics
-        push('/dashboard');
+        await handleExistingUser(userDocRef);
       }
     } catch (error: any) {
-      let errorCode = error.code;
-      if (errorCode == 'auth/popup-closed-by-user') {
-        toast.error('Popup was closed by user', {
-          position: 'bottom-right',
-          ariaProps: { role: 'status', 'aria-live': 'polite' },
-        });
-      } else {
-        toast.error(error.message);
-      }
+      handleSignInError(error);
     }
   };
+
+  async function handleNewUser(
+    userCredential: UserCredential,
+    userDocRef: DocumentReference,
+    responseToken: CustomAppleUserCredential['_tokenResponse'],
+  ) {
+    await updateProfile(userCredential.user, {
+      displayName: responseToken?.displayName,
+    });
+
+    await setDoc(userDocRef, { displayName: responseToken?.displayName }, { merge: true });
+
+    logEvent(analytics, 'signed_up', {
+      method: 'apple',
+    });
+
+    push('/onboarding/birthday');
+  }
+
+  async function handleExistingUser(userDocRef: DocumentReference) {
+    logEvent(analytics, 'user_logged_in', { method: 'apple' });
+
+    const userData = (await getDoc(userDocRef)).data();
+    if (!userData) {
+      push('/login');
+      return;
+    }
+
+    verifyOnboardingComplete(userData);
+  }
+
+  function handleSignInError(error: any) {
+    if (error.code === 'auth/popup-closed-by-user') {
+      toast.error('Popup was closed by user', {
+        position: 'bottom-right',
+        ariaProps: { role: 'status', 'aria-live': 'polite' },
+      });
+    } else {
+      toast.error(error.message);
+    }
+  }
+
+  function verifyOnboardingComplete(userData: DocumentData) {
+    // Redirect to unfinished onboarding step as long as the user hasn't agreed to the guideline
+    if (!userData['agreedToGuideline']) {
+      if (!userData['birthday']) {
+        push('/onboarding/birthday');
+      } else if (!userData['topGenres']) {
+        push('/onboarding/top-genres');
+      } else if (!userData['top5Movies']) {
+        push('/onboarding/top-movies');
+      } else if (!userData['top5Shows']) {
+        push('/onboarding/top-shows');
+      } else {
+        push('/onboarding/guideline-agreement');
+      }
+    } else {
+      push('/community');
+    }
+  }
   return (
     <button
       onClick={signInWithApple}

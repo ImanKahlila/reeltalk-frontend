@@ -48,12 +48,12 @@ const TopShows = ({ user }: ITopShowsProps) => {
       setDoc(
         docRef,
         {
-          top5Movies: floaterSelection,
+          top5Shows: floaterSelection,
         },
         { merge: true },
       )
         .then(() => {
-          push('/onboarding/top-shows');
+          push('/onboarding/guideline-agreement');
         })
         .catch(error => console.log(error));
     }
