@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 // Util
 import { isExists } from 'date-fns';
-import { usePasswordlessSignin, useValidateBirthday } from './Birthday.hooks';
+import { useValidateBirthday } from './Birthday.hooks';
 
 // Components
 import Buttons from '@/components/onboarding/shared/Buttons';
@@ -28,8 +28,6 @@ interface IBirthdayProps {
 const Birthday = (props: IBirthdayProps) => {
   const { user } = props;
   const { push } = useRouter();
-
-  usePasswordlessSignin();
 
   const { birthdayValid, inputChangeHandler, yearValue, monthValue, dayValue } =
     useValidateBirthday();
