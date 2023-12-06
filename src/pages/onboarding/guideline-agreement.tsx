@@ -23,7 +23,7 @@ const GuidlineAgreementPage = () => {
         { merge: true },
       )
         .then(() => {
-          push('/dashboard');
+          push('/community');
         })
         .catch(error => console.log(error));
     }

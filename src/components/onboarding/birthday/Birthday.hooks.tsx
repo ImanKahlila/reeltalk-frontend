@@ -7,7 +7,15 @@ import { isExists, subYears, isAfter, isBefore, isEqual } from 'date-fns';
 import toast from 'react-hot-toast';
 
 // Firebase
-import { getFirestore, setDoc, doc, collection } from 'firebase/firestore';
+import {
+  getFirestore,
+  setDoc,
+  doc,
+  collection,
+  DocumentReference,
+  DocumentData,
+  getDoc,
+} from 'firebase/firestore';
 import app from '@/firebase/firebase-config';
 import {
   getAuth,
@@ -15,7 +23,11 @@ import {
   signInWithEmailLink,
   getAdditionalUserInfo,
   updateProfile,
+  UserCredential,
 } from 'firebase/auth';
+
+const db = getFirestore(app);
+const auth = getAuth();
 
 // Google Analytics
 import { logEvent } from 'firebase/analytics';
@@ -26,44 +38,28 @@ export const usePasswordlessSignin = () => {
 
   useEffect(() => {
     async function passwordlessSignIn() {
-      const auth = getAuth();
-      let email = window.localStorage.getItem('emailForSignIn');
-
       if (isSignInWithEmailLink(auth, window.location.href)) {
+        let email = window.localStorage.getItem('emailForSignIn');
         if (!email) {
           email = window.prompt('Please provide your email for confirmation');
         }
 
         try {
-          const credential = await signInWithEmailLink(auth, email!, window.location.href);
+          const userCredential = await signInWithEmailLink(auth, email!, window.location.href);
           window.localStorage.removeItem('emailForSignIn');
-          const additionalInfo = getAdditionalUserInfo(credential);
+          const additionalInfo = getAdditionalUserInfo(userCredential);
 
-          if (!additionalInfo?.isNewUser) {
-            logEvent(analytics, 'user_logged_in', {
-              method: 'email',
-            }); // Google Analytics
-            push('/dashboard');
+          const userId = userCredential.user.uid;
+          const colRef = collection(db, 'users');
+          const userDocRef = doc(colRef, userId);
+
+          if (additionalInfo?.isNewUser) {
+            handleNewUser(userCredential, userDocRef);
           } else {
-            const userId = credential.user.uid;
-            const db = getFirestore(app);
-            const colRef = collection(db, 'users');
-            const userDocRef = doc(colRef, userId);
-            let displayName = credential.user.email?.split('@')[0];
-
-            await updateProfile(credential.user, {
-              displayName: displayName,
-            });
-            await setDoc(userDocRef, { displayName: displayName }, { merge: true });
-
-            // Google Analytics
-            logEvent(analytics, 'signed_up', {
-              method: 'email',
-            });
-            push('/onboarding/birthday');
+            await handleExistingUser(userDocRef);
           }
         } catch (error: any) {
-          toast.error(error.message);
+          handleSignInError(error);
         }
       }
     }
@@ -71,6 +67,63 @@ export const usePasswordlessSignin = () => {
     passwordlessSignIn();
     //eslint-disable-next-line
   }, []);
+
+  async function handleNewUser(userCredential: UserCredential, userDocRef: DocumentReference) {
+    let displayName = userCredential.user.email?.split('@')[0];
+
+    await updateProfile(userCredential.user, {
+      displayName: displayName,
+    });
+    await setDoc(userDocRef, { displayName: displayName }, { merge: true });
+
+    // Google Analytics
+    logEvent(analytics, 'signed_up', {
+      method: 'email',
+    });
+    push('/onboarding/birthday');
+  }
+
+  async function handleExistingUser(userDocRef: DocumentReference) {
+    logEvent(analytics, 'user_logged_in', { method: 'email' });
+
+    const userData = (await getDoc(userDocRef)).data();
+    if (!userData) {
+      push('/login');
+      return;
+    }
+
+    verifyOnboardingComplete(userData);
+  }
+
+  function handleSignInError(error: any) {
+    if (error.code === 'auth/popup-closed-by-user') {
+      toast.error('Popup was closed by user', {
+        position: 'bottom-right',
+        ariaProps: { role: 'status', 'aria-live': 'polite' },
+      });
+    } else {
+      toast.error(error.message);
+    }
+  }
+
+  function verifyOnboardingComplete(userData: DocumentData) {
+    // Redirect to unfinished onboarding step as long as the user hasn't agreed to the guideline
+    if (!userData['agreedToGuideline']) {
+      if (!userData['birthday']) {
+        push('/onboarding/birthday');
+      } else if (!userData['topGenres']) {
+        push('/onboarding/top-genres');
+      } else if (!userData['top5Movies']) {
+        push('/onboarding/top-movies');
+      } else if (!userData['top5Shows']) {
+        push('/onboarding/top-shows');
+      } else {
+        push('/onboarding/guideline-agreement');
+      }
+    } else {
+      push('/community');
+    }
+  }
 };
 
 export const useValidateBirthday = () => {
