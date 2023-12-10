@@ -21,19 +21,21 @@ const tags = [
 const DUMMY_JOINED_COMM = [
   {
     id: 'j1',
-    title: 'The Best Closers in the City',
+    title: 'Spider Guys',
     imageUrl:
-      'https://m.media-amazon.com/images/M/MV5BNmVmMmM5ZmItZDg0OC00NTFiLWIxNzctZjNmYTY5OTU3ZWU3XkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_.jpg',
-    isPublic: false,
+      'https://storage.googleapis.com/reeltalk-app.appspot.com/communityImages/H6sHupzEoyLWEgRfeox3/wp8328251.jpg_1701133522093?GoogleAccessId=firebase-adminsdk-147wm%40reeltalk-app.iam.gserviceaccount.com&Expires=16447046400&Signature=bBLq6abGnIBIkwOilcZlDzepsAKi2zwsoQEGESi6FFCZ15tUdP89SBRZVZyrYaKAABks0fm80el93iZRXLkWkhXcA%2B%2F79YMVVv0f24cPAWa2yAVbQ13uC%2FAIdKOUHsp4IV09O3Qc9eFU0SYoBv%2B7OdKgz9uIL3LR4qAPDMbMKuwAJaF4rljCNnAycXCQ5SdI7hfJM0Qjw2dlD%2Bvj%2Bwe1ikZX%2FFEKVqtJS6JAysOKA0VYSGJ9vVa3IsVn3GhgXo4oISQ2lbPRu7idlGKJs5RZ1Ho9aF3SAum%2BkoYzwiVSuBcQcn8w7ADEzLSJnmbTx0LdNG01Q%2FCkPpajjckRtlcBIA%3D%3D',
+    isPublic: true,
     members: 300,
+    url: '/community/H6sHupzEoyLWEgRfeox3',
   },
   {
     id: 'j2',
-    title: 'Marvel',
+    title: 'Michael Scarn Fan Club',
     imageUrl:
-      'https://m.media-amazon.com/images/M/MV5BNDYxNjQyMjAtNTdiOS00NGYwLWFmNTAtNThmYjU5ZGI2YTI1XkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_.jpg',
+      'https://storage.googleapis.com/reeltalk-app.appspot.com/communityImages/bmQIMUVgG0iXkBmPvDHR/Michael_Scott.webp_1701371229354?GoogleAccessId=firebase-adminsdk-147wm%40reeltalk-app.iam.gserviceaccount.com&Expires=16447046400&Signature=U9z3WHDBMbppUieBwkMde88di9%2Bnoq8WTIALCRn1jaRI5sRrxCsnoyCxdiyA3NFNqK%2BGieXXOm%2BDWVZxvXslh8JRQql03%2F2zGAFcnUEllVp0QSSnbZlZFdHhViS3K0Z5WHCcNAQsuPaJfQ9tM6rfWqECVksGY6eRI9NaqYupeC0ZLYMIY2zb2gDJOSvObatQrxbtUw%2BGoWfdwkA2%2Fb1aIzF9wLGou2qu07P8q35hX3CxcNO1%2Fetxy0OGYeOgFJ8kJXI4GGH9k%2FMeNu1xDO%2FRv%2BdnrdiGjvWu1waPg6mqexeEJpT%2FtSdlqhSgkK3RSnEs5bW%2FgkXVc6aqRow9whASDQ%3D%3D',
     isPublic: false,
     members: 300,
+    url: '/community/bmQIMUVgG0iXkBmPvDHR',
   },
 ];
 
@@ -121,6 +123,7 @@ const CommunityPage = () => {
                 imageUrl={title.imageUrl}
                 isPublic={title.isPublic}
                 members={title.members}
+                url={title.url}
               />
             ))}
           </div>
@@ -139,6 +142,7 @@ const CommunityPage = () => {
                 imageUrl={dummy.imageUrl}
                 isPublic={dummy.isPublic}
                 members={dummy.members}
+                url={'/communities/H6sHupzEoyLWEgRfeox3'}
               />
             ))}
           </div>
@@ -158,6 +162,7 @@ const CommunityPage = () => {
                 imageUrl={title.imageUrl}
                 isPublic={title.isPublic}
                 description={title.description}
+                url={'/communities/H6sHupzEoyLWEgRfeox3'}
               />
             ))}
           </div>
@@ -175,13 +180,15 @@ interface CommunitiesProps {
   imageUrl: string;
   members: number;
   description?: string;
+  url: string;
 }
 
-function Communities({ title, isPublic, imageUrl, members }: CommunitiesProps) {
+function Communities({ title, isPublic, imageUrl, members, url }: CommunitiesProps) {
+  console.log(url);
   return (
-    <div className='w-[102.188px]'>
-      <picture className='relative block h-[153.787px]  overflow-hidden rounded-md'>
-        <Image src={imageUrl} fill alt=''></Image>
+    <Link href={url} className='w-[102.188px]'>
+      <picture className='relative block h-[153.787px] overflow-hidden rounded-md'>
+        <Image className='object-cover' src={imageUrl} fill alt=''></Image>
       </picture>
       <h2 className='mt-2 text-sm tracking-eight text-high-emphasis'>{truncateString(title)}</h2>
       <div className='mt-[10px] text-xs tracking-[0.06px] text-medium-emphasis'>
@@ -191,7 +198,7 @@ function Communities({ title, isPublic, imageUrl, members }: CommunitiesProps) {
         </span> <UserIcon className='relative bottom-[1px] inline-block' />{' '}
         <span className='pl-1'>{members.toString()}</span>
       </div>
-    </div>
+    </Link>
   );
 }
 

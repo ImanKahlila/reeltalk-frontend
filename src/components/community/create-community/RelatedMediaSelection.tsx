@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 
-import { IRelatedTitlesSelection } from '@/pages/community/create-community';
+import { IRelatedTitlesSelection } from './CreateCommunity.hooks';
 
 interface IRelatedMediaSelectionProps {
   relatedTitlesSelection: IRelatedTitlesSelection['relatedTitles'];

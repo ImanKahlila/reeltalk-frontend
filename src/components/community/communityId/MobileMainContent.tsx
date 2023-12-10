@@ -2,7 +2,7 @@ import React from 'react';
 
 // Components
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Poster } from '../Poster';
+import { Poster } from './Poster';
 
 import { IPageData } from '@/pages/community/[communityId]';
 

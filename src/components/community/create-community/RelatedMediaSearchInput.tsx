@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { debounce } from 'lodash';
 import useMediaSearch from '@/hooks/useMediaSearch';
-import Spinner from '../shared/Spinner';
-import SearchIcon from '../layout/SearchIcon';
-import { ScrollArea } from '../ui/scroll-area';
-import SearchOption from '../onboarding/shared/SearchOption';
+import Spinner from '../../shared/Spinner';
+import SearchIcon from '../../layout/SearchIcon';
+import { ScrollArea } from '../../ui/scroll-area';
+import SearchOption from '../../onboarding/shared/SearchOption';
 
 interface IRelatedMediaSearchInputProps {
   addSelectionHandler: (id: string | number, title: string, poster: string, isApi: boolean) => void;

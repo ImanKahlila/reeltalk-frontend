@@ -1,7 +1,7 @@
 import React from 'react';
 
 // Components
-import { Poster } from '../Poster';
+import { Poster } from './Poster';
 
 import { IPageData } from '@/pages/community/[communityId]';
 
