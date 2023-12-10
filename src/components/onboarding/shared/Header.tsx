@@ -29,7 +29,7 @@ const Header = ({ addSelectionHandler, selectedLength, titleType }: HeaderProps)
   const searchInputChangeHandler = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
     const queryParam = e.target.value.trim();
     searchMedia(queryParam);
-  }, 500);
+  }, 1000);
 
   return (
     <header className='mx-auto mt-14 max-w-[600px] px-4 text-center'>

@@ -24,7 +24,7 @@ function RelatedMediaSearchInput({
   const searchInputChangeHandler = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
     const queryParam = e.target.value.trim();
     searchMedia(queryParam); // Passing null returns movies and tvSeries
-  }, 500);
+  }, 1000);
 
   return (
     <div className='relative mx-auto w-fit'>

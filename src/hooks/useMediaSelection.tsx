@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import suggestedMovies from '@/lib/suggestedMovies';
 import suggestedShows from '@/lib/suggestedShows';
+
+import axios from 'axios';
 
 export type Media = {
   id: string;
@@ -17,10 +19,39 @@ export type FloaterSelection = {
   isApi: boolean;
 }[];
 
-const useMediaSelection = (mediaType: 'movies' | 'series') => {
-  const suggestedMedia = mediaType === 'movies' ? suggestedMovies : suggestedShows;
+const backend_URL = 'https://us-central1-reeltalk-app.cloudfunctions.net/api';
 
-  const [media, setMedia] = useState<Media>(suggestedMedia);
+const useMediaSelection = (mediaType: 'movies' | 'series') => {
+  useEffect(() => {
+    async function retrieveSuggestedMedia() {
+      try {
+        let response;
+        let mediaArray: Media;
+        if (mediaType === 'movies') {
+          response = await axios.get(`${backend_URL}/movies/getPossibleFilms`, {
+            withCredentials: true,
+          });
+          mediaArray = response.data.data.films;
+        } else {
+          response = await axios.get(`${backend_URL}/movies/getPossibleShows`, {
+            withCredentials: true,
+          });
+          mediaArray = response.data.data.shows;
+        }
+        const mediaData = mediaArray.map(media => ({ ...media, selected: false }));
+        if (response.statusText !== 'OK') return;
+        setMedia(mediaData);
+      } catch (error: any) {
+        console.log(error.message);
+      }
+    }
+
+    retrieveSuggestedMedia();
+  }, [mediaType]);
+
+  const [media, setMedia] = useState<Media>(
+    mediaType === 'movies' ? suggestedMovies : suggestedShows,
+  );
   const [floaterSelection, setFloaterSelection] = useState<FloaterSelection>([]);
 
   // Function to add a media selection
