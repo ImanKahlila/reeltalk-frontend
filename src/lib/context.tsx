@@ -28,10 +28,10 @@ export const UserContextProvider = ({ children }: ComponentProps) => {
         // Yes, it is okay for javascript running on the client side to access the ID token issued by Firebase Authentication.
         // The ID token is specifically designed to be used on the client side for authenication and authorization purposes.
         setUser(user);
-        setCookie(undefined, 'token', token, { path: '/', secure: true });
+        setCookie(undefined, 'idToken', token, { path: '/', secure: true });
       } else {
         setUser(null);
-        destroyCookie(undefined, 'token', { path: '/', secure: true });
+        destroyCookie(undefined, 'idToken', { path: '/', secure: true });
       }
     });
 

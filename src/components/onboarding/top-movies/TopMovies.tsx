@@ -86,7 +86,9 @@ const TopMovies = ({ user }: ITopMovies) => {
         floaterSelection={floaterSelection}
         removeSelectionHandler={removeSelectionHandler}
       />
-      <ShowMoreButton onShowMoreHandler={() => setMediaToShow(16)} mediaToShow={mediaToShow} />
+      {media.length > 8 ? (
+        <ShowMoreButton onShowMoreHandler={() => setMediaToShow(16)} mediaToShow={mediaToShow} />
+      ) : null}
 
       <Buttons
         className='md:hidden'
