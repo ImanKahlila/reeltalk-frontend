@@ -61,9 +61,9 @@ const CreateCommunity = ({ user }: { user: User }) => {
     }));
   };
 
+  const router = useRouter();
   const [spinnerActive, setSpinnerActive] = useState(false);
   const CreateCommunityPage = async () => {
-    const router = useRouter();
     setSpinnerActive(true);
     // Extracted request logic into seperate file
     await useCreateCommunity({
