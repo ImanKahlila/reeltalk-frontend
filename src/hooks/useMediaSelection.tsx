@@ -19,6 +19,8 @@ export type FloaterSelection = {
   isApi: boolean;
 }[];
 
+const backend_URL = 'https://us-central1-reeltalk-app.cloudfunctions.net/api';
+
 const useMediaSelection = (mediaType: 'movies' | 'series') => {
   useEffect(() => {
     async function retrieveSuggestedMedia() {
@@ -26,12 +28,12 @@ const useMediaSelection = (mediaType: 'movies' | 'series') => {
         let response;
         let mediaArray: Media;
         if (mediaType === 'movies') {
-          response = await axios.get('http://localhost:8080/api/movies/getPossibleFilms', {
+          response = await axios.get(`${backend_URL}/movies/getPossibleFilms`, {
             withCredentials: true,
           });
           mediaArray = response.data.data.films;
         } else {
-          response = await axios.get('http://localhost:8080/api/movies/getPossibleShows', {
+          response = await axios.get(`${backend_URL}/movies/getPossibleShows`, {
             withCredentials: true,
           });
           mediaArray = response.data.data.shows;

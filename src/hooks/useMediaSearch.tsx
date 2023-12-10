@@ -2,6 +2,8 @@ import { useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
+const backend_URL = 'https://us-central1-reeltalk-app.cloudfunctions.net/api';
+
 const useMediaSearch = (titleType: 'movie' | 'tvSeries' | null) => {
   const [queryMedia, setQueryMedia] = useState<any[]>([]);
   const [fetching, setFetching] = useState(false);
@@ -14,12 +16,12 @@ const useMediaSearch = (titleType: 'movie' | 'tvSeries' | null) => {
 
     // Create an array to store the promises for the two Axios requests
     const promises = [
-      axios.post('http://localhost:8080/movies/search', {
+      axios.post(`${backend_URL}/movies/search`, {
         input: queryParam,
         titleType: titleType,
         info: 'base_info',
       }),
-      axios.post('http://localhost:8080/movies/search', {
+      axios.post(`${backend_URL}/movies/search`, {
         input: queryParam,
         titleType: titleType,
         info: 'creators_directors_writers',
