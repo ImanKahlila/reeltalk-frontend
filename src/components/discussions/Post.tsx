@@ -29,7 +29,7 @@ export default function Post() {
         </div>
         <p className='text-xs text-high-emphasis'>
           My favorite scene will always be from season 4 episode 8 when Harvey found out about
-          louis' deal with forstman. The side by side wal see morek by harvey and louis will always
+          louis&#39; deal with forstman. The side by side wal see morek by harvey and louis will always
           be one of my favorite shots of all time.
         </p>
         <LikesReplies likes={2} replies={2} />
