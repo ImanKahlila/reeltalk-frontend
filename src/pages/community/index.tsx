@@ -26,16 +26,16 @@ const DUMMY_JOINED_COMM = [
       'https://storage.googleapis.com/reeltalk-app.appspot.com/communityImages/H6sHupzEoyLWEgRfeox3/wp8328251.jpg_1701133522093?GoogleAccessId=firebase-adminsdk-147wm%40reeltalk-app.iam.gserviceaccount.com&Expires=16447046400&Signature=bBLq6abGnIBIkwOilcZlDzepsAKi2zwsoQEGESi6FFCZ15tUdP89SBRZVZyrYaKAABks0fm80el93iZRXLkWkhXcA%2B%2F79YMVVv0f24cPAWa2yAVbQ13uC%2FAIdKOUHsp4IV09O3Qc9eFU0SYoBv%2B7OdKgz9uIL3LR4qAPDMbMKuwAJaF4rljCNnAycXCQ5SdI7hfJM0Qjw2dlD%2Bvj%2Bwe1ikZX%2FFEKVqtJS6JAysOKA0VYSGJ9vVa3IsVn3GhgXo4oISQ2lbPRu7idlGKJs5RZ1Ho9aF3SAum%2BkoYzwiVSuBcQcn8w7ADEzLSJnmbTx0LdNG01Q%2FCkPpajjckRtlcBIA%3D%3D',
     isPublic: true,
     members: 300,
-    url: '/community/H6sHupzEoyLWEgRfeox3',
+    url: '/community/geACoPYrDWq1g4RcMAN4',
   },
   {
     id: 'j2',
-    title: 'Michael Scarn Fan Club',
+    title: 'Studio Ghibli',
     imageUrl:
-      'https://storage.googleapis.com/reeltalk-app.appspot.com/communityImages/bmQIMUVgG0iXkBmPvDHR/Michael_Scott.webp_1701371229354?GoogleAccessId=firebase-adminsdk-147wm%40reeltalk-app.iam.gserviceaccount.com&Expires=16447046400&Signature=U9z3WHDBMbppUieBwkMde88di9%2Bnoq8WTIALCRn1jaRI5sRrxCsnoyCxdiyA3NFNqK%2BGieXXOm%2BDWVZxvXslh8JRQql03%2F2zGAFcnUEllVp0QSSnbZlZFdHhViS3K0Z5WHCcNAQsuPaJfQ9tM6rfWqECVksGY6eRI9NaqYupeC0ZLYMIY2zb2gDJOSvObatQrxbtUw%2BGoWfdwkA2%2Fb1aIzF9wLGou2qu07P8q35hX3CxcNO1%2Fetxy0OGYeOgFJ8kJXI4GGH9k%2FMeNu1xDO%2FRv%2BdnrdiGjvWu1waPg6mqexeEJpT%2FtSdlqhSgkK3RSnEs5bW%2FgkXVc6aqRow9whASDQ%3D%3D',
+      'https://firebasestorage.googleapis.com/v0/b/reeltalk-app.appspot.com/o/communityImage%2F14j9jP03strFhDmDmScz%2FHERON_IMAX_Poster_Digital.jpg_1702265471547?alt=media',
     isPublic: false,
     members: 300,
-    url: '/community/bmQIMUVgG0iXkBmPvDHR',
+    url: '/community/14j9jP03strFhDmDmScz',
   },
 ];
 

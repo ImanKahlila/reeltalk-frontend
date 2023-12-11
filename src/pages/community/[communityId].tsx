@@ -11,11 +11,11 @@ import CreatedCommunity from '@/components/community/communityId/CreatedCommunit
 
 export interface IPageData {
   content: { id: string; isApi: boolean; poster: string; title: string }[];
-  coverPhoto: string[];
+  coverPhoto: string;
   createdAt: Timestamp;
   description: string;
   discussions: [];
-  image: string[];
+  communityImage: string;
   isPublic: string;
   members: [];
   name: string;

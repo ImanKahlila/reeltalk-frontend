@@ -26,7 +26,7 @@ const Header = ({ pageData }: { pageData: IPageData }) => {
         <>
           <Image
             className={`object-cover ${!coverImageLoaded ? 'invisible' : 'visible'}`}
-            src={pageData.coverPhoto?.[0] || ''}
+            src={pageData.coverPhoto || ''}
             onLoadingComplete={handleCoverImageload}
             onError={handleCoverImageload}
             fill
@@ -41,7 +41,7 @@ const Header = ({ pageData }: { pageData: IPageData }) => {
         <picture className='relative block min-w-[80px] overflow-hidden rounded-md'>
           <Image
             className={`object-cover ${!communityImageLoaded ? 'invisible' : 'visible'}`}
-            src={pageData?.image[0] || '/Pixel-160.png'}
+            src={pageData?.communityImage || '/Pixel-160.png'}
             onLoadingComplete={handleCommunityImageLoad}
             onError={handleCommunityImageLoad}
             fill

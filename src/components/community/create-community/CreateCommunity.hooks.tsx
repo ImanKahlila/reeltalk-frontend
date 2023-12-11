@@ -104,7 +104,7 @@ export const useCreateCommunity = async ({
     };
     const formData = new FormData();
     formData.append('coverPhoto', coverImage as Blob); // Add images to FormData instance
-    formData.append('image', communityImage as Blob);
+    formData.append('communityImage', communityImage as Blob);
 
     // map data to FormData instance
     Object.entries(data).forEach(([key, value]) => {
