@@ -6,6 +6,7 @@ const nextConfig = {
       'm.media-amazon.com',
       'lh3.googleusercontent.com',
       'graph.facebook.com',
+      'firebasestorage.googleapis.com',
       'storage.googleapis.com',
     ],
   },

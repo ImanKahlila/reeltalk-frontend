@@ -2,7 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 
 // Components
-import PlusIcon from '../Icons/plusIcon';
+import PlusIcon from '../../Icons/plusIcon';
 
 interface ICommunityCoverUpload {
   coverImagePreview: string;

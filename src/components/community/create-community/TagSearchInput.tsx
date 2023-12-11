@@ -1,63 +1,16 @@
 import React, { useState } from 'react';
 
-// Components
-import CrossIconSVG from '../Icons/crossIcon';
-import Spinner from '../shared/Spinner';
-import SearchIcon from '../layout/SearchIcon';
+import Spinner from '../../shared/Spinner';
 
-// ShadCN/UI
-import { ScrollArea } from '../ui/scroll-area';
-
-interface ITagsProps {
-  addTagHandler: (query: string) => void;
-  removeTagHandler: (index: number) => void;
-  tags: string[];
-}
-
-const Tags = ({ addTagHandler, removeTagHandler, tags }: ITagsProps) => {
-  return (
-    <div>
-      <h2 className='mb-2 font-medium tracking-eight text-high-emphasis'>Tags (optional)</h2>
-      <TagSearchInput
-        fetching={false} //TODO: Fix when implement tag searching
-        addTagHandler={addTagHandler}
-      />
-      <div className='flex flex-wrap gap-x-3 gap-y-[14px]'>
-        {tags.map((tag, index) => (
-          <Tag key={index} index={index} tag={tag} removeTagHandler={removeTagHandler} />
-        ))}
-      </div>
-    </div>
-  );
-};
-
-export default Tags;
-
-interface ITagProps {
-  index: number;
-  tag: string;
-  removeTagHandler: (index: number) => void;
-}
-
-function Tag({ index, tag, removeTagHandler }: ITagProps) {
-  return (
-    <div
-      key={index}
-      onClick={() => removeTagHandler(index)}
-      className='relative inline-flex h-[34px] cursor-pointer rounded-full border border-high-emphasis px-4 py-[4px] font-medium tracking-eight text-high-emphasis'
-    >
-      {tag}
-      <CrossIconSVG className='absolute -right-3 -top-3 ' />
-    </div>
-  );
-}
+import SearchIcon from '../../layout/SearchIcon';
+import { ScrollArea } from '../../ui/scroll-area';
 
 interface ITagSearchInput {
   fetching: boolean;
   addTagHandler: (query: string) => void;
 }
 
-function TagSearchInput({ fetching = false, addTagHandler }: ITagSearchInput) {
+export default function TagSearchInput({ fetching = false, addTagHandler }: ITagSearchInput) {
   const [tagQuery, setTagQuery] = useState<string>('');
   const [inputFocus, setInputFocus] = useState(false);
 
