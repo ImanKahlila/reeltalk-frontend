@@ -102,7 +102,7 @@ const NavigationLinks = () => {
           router.pathname == '/discussions' ? 'font-medium' : 'font-normal'
         }`}
       >
-        <Link href={'/'}>Discussions</Link>
+        <Link href={'/discussions'}>Discussions</Link>
       </li>
     </ul>
   );
