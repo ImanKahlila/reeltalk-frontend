@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import UserIcon from '@/components/Icons/userIcon';
 import Link from 'next/link';
 import Image from 'next/image';
 import SearchIcon from '@/components/layout/SearchIcon';
 import LikeIcon from '@/components/Icons/likeIcon';
 import MessageBubbleIcon from '@/components/Icons/messageBubbleIcon';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const tags = [
   'pixar',
@@ -184,11 +185,24 @@ interface CommunitiesProps {
 }
 
 function Communities({ title, isPublic, imageUrl, members, url }: CommunitiesProps) {
-  console.log(url);
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  const handleImageLoad = () => {
+    // When the image is loaded, set the state to indicate that the image is ready
+    setImageLoaded(true);
+  };
   return (
     <Link href={url} className='w-[102.188px]'>
       <picture className='relative block h-[153.787px] overflow-hidden rounded-md'>
-        <Image className='object-cover' src={imageUrl} fill alt=''></Image>
+        <Image
+          onLoadingComplete={handleImageLoad}
+          onError={handleImageLoad}
+          className={`object-cover ${!imageLoaded ? 'invisible' : 'visible'}`}
+          src={imageUrl}
+          fill
+          alt=''
+        ></Image>
+        {!imageLoaded && <Skeleton className='h-[153.787px] flex-grow rounded-md' />}
       </picture>
       <h2 className='mt-2 text-sm tracking-eight text-high-emphasis'>{truncateString(title)}</h2>
       <div className='mt-[10px] text-xs tracking-[0.06px] text-medium-emphasis'>
@@ -209,12 +223,26 @@ function DesktopPopularCommunities({
   members,
   description,
 }: CommunitiesProps) {
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  const handleImageLoad = () => {
+    // When the image is loaded, set the state to indicate that the image is ready
+    setImageLoaded(true);
+  };
   return (
     <div className='flex h-fit gap-8 bg-first-surface p-2'>
       {/* Community Poster */}
       <div className='flex min-w-[102.188px] flex-col gap-3'>
         <picture className='relative block h-[153.787px] overflow-hidden rounded-md'>
-          <Image src={imageUrl} fill alt=''></Image>
+          <Image
+            onLoadingComplete={handleImageLoad}
+            onError={handleImageLoad}
+            className={`object-cover ${!imageLoaded ? 'invisible' : 'visible'}`}
+            src={imageUrl}
+            fill
+            alt=''
+          ></Image>
+          {!imageLoaded && <Skeleton className='h-[153.787px] flex-grow rounded-md' />}
         </picture>
         <button className='flex h-[34px] w-full items-center justify-center rounded bg-primary px-4 font-semibold tracking-[0.24px] text-secondary'>
           Join
