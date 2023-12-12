@@ -19,7 +19,7 @@ export type FloaterSelection = {
   isApi: boolean;
 }[];
 
-const backend_URL = 'https://us-central1-reeltalk-app.cloudfunctions.net/api';
+const backend_URL = 'https://us-central1-reeltalk-app.cloudfunctions.net/api/api';
 
 const useMediaSelection = (mediaType: 'movies' | 'series') => {
   useEffect(() => {
