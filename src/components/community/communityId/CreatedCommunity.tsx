@@ -1,7 +1,7 @@
 import React from 'react';
 
 // Components
-import TabsMobile from '@/components/community/communityId/MobileMainContent';
+import MobileMainContent from '@/components/community/communityId/MobileMainContent';
 import DesktopMainContent from '@/components/community/communityId/DesktopMainContent';
 
 import { IPageData } from '@/pages/community/[communityId]';
@@ -11,7 +11,7 @@ const CreatedCommunity = ({ pageData }: { pageData: IPageData }) => {
   return (
     <>
       <Header pageData={pageData} />
-      <TabsMobile pageData={pageData} />
+      <MobileMainContent pageData={pageData} />
       <DesktopMainContent pageData={pageData} />
     </>
   );

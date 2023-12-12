@@ -3,6 +3,8 @@ import React from 'react';
 // Components
 import { Poster } from './Poster';
 
+// Util
+import { useUserContext } from '@/lib/context';
 import { IPageData } from '@/pages/community/[communityId]';
 
 interface IDesktopMainContentProps {
@@ -10,6 +12,8 @@ interface IDesktopMainContentProps {
 }
 
 function DesktopMainContent({ pageData }: IDesktopMainContentProps) {
+  const { user } = useUserContext();
+  const isAdmin = user?.uid === pageData.userId;
   return (
     <div className='mx-auto mt-6 hidden max-w-[1120px] gap-8 px-4 md:flex'>
       <div className='flex h-[506px] w-full min-w-[px] flex-col items-center justify-center gap-6 rounded-[8px] bg-first-surface'>
@@ -34,12 +38,14 @@ function DesktopMainContent({ pageData }: IDesktopMainContentProps) {
           >
             Create new post
           </button>
-          <button
-            type='button'
-            className='mx-auto h-12 w-full max-w-[256px] rounded-lg bg-white font-semibold tracking-eight text-secondary'
-          >
-            Manage my community
-          </button>
+          {isAdmin && (
+            <button
+              type='button'
+              className='mx-auto h-12 w-full max-w-[256px] rounded-lg bg-white font-semibold tracking-eight text-secondary'
+            >
+              Manage my community
+            </button>
+          )}
         </div>
         <div className='flex w-full flex-col gap-4 rounded-[8px] bg-first-surface px-4 py-8'>
           <h2 className='font-semibold tracking-eight text-high-emphasis'>

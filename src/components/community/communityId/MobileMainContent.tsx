@@ -5,6 +5,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Poster } from './Poster';
 
 import { IPageData } from '@/pages/community/[communityId]';
+import { useUserContext } from '@/lib/context';
+import { cn } from '@/lib/utils';
 
 interface ITabsMobileProps {
   pageData: IPageData;
@@ -45,14 +47,20 @@ function PostsTab() {
 }
 
 function AboutTab({ pageData }: { pageData: IPageData }) {
+  const { user } = useUserContext();
+  const isAdmin = user?.uid === pageData.userId;
+
   return (
     <div className='flex flex-col gap-6'>
-      <div className='flex h-[188px] w-full flex-col gap-4 rounded-sm bg-first-surface px-4 py-8'>
+      <div className='flex w-full flex-col gap-4 rounded-sm bg-first-surface px-4 py-8'>
         <h2 className='font-semibold tracking-eight text-high-emphasis'>About the community</h2>
         <p className='text-medium-emphasis'>{pageData.description}</p>
         <button
           type='button'
-          className='mx-auto h-12 w-full max-w-[256px] rounded-lg bg-white font-semibold tracking-eight text-secondary'
+          className={cn(
+            'mx-auto h-12 w-full max-w-[256px] rounded-lg bg-white font-semibold tracking-eight text-secondary',
+            !isAdmin && 'hidden',
+          )}
         >
           Community settings
         </button>
@@ -67,7 +75,9 @@ function AboutTab({ pageData }: { pageData: IPageData }) {
       </div>
       <div className='flex w-full flex-col gap-4 rounded-sm bg-first-surface px-4 py-8'>
         <h2 className='font-semibold tracking-eight text-high-emphasis'>Rules</h2>
-        <p className='tracking-eight text-medium-emphasis'>{pageData.rules}</p>
+        <p className='whitespace-pre-wrap break-words tracking-eight text-medium-emphasis'>
+          {pageData.rules}
+        </p>
       </div>
     </div>
   );

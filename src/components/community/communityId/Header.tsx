@@ -8,8 +8,15 @@ import UserIcon from '@/components/Icons/userIcon';
 import { Skeleton } from '@/components/ui/skeleton';
 
 import { IPageData } from '@/pages/community/[communityId]';
+import { cn } from '@/lib/utils';
+import { useUserContext } from '@/lib/context';
 
 const Header = ({ pageData }: { pageData: IPageData }) => {
+  const { user } = useUserContext();
+  const isAdmin = user?.uid === pageData.userId;
+  const isMember = user ? pageData?.members.includes(user.uid) : false;
+  const isPublic = pageData.isPublic === 'true';
+
   // Skeleton Image Loader logic
   const [communityImageLoaded, setCommunityImageLoaded] = useState(false);
   const [coverImageLoaded, setCoverImageLoaded] = useState(false);
@@ -56,17 +63,23 @@ const Header = ({ pageData }: { pageData: IPageData }) => {
           </h1>
           <div className='flex h-full flex-col justify-between md:h-fit md:flex-row md:items-center md:justify-start md:gap-6'>
             <div className='tracking-eight text-high-emphasis'>
-              <span className=''>Public </span>
+              <span className=''>{isPublic ? 'Public' : 'Private'}</span>
               <span className='px-2'>·</span>{' '}
               <UserIcon className='relative bottom-[1px] inline-block' />{' '}
-              <span className='pl-1'>1</span>
+              <span className='pl-1'>{pageData.members.length || 1}</span>
             </div>
-            <button
-              type='button'
-              className='h-[34px] w-fit rounded-[4px] bg-gray px-4 font-semibold tracking-eight text-secondary'
-            >
-              Joined
-            </button>
+            <div className='flex gap-4'>
+              {isMember ||
+                (isAdmin && (
+                  <button
+                    className='h-[34px] w-fit rounded-[4px] bg-primary px-4 font-semibold tracking-eight text-secondary md:hidden'
+                    type='button'
+                  >
+                    Create new post
+                  </button>
+                ))}
+              <MemberButton isAdmin={isAdmin} isMember={isMember} />
+            </div>
           </div>
         </div>
       </div>
@@ -75,3 +88,24 @@ const Header = ({ pageData }: { pageData: IPageData }) => {
 };
 
 export default Header;
+
+interface CustomButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  isAdmin: boolean;
+  isMember: boolean;
+}
+
+function MemberButton({ isAdmin, isMember }: CustomButtonProps) {
+  const display = isAdmin ? 'Admin' : isMember ? 'Joined' : 'Join';
+
+  return (
+    <button
+      type='button'
+      className={cn(
+        'h-[34px] w-fit rounded-[4px] bg-primary px-4 font-semibold tracking-eight text-secondary',
+        (isMember || isAdmin) && 'bg-gray text-disabled',
+      )}
+    >
+      {display}
+    </button>
+  );
+}
