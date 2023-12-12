@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import initialGenres from '@/lib/genresData';
+import { useUserContext } from '@/lib/context';
 
 export type Genre = {
   name: string;
@@ -28,12 +29,17 @@ export const useGetGenres = () => {
     }
   }
 
+  const { idToken } = useUserContext();
+
   useEffect(() => {
     async function retrieveGenres() {
       let response;
       try {
         response = await axios.get(`${backend_URL}/movies/getPossibleGenres`, {
           withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${idToken}`,
+          },
         });
       } catch (error: any) {
         console.log(error.message);
@@ -42,12 +48,12 @@ export const useGetGenres = () => {
       let genres = data?.data.genres.map((genre: Genre) => {
         return { ...genre, selected: false };
       });
-      if (response?.statusText !== 'OK') return;
+      if (response?.status !== 200) return;
       setGenres(genres);
       setFilteredGenres(genres);
     }
     retrieveGenres();
-  }, []);
+  }, [idToken]);
 
   return {
     genres,
