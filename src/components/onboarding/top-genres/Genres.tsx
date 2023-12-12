@@ -1,12 +1,12 @@
 import React from 'react';
 import Genre from '@/components/onboarding/top-genres/Genre';
 
-import { IGenre } from './TopGenres';
+import { Genre as TypeGenre } from './TopGenres.hooks';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
 interface IGenresProps {
-  filteredGenres: IGenre['Genre'];
+  filteredGenres: TypeGenre;
   toggleSelectedGenre: (id: string, newVal: boolean) => void;
   totalSelected: number;
 }
