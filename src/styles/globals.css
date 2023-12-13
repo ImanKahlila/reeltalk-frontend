@@ -96,6 +96,7 @@ body {
   min-height: 100vh;
   position: relative;
   background-color: #222;
+  overflow-x: hidden; /* Needed else AOS animation on mobile causes horizontal overflow*/
 }
 
 a {
