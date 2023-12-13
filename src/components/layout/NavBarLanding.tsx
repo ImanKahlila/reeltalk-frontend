@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -22,7 +22,7 @@ const NavBarLanding = () => {
             href={'/onboarding'}
             className='inline-flex h-[34px] items-center justify-center rounded bg-primary px-4 py-[6px] font-semibold tracking-[0.08px] text-secondary'
           >
-            Sign In/Join
+            Sign in/Join
           </Link>
           <Link
             href={'/onboarding'}
