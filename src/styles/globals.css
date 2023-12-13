@@ -97,6 +97,7 @@ body {
   position: relative;
   background-color: #222;
   word-wrap: break-word;
+  overflow-x: hidden; /* Needed else AOS animation on mobile causes horizontal overflow*/
 }
 
 a {

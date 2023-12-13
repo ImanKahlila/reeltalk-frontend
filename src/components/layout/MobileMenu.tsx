@@ -40,7 +40,7 @@ const MobileMenu = ({ isOpen, toggleMobileMenu }: ComponentProps) => {
         <li>
           <Link
             className='text-base font-normal tracking-wide'
-            href={'/'}
+            href={'/discussions'}
             onClick={toggleMobileMenu}
           >
             Discussions
@@ -50,6 +50,7 @@ const MobileMenu = ({ isOpen, toggleMobileMenu }: ComponentProps) => {
           <button
             onClick={() => {
               signOut(auth);
+              toggleMobileMenu();
               router.push('/onboarding');
             }}
           >

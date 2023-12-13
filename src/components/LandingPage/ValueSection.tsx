@@ -3,60 +3,73 @@ import Image from 'next/image';
 
 const ValueSection = () => {
   return (
-    <section className='bg-pure-white py-36'>
+    <section id='value-section' className='bg-pure-white md:px-4'>
       {/* Value 1 Container */}
-      <div className='mx-auto flex max-w-sm flex-col items-center justify-between md:max-w-[960px] md:flex-row'>
-        {/* Image */}
-        <div className='relative left-1 min-h-[647px] min-w-[326px]'>
-          <Image src={'/LandingPage/Value-Discover.png'} fill alt=''></Image>
+      <div className='mx-auto max-w-[292px] py-5 pb-32 md:max-w-none md:pt-32'>
+        <div className='mx-auto flex max-w-sm flex-col items-center justify-between md:max-w-[960px] md:flex-row'>
+          {/* Image */}
+          <picture className='relative block aspect-[128/227] w-[90%] md:max-w-[293px]'>
+            <Image src={'/LandingPage/Value-Discover.png'} fill alt=''></Image>
+          </picture>
+          {/* Content */}
+          <header
+            data-aos='fade-left'
+            data-aos-duration='500'
+            data-aos-delay='100'
+            className='max-w-[462px] text-center text-secondary md:text-left'
+          >
+            <h2 className='text-[22px] font-semibold tracking-[-0.11px] md:text-4xl md:tracking-[-0.54px]'>
+              Discover engaging content
+            </h2>
+            <p className='mt-2 text-[17px] tracking-normal md:text-xl'>
+              Content tailored for you so you can find engaging content about films and TV shows.
+            </p>
+          </header>
         </div>
 
-        {/* Content */}
-        <header className='max-w-[462px] text-center md:text-left'>
-          <h2 className='text-4xl font-semibold'>Discover engaging content</h2>
-          <p className='mt-[10px] text-xl font-medium'>
-            Content tailored for you so you can find engaging content about films and TV shows.
-          </p>
-        </header>
-      </div>
-
-      {/* Value 2 Container */}
-      <div className='mx-auto mt-24 flex w-full max-w-sm flex-col items-center justify-between overflow-x-hidden md:max-w-[960px] md:flex-row-reverse'>
-        {/* Image */}
-        <div className='relative left-1 min-h-[647px] min-w-[326px]'>
-          <Image src={'/LandingPage/Value-Conversations-1.png'} fill alt=''></Image>
-          <Image
-            src={'/LandingPage/Value-Conversations-2.png'}
-            height={479.22}
-            width={400}
-            alt=''
-            className='absolute -left-8 top-20 min-h-[479.22px] min-w-[400px]'
-          ></Image>
+        {/* Value 2 Container */}
+        <div className='mx-auto mt-[84px] flex max-w-sm flex-col items-center justify-between md:max-w-[960px] md:flex-row-reverse'>
+          {/* Image */}
+          <picture className='relative block aspect-[128/227] w-[90%] md:max-w-[293px]'>
+            <Image src={'/LandingPage/Value-Conversations.png'} fill alt=''></Image>
+          </picture>
+          {/* Content */}
+          <header
+            data-aos='fade-right'
+            data-aos-duration='500'
+            data-aos-delay='100'
+            className='max-w-[462px] text-center text-secondary md:text-left'
+          >
+            <h2 className='text-[22px] font-semibold tracking-[-0.11px] md:text-4xl md:tracking-[-0.54px]'>
+              Have reel conversations
+            </h2>
+            <p className='mt-2 text-[17px] tracking-normal md:text-xl'>
+              Engage in lively discussions about your favorite movies and Tv shows.
+            </p>
+          </header>
         </div>
 
-        {/* Content */}
-        <header className='max-w-[462px] text-center md:text-right'>
-          <h2 className='text-4xl font-semibold'>Have reel conversations</h2>
-          <p className='mt-[10px] text-xl font-medium'>
-            Engage in lively discussions about your favorite movies and TV shows.
-          </p>
-        </header>
-      </div>
-
-      {/* Value 3 Container */}
-      <div className='mx-auto mt-24 flex max-w-sm flex-col items-center justify-between md:max-w-[960px] md:flex-row'>
-        {/* Image */}
-        <div className='relative left-1 min-h-[506.08px] min-w-[265.17px]'>
-          <Image src={'/LandingPage/placeholder-phone.png'} fill alt=''></Image>
+        {/* Value 3 Container */}
+        <div className='mx-auto mt-[84px] flex max-w-sm flex-col items-center justify-between md:max-w-[960px] md:flex-row'>
+          {/* Image */}
+          <picture className='relative block aspect-[128/227] w-[90%] md:max-w-[293px]'>
+            <Image src={'/LandingPage/Value-Niche.png'} fill alt=''></Image>
+          </picture>
+          {/* Content */}
+          <header
+            data-aos='fade-left'
+            data-aos-duration='500'
+            data-aos-delay='100'
+            className='max-w-[462px] text-center text-secondary md:text-left'
+          >
+            <h2 className='text-[22px] font-semibold tracking-[-0.11px] md:text-4xl md:tracking-[-0.54px]'>
+              Find your niche
+            </h2>
+            <p className='mt-2 text-[17px] tracking-normal md:text-xl'>
+              Start or join vibrant communities that will unleash meaningful and engaging chats.
+            </p>
+          </header>
         </div>
-
-        {/* Content */}
-        <header className='mt-8 max-w-[462px] text-center md:text-left'>
-          <h2 className='text-4xl font-semibold'>Find your niche</h2>
-          <p className='mt-[10px] text-xl font-medium'>
-            Start or join vibrant communities that will unleash meaningful and engaging chats.
-          </p>
-        </header>
       </div>
     </section>
   );
