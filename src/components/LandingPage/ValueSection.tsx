@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 const ValueSection = () => {
   return (
-    <section className='bg-pure-white md:px-4'>
+    <section id='value-section' className='bg-pure-white md:px-4'>
       {/* Value 1 Container */}
       <div className='mx-auto max-w-[292px] py-5 pb-32 md:max-w-none md:pt-32'>
         <div className='mx-auto flex max-w-sm flex-col items-center justify-between md:max-w-[960px] md:flex-row'>
@@ -12,7 +12,12 @@ const ValueSection = () => {
             <Image src={'/LandingPage/Value-Discover.png'} fill alt=''></Image>
           </picture>
           {/* Content */}
-          <header className='max-w-[462px] text-center text-secondary md:text-left'>
+          <header
+            data-aos='fade-left'
+            data-aos-duration='500'
+            data-aos-delay='100'
+            className='max-w-[462px] text-center text-secondary md:text-left'
+          >
             <h2 className='text-[22px] font-semibold tracking-[-0.11px] md:text-4xl md:tracking-[-0.54px]'>
               Discover engaging content
             </h2>
@@ -29,7 +34,12 @@ const ValueSection = () => {
             <Image src={'/LandingPage/Value-Conversations.png'} fill alt=''></Image>
           </picture>
           {/* Content */}
-          <header className='max-w-[462px] text-center text-secondary md:text-left'>
+          <header
+            data-aos='fade-right'
+            data-aos-duration='500'
+            data-aos-delay='100'
+            className='max-w-[462px] text-center text-secondary md:text-left'
+          >
             <h2 className='text-[22px] font-semibold tracking-[-0.11px] md:text-4xl md:tracking-[-0.54px]'>
               Have reel conversations
             </h2>
@@ -46,7 +56,12 @@ const ValueSection = () => {
             <Image src={'/LandingPage/Value-Niche.png'} fill alt=''></Image>
           </picture>
           {/* Content */}
-          <header className='max-w-[462px] text-center text-secondary md:text-left'>
+          <header
+            data-aos='fade-left'
+            data-aos-duration='500'
+            data-aos-delay='100'
+            className='max-w-[462px] text-center text-secondary md:text-left'
+          >
             <h2 className='text-[22px] font-semibold tracking-[-0.11px] md:text-4xl md:tracking-[-0.54px]'>
               Find your niche
             </h2>

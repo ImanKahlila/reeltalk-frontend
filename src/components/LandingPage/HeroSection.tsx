@@ -12,16 +12,31 @@ const HeroSection = () => {
         {/* Left Side */}
         <div className='mr-auto flex max-w-sm flex-col justify-end lg:max-w-lg'>
           <header className='max-w-prose text-left text-pure-white md:mt-5 lg:text-left '>
-            <h1 className='text-[28px] font-semibold leading-[38.25px] tracking-wider md:text-4xl'>
+            <h1
+              data-aos='fade-down'
+              data-aos-duration='500'
+              data-aos-delay='400'
+              className='text-[28px] font-semibold leading-[38.25px] tracking-wider md:text-4xl'
+            >
               Elevate your film experience with reel conversations.
             </h1>
-            <p className='mt-[10px] text-[17px] font-normal'>
+            <p
+              data-aos='fade-down'
+              data-aos-duration='500'
+              data-aos-delay='300'
+              className='mt-[10px] text-[17px] font-normal'
+            >
               Discover, delve into your community, and discuss your favorite movies and TV shows.
             </p>
           </header>
 
           {/* App Redirects on Mobile */}
-          <div className='mt-14 flex w-fit flex-col gap-4 lg:hidden'>
+          <div
+            data-aos='zoom-in-up'
+            data-aos-duration='500'
+            data-aos-delay='100'
+            className='mt-14 flex w-fit flex-col gap-4 lg:hidden'
+          >
             <Link href={'/'}>
               <AppStoreSVG height={48} width={158} />
             </Link>
@@ -31,7 +46,12 @@ const HeroSection = () => {
           </div>
 
           {/* APP REDIRECTS DESKTOP */}
-          <div className='mt-4 hidden h-fit flex-col items-center gap-6 sm:flex-row sm:justify-center sm:gap-12 lg:flex lg:justify-start'>
+          <div
+            data-aos='fade-down'
+            data-aos-duration='500'
+            data-aos-delay='200'
+            className='mt-4 hidden h-fit flex-col items-center gap-6 sm:flex-row sm:justify-center sm:gap-12 lg:flex lg:justify-start'
+          >
             {/* APP STORES */}
             <div className='flex flex-col gap-4'>
               <Link href={'/'}>
@@ -52,6 +72,9 @@ const HeroSection = () => {
             </div>
           </div>
           <Link
+            data-aos='fade-up'
+            data-aos-duration='500'
+            data-aos-delay='100'
             className='mt-[70px] hidden h-[34px] w-[112px] items-center justify-center rounded-[4px] bg-pure-white py-[6px] font-medium tracking-eight text-secondary md:flex'
             href={'/onboarding'}
           >
@@ -60,13 +83,24 @@ const HeroSection = () => {
         </div>
 
         {/* Right Side Phone Placeholder Image */}
-        <picture className='relative hidden aspect-[512/1035] w-[34.5%] md:block md:max-w-[242.433px]'>
+        <picture
+          data-aos='fade-down'
+          data-aos-duration='800'
+          data-aos-delay='100'
+          className='relative hidden aspect-[512/1035] w-[34.5%] md:block md:max-w-[242.433px]'
+        >
           <Image className='' src={'/LandingPage/Hero-Image.png'} alt='placeholder' fill></Image>
         </picture>
       </div>
 
       {/* Learn More */}
-      <div className=' hidden flex-col items-center pb-6 md:block lg:mt-0 lg:flex'>
+      <div
+        onClick={() => {
+          const section = document.getElementById('value-section');
+          section?.scrollIntoView({ behavior: 'smooth' });
+        }}
+        className=' hidden flex-col items-center pb-6 md:block lg:mt-0 lg:flex'
+      >
         <a className='flex cursor-pointer flex-col items-center gap-1 text-xl  text-pure-white'>
           learn more
           <svg
