@@ -21,10 +21,12 @@ export default function App({ Component, pageProps }: AppProps) {
         <meta property='og:title' content='Reel Talk' />
         <meta property='og:site_name' content='Reel Talk' />
         <meta property='og:url' content='https://reeltalk.us' />
+        <meta property='twitter:image' content='/favicons/Primary-favicon.png' />
         <meta
           property='og:description'
           content='The ultimate community for movie and TV show enthusiasts! Connect with fellow cinephiles and TV buffs to discuss your favorite films, scenes, episodes, and more. Check out movie and TV show reviews and ratings, top lists, and communities, and manage your watchlist with Reel Talk. Fancy yourself a true movie or tv show buff, then this app is for you.'
         />
+        <meta property='og:type' content='website' />
         <link rel='canonical' href='https://reeltalk.us' />
         <link rel='manifest' href='/favicons/site.webmanifest' />
         <link rel='icon' type='image/png' sizes='16x16' href='/favicons/favicon-16x16' />
