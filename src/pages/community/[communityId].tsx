@@ -16,7 +16,8 @@ export interface IPageData {
   description: string;
   discussions: [];
   communityImage: string;
-  isPublic: string;
+  isPublic: boolean;
+  joinRequests: string[];
   members: string[];
   name: string;
   rules: string;

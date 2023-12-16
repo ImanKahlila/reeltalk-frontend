@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import Image from 'next/image';
+import toast from 'react-hot-toast';
 
 // Components
 import UserIcon from '@/components/Icons/userIcon';
+import Spinner from '@/components/shared/Spinner';
 
 // ShadCN/UI
 import { Skeleton } from '@/components/ui/skeleton';
@@ -10,12 +13,23 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { IPageData } from '@/pages/community/[communityId]';
 import { cn } from '@/lib/utils';
 import { useUserContext } from '@/lib/context';
+import axios, { AxiosResponse } from 'axios';
 
 const Header = ({ pageData }: { pageData: IPageData }) => {
-  const { user } = useUserContext();
+  const router = useRouter();
+  const { communityId } = router.query;
+  const { user, idToken } = useUserContext();
+
+  // TODO: Decide wether to put logic in parent component
   const isAdmin = user?.uid === pageData.userId;
-  const isMember = user ? pageData?.members.includes(user.uid) : false;
-  const isPublic = pageData.isPublic === 'true';
+  const [isMember, setIsMember] = useState(false);
+  const isPublic = pageData.isPublic;
+  const [pendingJoin, setPendingJoin] = useState(false); // If user true and page is private
+
+  useEffect(() => {
+    setIsMember(user ? pageData?.members.includes(user.uid) : false);
+    setPendingJoin(user && !isPublic ? pageData.joinRequests.includes(user.uid) : false);
+  }, [user, pageData, isPublic]);
 
   // Skeleton Image Loader logic
   const [communityImageLoaded, setCommunityImageLoaded] = useState(false);
@@ -27,6 +41,50 @@ const Header = ({ pageData }: { pageData: IPageData }) => {
   const handleCoverImageload = () => {
     setCoverImageLoaded(true);
   };
+
+  const [spinnerActive, setSpinnerActive] = useState(false);
+  async function joinCommunityHandler() {
+    if (!user || isAdmin) return;
+    if (pendingJoin) {
+      toast.error('Your request is pending for approval!');
+      return;
+    }
+    const API = `http://localhost:8080/communities/join-community/${communityId}`;
+    let response: AxiosResponse;
+    try {
+      setSpinnerActive(true);
+      if (isMember || pendingJoin) {
+        response = await new Promise(resolve =>
+          setTimeout(() => {
+            resolve('Completed'); //TODO: Update once Ronny fixes delete request
+          }, 3000),
+        );
+        setIsMember(false);
+      } else {
+        response = await axios.post(
+          API,
+          { userId: user?.uid },
+          {
+            withCredentials: true,
+            headers: {
+              Authorization: `Bearer ${idToken}`,
+            },
+          },
+        );
+        toast.success(response.data.message);
+        if (!isPublic) {
+          // Private
+          setPendingJoin(true);
+          return;
+        }
+        setIsMember(true);
+      }
+    } catch (error) {
+    } finally {
+      setSpinnerActive(false);
+    }
+  }
+
   return (
     <header className='relative mx-auto block h-[11.11vw] max-h-[170px] min-h-[160px] max-w-screen-2xl'>
       {pageData.coverPhoto ? (
@@ -78,7 +136,14 @@ const Header = ({ pageData }: { pageData: IPageData }) => {
                     Create new post
                   </button>
                 ))}
-              <MemberButton isAdmin={isAdmin} isMember={isMember} />
+              <MemberButton
+                joinCommunityHandler={joinCommunityHandler}
+                isAdmin={isAdmin}
+                isMember={isMember}
+                pendingJoin={pendingJoin}
+                isPublic={isPublic}
+                spinnerActive={spinnerActive}
+              />
             </div>
           </div>
         </div>
@@ -92,20 +157,40 @@ export default Header;
 interface CustomButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   isAdmin: boolean;
   isMember: boolean;
+  pendingJoin: boolean;
+  isPublic: boolean;
+  spinnerActive: boolean;
+  joinCommunityHandler(): Promise<void>;
 }
 
-function MemberButton({ isAdmin, isMember }: CustomButtonProps) {
-  const display = isAdmin ? 'Admin' : isMember ? 'Joined' : 'Join';
+function MemberButton({
+  isAdmin,
+  isMember,
+  joinCommunityHandler,
+  pendingJoin,
+  isPublic,
+  spinnerActive,
+}: CustomButtonProps) {
+  const display = isAdmin
+    ? 'Admin'
+    : pendingJoin
+      ? 'Pending'
+      : isMember
+        ? 'Joined'
+        : isPublic
+          ? 'Join'
+          : 'Ask to join';
 
   return (
     <button
       type='button'
+      onClick={joinCommunityHandler}
       className={cn(
-        'h-[34px] w-fit rounded-[4px] bg-primary px-4 font-semibold tracking-eight text-secondary',
-        (isMember || isAdmin) && 'bg-gray text-disabled',
+        'h-[34px] w-fit rounded-[4px] bg-primary px-4 font-semibold tracking-eight text-secondary transition-all duration-300',
+        (isMember || isAdmin || pendingJoin) && 'bg-gray text-disabled',
       )}
     >
-      {display}
+      {spinnerActive ? <Spinner /> : display}
     </button>
   );
 }
