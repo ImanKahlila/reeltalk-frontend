@@ -46,7 +46,7 @@ const Header = ({ pageData }: { pageData: IPageData }) => {
   async function joinCommunityHandler() {
     if (!user || isAdmin) return;
     if (pendingJoin) {
-      toast.error('Your request is pending for approval!');
+      toast.error('Your request is pending for approval!', { position: 'bottom-center' });
       return;
     }
     const API = `http://localhost:8080/communities/join-community/${communityId}`;
