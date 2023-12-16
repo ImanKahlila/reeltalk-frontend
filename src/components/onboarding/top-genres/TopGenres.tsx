@@ -26,8 +26,14 @@ const TopGenres = (props: ITopGenres) => {
   const { user } = props;
   const { push } = useRouter();
 
-  const { genres, filteredGenres, totalSelected, setFilteredGenres, toggleSelectedGenre } =
-    useGetGenres();
+  const {
+    genres,
+    filteredGenres,
+    totalSelected,
+    setFilteredGenres,
+    toggleSelectedGenre,
+    errorFetching,
+  } = useGetGenres();
 
   const inputChangeHandler = debounce(e => {
     const value = e.target.value.toLowerCase();
@@ -71,6 +77,7 @@ const TopGenres = (props: ITopGenres) => {
         filteredGenres={filteredGenres}
         toggleSelectedGenre={toggleSelectedGenre}
         totalSelected={totalSelected}
+        errorFetching={errorFetching}
       />
 
       <Buttons
