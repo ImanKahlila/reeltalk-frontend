@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import initialGenres from '@/lib/genresData';
 import { useUserContext } from '@/lib/context';
 
 export type Genre = {
@@ -14,8 +13,9 @@ const backend_URL = 'https://us-central1-reeltalk-app.cloudfunctions.net/api/api
 // const backend_URL = 'http://localhost:8080';
 
 export const useGetGenres = () => {
-  const [genres, setGenres] = useState<Genre>(initialGenres);
-  const [filteredGenres, setFilteredGenres] = useState<Genre>(initialGenres);
+  const [genres, setGenres] = useState<Genre>([]);
+  const [filteredGenres, setFilteredGenres] = useState<Genre>([]);
+  const [errorFetching, setErrorFetching] = useState(false);
 
   // Tracks number of selected genres
   const totalSelected = calculateTotalSelected(genres);
@@ -42,6 +42,7 @@ export const useGetGenres = () => {
           },
         });
       } catch (error: any) {
+        setErrorFetching(true);
         console.log(error.message);
       }
       let data = response?.data;
@@ -62,6 +63,7 @@ export const useGetGenres = () => {
     setFilteredGenres,
     setGenres,
     toggleSelectedGenre,
+    errorFetching,
   };
 };
 

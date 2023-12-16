@@ -9,10 +9,20 @@ interface IGenresProps {
   filteredGenres: TypeGenre;
   toggleSelectedGenre: (id: string, newVal: boolean) => void;
   totalSelected: number;
+  errorFetching: boolean;
 }
 
 const Genres = (props: IGenresProps) => {
-  const { filteredGenres, toggleSelectedGenre, totalSelected } = props;
+  const { filteredGenres, toggleSelectedGenre, totalSelected, errorFetching } = props;
+
+  if (errorFetching) {
+    return (
+      <div className='mx-auto mt-14 w-fit text-medium-emphasis'>
+        Error fetching genres... Try refreshing the page
+      </div>
+    );
+  }
+
   return (
     <motion.div
       layout
