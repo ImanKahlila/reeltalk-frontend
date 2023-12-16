@@ -27,7 +27,7 @@ const TopMovies = ({ user }: ITopMovies) => {
   const { push } = useRouter();
   const [mediaToShow, setMediaToShow] = useState(8);
 
-  const { media, floaterSelection, addSelectionHandler, removeSelectionHandler } =
+  const { media, floaterSelection, addSelectionHandler, removeSelectionHandler, errorFetching } =
     useMediaSelection('movies');
 
   // Placeholder tracker, tracks how many placeholders needed for selectionFloater
@@ -85,6 +85,7 @@ const TopMovies = ({ user }: ITopMovies) => {
         addSelectionHandler={addSelectionHandler}
         floaterSelection={floaterSelection}
         removeSelectionHandler={removeSelectionHandler}
+        errorFetching={errorFetching}
       />
       {media.length > 8 ? (
         <ShowMoreButton onShowMoreHandler={() => setMediaToShow(16)} mediaToShow={mediaToShow} />
