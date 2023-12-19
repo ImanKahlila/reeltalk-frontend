@@ -93,7 +93,7 @@ const Header = ({ pageData }: { pageData: ICommunityObject }) => {
           <Image
             className={`object-cover ${!coverImageLoaded ? 'invisible' : 'visible'}`}
             src={pageData.coverPhoto || ''}
-            onLoadingComplete={handleCoverImageload}
+            onLoad={handleCoverImageload}
             onError={handleCoverImageload}
             fill
             alt=''
@@ -108,7 +108,7 @@ const Header = ({ pageData }: { pageData: ICommunityObject }) => {
           <Image
             className={`object-cover ${!communityImageLoaded ? 'invisible' : 'visible'}`}
             src={pageData?.communityImage || '/Pixel-160.png'}
-            onLoadingComplete={handleCommunityImageLoad}
+            onLoad={handleCommunityImageLoad}
             onError={handleCommunityImageLoad}
             fill
             alt=''

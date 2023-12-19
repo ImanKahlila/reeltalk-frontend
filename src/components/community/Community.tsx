@@ -25,7 +25,7 @@ const Community = (props: CommunitiesProps) => {
     <Link href={url} className='w-[102.188px]'>
       <picture className='relative block h-[153.787px] overflow-hidden rounded-md'>
         <Image
-          onLoadingComplete={handleImageLoad}
+          onLoad={handleImageLoad}
           onError={handleImageLoad}
           className={`object-cover ${!imageLoaded ? 'invisible' : 'visible'}`}
           src={imageUrl}
