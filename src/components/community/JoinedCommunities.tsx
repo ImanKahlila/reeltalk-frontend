@@ -1,6 +1,7 @@
 import React from 'react';
 import { ICommunityObject } from '@/pages/community/[communityId]';
 import Community from './Community';
+import EllipseLoader from '../shared/EllipseLoader';
 
 interface IJoinedCommunityProps {
   joinedCommunities: any;
@@ -44,14 +45,3 @@ const JoinedCommunities = (props: IJoinedCommunityProps) => {
 };
 
 export default JoinedCommunities;
-
-function EllipseLoader() {
-  return (
-    <div className='lds-ellipsis'>
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-    </div>
-  );
-}
