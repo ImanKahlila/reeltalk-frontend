@@ -10,12 +10,12 @@ import Spinner from '@/components/shared/Spinner';
 // ShadCN/UI
 import { Skeleton } from '@/components/ui/skeleton';
 
-import { IPageData } from '@/pages/community/[communityId]';
+import { ICommunityObject } from '@/pages/community/[communityId]';
 import { cn } from '@/lib/utils';
 import { useUserContext } from '@/lib/context';
 import axios, { AxiosResponse } from 'axios';
 
-const Header = ({ pageData }: { pageData: IPageData }) => {
+const Header = ({ pageData }: { pageData: ICommunityObject }) => {
   const router = useRouter();
   const { communityId } = router.query;
   const { user, idToken } = useUserContext();
@@ -53,12 +53,13 @@ const Header = ({ pageData }: { pageData: IPageData }) => {
     let response: AxiosResponse;
     try {
       setSpinnerActive(true);
-      if (isMember || pendingJoin) {
-        response = await new Promise(resolve =>
-          setTimeout(() => {
-            resolve('Completed'); //TODO: Update once Ronny fixes delete request
-          }, 3000),
-        );
+      if (isMember) {
+        response = await axios.delete(API, {
+          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${idToken}`,
+          },
+        });
         setIsMember(false);
       } else {
         response = await axios.post(

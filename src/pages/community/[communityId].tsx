@@ -9,7 +9,7 @@ const db = getFirestore(app);
 
 import CreatedCommunity from '@/components/community/communityId/CreatedCommunity';
 
-export interface IPageData {
+export interface ICommunityObject {
   content: { id: string; isApi: boolean; poster: string; title: string }[];
   coverPhoto: string;
   createdAt: Timestamp;
@@ -23,10 +23,11 @@ export interface IPageData {
   rules: string;
   tags: string[];
   userId: string;
+  communityId: string;
 }
 
 const CreatedCommunityPage: React.FC<{ data?: string }> = ({ data }) => {
-  const pageData: IPageData = data ? JSON.parse(data) : null;
+  const pageData: ICommunityObject = data ? JSON.parse(data) : null;
 
   const { user } = useUserContext();
   if (!user) return;

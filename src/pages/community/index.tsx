@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import UserIcon from '@/components/Icons/userIcon';
+import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import SearchIcon from '@/components/layout/SearchIcon';
-import LikeIcon from '@/components/Icons/likeIcon';
-import MessageBubbleIcon from '@/components/Icons/messageBubbleIcon';
-import { Skeleton } from '@/components/ui/skeleton';
+
+import { useRetrieveJoinedCommunites } from '@/components/community/CommunityPage.Hooks';
+import JoinedCommunities from '@/components/community/JoinedCommunities';
+import DesktopPopularCommunity from '@/components/community/DesktopPopularCommunity';
+import Community from '@/components/community/Community';
 
 const tags = [
   'pixar',
@@ -19,14 +19,16 @@ const tags = [
   'SurprisingEnd',
 ];
 
-const DUMMY_JOINED_COMM = [
+const DUMMY_POP_COM = [
   {
-    id: 'j1',
+    id: 'p1',
     title: 'Spider Guys',
     imageUrl:
       'https://storage.googleapis.com/reeltalk-app.appspot.com/communityImages/H6sHupzEoyLWEgRfeox3/wp8328251.jpg_1701133522093?GoogleAccessId=firebase-adminsdk-147wm%40reeltalk-app.iam.gserviceaccount.com&Expires=16447046400&Signature=bBLq6abGnIBIkwOilcZlDzepsAKi2zwsoQEGESi6FFCZ15tUdP89SBRZVZyrYaKAABks0fm80el93iZRXLkWkhXcA%2B%2F79YMVVv0f24cPAWa2yAVbQ13uC%2FAIdKOUHsp4IV09O3Qc9eFU0SYoBv%2B7OdKgz9uIL3LR4qAPDMbMKuwAJaF4rljCNnAycXCQ5SdI7hfJM0Qjw2dlD%2Bvj%2Bwe1ikZX%2FFEKVqtJS6JAysOKA0VYSGJ9vVa3IsVn3GhgXo4oISQ2lbPRu7idlGKJs5RZ1Ho9aF3SAum%2BkoYzwiVSuBcQcn8w7ADEzLSJnmbTx0LdNG01Q%2FCkPpajjckRtlcBIA%3D%3D',
-    isPublic: true,
+    isPublic: false,
     members: 300,
+    description:
+      'Join the ultimate Spider-Man hangout! Share your favorite Spidey moments, connect with web-heads, and celebrate the iconic hero. Swing into the excitement with us!',
     url: '/community/geACoPYrDWq1g4RcMAN4',
   },
   {
@@ -34,35 +36,17 @@ const DUMMY_JOINED_COMM = [
     title: 'Studio Ghibli',
     imageUrl:
       'https://firebasestorage.googleapis.com/v0/b/reeltalk-app.appspot.com/o/communityImage%2F14j9jP03strFhDmDmScz%2FHERON_IMAX_Poster_Digital.jpg_1702265471547?alt=media',
-    isPublic: false,
+    isPublic: true,
     members: 300,
     url: '/community/14j9jP03strFhDmDmScz',
-  },
-];
-
-const DUMMY_POP_COM = [
-  {
-    id: 'p1',
-    title: 'Disney Animations',
-    imageUrl:
-      'https://m.media-amazon.com/images/M/MV5BMDU2ZWJlMjktMTRhMy00ZTA5LWEzNDgtYmNmZTEwZTViZWJkXkEyXkFqcGdeQXVyNDQ2OTk4MzI@._V1_.jpg',
-    isPublic: true,
-    members: 300,
     description:
-      'Disney Animations is a community for fans of classic Walt Disney animated films. ',
-  },
-  {
-    id: 'p2',
-    title: 'Potterheads',
-    imageUrl:
-      'https://m.media-amazon.com/images/M/MV5BOTA3MmRmZDgtOWU1Ny00ZDc5LWFkN2YtNzNlY2UxZmY0N2IyXkEyXkFqcGdeQXVyNTIzOTk5ODM@._V1_.jpg',
-    isPublic: true,
-    members: 300,
-    description: 'Potterhead is a community for fans of Harry Potter film series. ',
+      'Discover the ultimate online haven for Studio Ghibli fans! Immerse yourself in spirited discussions, fan theories, and exclusive events. Join us and let the enchantment unfold!',
   },
 ];
 
 const CommunityPage = () => {
+  const { joinedCommunities, fetchingJoinedCommunities } = useRetrieveJoinedCommunites();
+
   return (
     <section className='mx-auto flex max-w-[1120px] flex-col gap-4 p-4 md:flex-row-reverse md:justify-between'>
       {/* Search / General Info */}
@@ -110,40 +94,27 @@ const CommunityPage = () => {
         </div>
       </div>
 
-      {/* Communities */}
+      {/* COMMUNITIES */}
       <div className='mx-auto flex w-full max-w-[352px] flex-col gap-4 md:max-w-none'>
-        <div>
+        <JoinedCommunities
+          joinedCommunities={joinedCommunities}
+          fetchingJoinedCommunities={fetchingJoinedCommunities}
+        />
+
+        {/* MOBILE POPULAR COMMUNITIES */}
+        <div className='md:hidden'>
           <h1 className='mb-2 text-xl font-normal tracking-[0.1px] text-pure-white'>
-            Joined Communities
+            Popular Communities
           </h1>
           <div className='flex h-fit gap-4 rounded-lg bg-first-surface p-4'>
-            {DUMMY_JOINED_COMM.map(title => (
-              <Communities
+            {DUMMY_POP_COM.map(title => (
+              <Community
                 key={title.id}
                 title={title.title}
                 imageUrl={title.imageUrl}
                 isPublic={title.isPublic}
                 members={title.members}
                 url={title.url}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Mobile Pop */}
-        <div className='md:hidden'>
-          <h1 className='mb-2 text-xl font-normal tracking-[0.1px] text-pure-white'>
-            Popular Communities
-          </h1>
-          <div className='flex h-fit gap-4 rounded-lg bg-first-surface p-4'>
-            {DUMMY_POP_COM.map(dummy => (
-              <Communities
-                key={dummy.id}
-                title={dummy.title}
-                imageUrl={dummy.imageUrl}
-                isPublic={dummy.isPublic}
-                members={dummy.members}
-                url={'/communities/H6sHupzEoyLWEgRfeox3'}
               />
             ))}
           </div>
@@ -156,14 +127,14 @@ const CommunityPage = () => {
           </h1>
           <div className='mt-4 flex flex-col gap-8'>
             {DUMMY_POP_COM.map(title => (
-              <DesktopPopularCommunities
+              <DesktopPopularCommunity
                 key={title.id}
                 title={title.title}
                 members={title.members}
                 imageUrl={title.imageUrl}
                 isPublic={title.isPublic}
                 description={title.description}
-                url={'/communities/H6sHupzEoyLWEgRfeox3'}
+                url={title.url}
               />
             ))}
           </div>
@@ -174,125 +145,3 @@ const CommunityPage = () => {
 };
 
 export default CommunityPage;
-
-interface CommunitiesProps {
-  title: string;
-  isPublic: boolean;
-  imageUrl: string;
-  members: number;
-  description?: string;
-  url: string;
-}
-
-function Communities({ title, isPublic, imageUrl, members, url }: CommunitiesProps) {
-  const [imageLoaded, setImageLoaded] = useState(false);
-
-  const handleImageLoad = () => {
-    // When the image is loaded, set the state to indicate that the image is ready
-    setImageLoaded(true);
-  };
-  return (
-    <Link href={url} className='w-[102.188px]'>
-      <picture className='relative block h-[153.787px] overflow-hidden rounded-md'>
-        <Image
-          onLoadingComplete={handleImageLoad}
-          onError={handleImageLoad}
-          className={`object-cover ${!imageLoaded ? 'invisible' : 'visible'}`}
-          src={imageUrl}
-          fill
-          alt=''
-        ></Image>
-        {!imageLoaded && <Skeleton className='h-[153.787px] flex-grow rounded-md' />}
-      </picture>
-      <h2 className='mt-2 text-sm tracking-eight text-high-emphasis'>{truncateString(title)}</h2>
-      <div className='mt-[10px] text-xs tracking-[0.06px] text-medium-emphasis'>
-        <span>{isPublic ? 'Public' : 'Private'}</span>
-        <span className='px-2'>
-          ·
-        </span> <UserIcon className='relative bottom-[1px] inline-block' />{' '}
-        <span className='pl-1'>{members.toString()}</span>
-      </div>
-    </Link>
-  );
-}
-
-function DesktopPopularCommunities({
-  title,
-  isPublic,
-  imageUrl,
-  members,
-  description,
-}: CommunitiesProps) {
-  const [imageLoaded, setImageLoaded] = useState(false);
-
-  const handleImageLoad = () => {
-    // When the image is loaded, set the state to indicate that the image is ready
-    setImageLoaded(true);
-  };
-  return (
-    <div className='flex h-fit gap-8 bg-first-surface p-2'>
-      {/* Community Poster */}
-      <div className='flex min-w-[102.188px] flex-col gap-3'>
-        <picture className='relative block h-[153.787px] overflow-hidden rounded-md'>
-          <Image
-            onLoadingComplete={handleImageLoad}
-            onError={handleImageLoad}
-            className={`object-cover ${!imageLoaded ? 'invisible' : 'visible'}`}
-            src={imageUrl}
-            fill
-            alt=''
-          ></Image>
-          {!imageLoaded && <Skeleton className='h-[153.787px] flex-grow rounded-md' />}
-        </picture>
-        <button className='flex h-[34px] w-full items-center justify-center rounded bg-primary px-4 font-semibold tracking-[0.24px] text-secondary'>
-          Join
-        </button>
-      </div>
-
-      {/* Community Info */}
-      <div className='w-full'>
-        <h2 className='font-medium tracking-[0.24px] text-high-emphasis'>{title}</h2>
-        <div className='mt-1 text-xs tracking-[0.06px] text-medium-emphasis'>
-          <span>{isPublic ? 'Public' : 'Private'}</span>
-          <span className='px-2'>·</span>{' '}
-          <UserIcon className='relative bottom-[1px] inline-block' />{' '}
-          <span className='pl-1'>{members.toString()}</span>
-        </div>
-
-        <p className='tracking-eight text-high-emphasis'>{description}</p>
-
-        <div className='mt-4 flex flex-col gap-2 rounded-lg bg-second-surface p-2 text-high-emphasis'>
-          <div className='flex gap-4'>
-            <picture className='relative block  h-[35px] min-w-[35px]'>
-              <Image src={'/memoji.png'} fill alt=''></Image>
-            </picture>
-            <div>
-              <h3 className='text-high-emphasis'>
-                Jennifer L. <span className='pl-2 text-sm text-medium-emphasis'>2h ago</span>
-              </h3>
-              <p>In your opinion, what are the top 5 scenes of Frozen?</p>
-            </div>
-          </div>
-          <div className='flex gap-[10px] text-xs tracking-[0.24px] text-medium-emphasis'>
-            <div className='flex items-center gap-[10px]'>
-              <LikeIcon className='inline-block' />
-              <span>30 likes</span>{' '}
-            </div>
-            <div className='flex items-center gap-[5px]'>
-              <MessageBubbleIcon className='inline-block' /> <span>52 replies</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// Helper Function
-function truncateString(str: string) {
-  if (str.length > 12) {
-    return str.substring(0, 12) + '...';
-  } else {
-    return str;
-  }
-}
