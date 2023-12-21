@@ -2,15 +2,29 @@ import { useState, useEffect } from 'react';
 import { useUserContext } from '@/lib/context';
 
 // Firebase
-import { doc, getDoc, getFirestore } from 'firebase/firestore';
+import { Timestamp, doc, getDoc, getFirestore, DocumentData } from 'firebase/firestore';
 import app from '@/firebase/firebase-config';
 const db = getFirestore(app);
 import axios from 'axios';
 
+import { ICommunityObject } from '@/pages/community/[communityId]';
+
+interface UserData {
+  agreedToGuideline: boolean;
+  birthday: Timestamp;
+  createdCommunities: string[];
+  displayName: string;
+  joinedCommunities: string[];
+  top5Movies: any[];
+  top5Shows: any[];
+  topGenres: string[];
+}
+
 export const useRetrieveJoinedCommunites = () => {
   const { user, idToken } = useUserContext();
-  const [userData, setUserData] = useState<any>(null);
-  const [joinedCommunities, setJoinedCommunities] = useState<any>([]);
+  const [userData, setUserData] = useState<UserData | DocumentData | null>(null);
+  console.log(userData); //TODO: Figure out why this re renders 5 times
+  const [joinedCommunities, setJoinedCommunities] = useState<ICommunityObject[]>([]);
   const [fetchingJoinedCommunities, setFetchingingJoinedCommunities] = useState(true);
 
   useEffect(() => {
@@ -32,8 +46,8 @@ export const useRetrieveJoinedCommunites = () => {
   }, [user]);
 
   useEffect(() => {
-    if (!userData) return;
     async function retrieveJoinedCommunities() {
+      if (!userData) return;
       const joinedCommunities = userData.joinedCommunities;
       const joinedDataArray: any[] = [];
       try {
@@ -48,7 +62,7 @@ export const useRetrieveJoinedCommunites = () => {
           }),
         );
       } catch (error: any) {
-        // Handle error if needed
+        console.log(error.message);
       } finally {
         setJoinedCommunities(joinedDataArray);
         setFetchingingJoinedCommunities(false);
@@ -60,4 +74,27 @@ export const useRetrieveJoinedCommunites = () => {
   }, [user, userData]);
 
   return { joinedCommunities, fetchingJoinedCommunities };
+};
+
+export const useRetrievePopularCommunities = () => {
+  const { idToken } = useUserContext();
+  const [popularCommunities, setPopularCommunities] = useState<ICommunityObject[]>([]);
+
+  useEffect(() => {
+    async function retrievePopularCommunities() {
+      try {
+        let response = await axios.get('http://localhost:8080/communities', {
+          headers: {
+            Authorization: `Bearer ${idToken}`,
+          },
+        });
+        setPopularCommunities(response.data);
+      } catch (error: any) {
+        // Handle error
+      }
+    }
+
+    retrievePopularCommunities();
+  }, [idToken]);
+  return { popularCommunities };
 };

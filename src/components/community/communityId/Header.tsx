@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 import Image from 'next/image';
-import toast from 'react-hot-toast';
 
 // Components
 import UserIcon from '@/components/Icons/userIcon';
@@ -12,25 +10,9 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 import { ICommunityObject } from '@/pages/community/[communityId]';
 import { cn } from '@/lib/utils';
-import { useUserContext } from '@/lib/context';
-import axios, { AxiosResponse } from 'axios';
+import useJoinLeaveCommunity from '@/hooks/useJoinLeaveCommunity';
 
 const Header = ({ pageData }: { pageData: ICommunityObject }) => {
-  const router = useRouter();
-  const { communityId } = router.query;
-  const { user, idToken } = useUserContext();
-
-  // TODO: Decide wether to put logic in parent component
-  const isAdmin = user?.uid === pageData.userId;
-  const [isMember, setIsMember] = useState(false);
-  const isPublic = pageData.isPublic;
-  const [pendingJoin, setPendingJoin] = useState(false); // If user true and page is private
-
-  useEffect(() => {
-    setIsMember(user ? pageData?.members.includes(user.uid) : false);
-    setPendingJoin(user && !isPublic ? pageData.joinRequests.includes(user.uid) : false);
-  }, [user, pageData, isPublic]);
-
   // Skeleton Image Loader logic
   const [communityImageLoaded, setCommunityImageLoaded] = useState(false);
   const [coverImageLoaded, setCoverImageLoaded] = useState(false);
@@ -42,49 +24,14 @@ const Header = ({ pageData }: { pageData: ICommunityObject }) => {
     setCoverImageLoaded(true);
   };
 
-  const [spinnerActive, setSpinnerActive] = useState(false);
-  async function joinCommunityHandler() {
-    if (!user || isAdmin) return;
-    if (pendingJoin) {
-      toast.error('Your request is pending for approval!', { position: 'bottom-center' });
-      return;
-    }
-    const API = `http://localhost:8080/communities/join-community/${communityId}`;
-    let response: AxiosResponse;
-    try {
-      setSpinnerActive(true);
-      if (isMember) {
-        response = await axios.delete(API, {
-          withCredentials: true,
-          headers: {
-            Authorization: `Bearer ${idToken}`,
-          },
-        });
-        setIsMember(false);
-      } else {
-        response = await axios.post(
-          API,
-          { userId: user?.uid },
-          {
-            withCredentials: true,
-            headers: {
-              Authorization: `Bearer ${idToken}`,
-            },
-          },
-        );
-        toast.success(response.data.message);
-        if (!isPublic) {
-          // Private
-          setPendingJoin(true);
-          return;
-        }
-        setIsMember(true);
-      }
-    } catch (error) {
-    } finally {
-      setSpinnerActive(false);
-    }
-  }
+  const { isAdmin, isMember, pendingJoin, spinnerActive, joinCommunityHandler } =
+    useJoinLeaveCommunity(
+      pageData.userId,
+      pageData.isPublic,
+      pageData.members,
+      pageData.communityId,
+      pageData.joinRequests,
+    );
 
   return (
     <header className='relative mx-auto block h-[11.11vw] max-h-[170px] min-h-[160px] max-w-screen-2xl'>
@@ -122,7 +69,7 @@ const Header = ({ pageData }: { pageData: ICommunityObject }) => {
           </h1>
           <div className='flex h-full flex-col justify-between md:h-fit md:flex-row md:items-center md:justify-start md:gap-6'>
             <div className='tracking-eight text-high-emphasis'>
-              <span className=''>{isPublic ? 'Public' : 'Private'}</span>
+              <span className=''>{pageData.isPublic ? 'Public' : 'Private'}</span>
               <span className='px-2'>·</span>{' '}
               <UserIcon className='relative bottom-[1px] inline-block' />{' '}
               <span className='pl-1'>{pageData.members.length || 1}</span>
@@ -142,7 +89,7 @@ const Header = ({ pageData }: { pageData: ICommunityObject }) => {
                 isAdmin={isAdmin}
                 isMember={isMember}
                 pendingJoin={pendingJoin}
-                isPublic={isPublic}
+                isPublic={pageData.isPublic}
                 spinnerActive={spinnerActive}
               />
             </div>

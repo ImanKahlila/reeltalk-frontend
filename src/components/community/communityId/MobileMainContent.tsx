@@ -4,12 +4,12 @@ import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Poster } from './Poster';
 
-import { IPageData } from '@/pages/community/[communityId]';
+import { ICommunityObject } from '@/pages/community/[communityId]';
 import { useUserContext } from '@/lib/context';
 import { cn } from '@/lib/utils';
 
 interface ITabsMobileProps {
-  pageData: IPageData;
+  pageData: ICommunityObject;
 }
 
 function MobileMainContent({ pageData }: ITabsMobileProps) {
@@ -46,7 +46,7 @@ function PostsTab() {
   );
 }
 
-function AboutTab({ pageData }: { pageData: IPageData }) {
+function AboutTab({ pageData }: { pageData: ICommunityObject }) {
   const { user } = useUserContext();
   const isAdmin = user?.uid === pageData.userId;
 
@@ -68,9 +68,11 @@ function AboutTab({ pageData }: { pageData: IPageData }) {
       <div className='flex w-full flex-col gap-4 rounded-sm bg-first-surface px-4 py-8'>
         <h2 className='font-semibold tracking-eight text-high-emphasis'>Related movies/TV-shows</h2>
         <div className='flex justify-start gap-1'>
-          {pageData.content.map(media => {
-            return <Poster key={media.id} poster={media.poster} />;
-          })}
+          {pageData.content
+            ? pageData.content.map(media => {
+                return <Poster key={media.id} poster={media.poster} />;
+              })
+            : null}
         </div>
       </div>
       <div className='flex w-full flex-col gap-4 rounded-sm bg-first-surface px-4 py-8'>

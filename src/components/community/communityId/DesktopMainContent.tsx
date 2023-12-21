@@ -5,13 +5,9 @@ import { Poster } from './Poster';
 
 // Util
 import { useUserContext } from '@/lib/context';
-import { IPageData } from '@/pages/community/[communityId]';
+import { ICommunityObject } from '@/pages/community/[communityId]';
 
-interface IDesktopMainContentProps {
-  pageData: IPageData;
-}
-
-function DesktopMainContent({ pageData }: IDesktopMainContentProps) {
+function DesktopMainContent({ pageData }: { pageData: ICommunityObject }) {
   const { user } = useUserContext();
   const isAdmin = user?.uid === pageData.userId;
   return (
@@ -52,9 +48,11 @@ function DesktopMainContent({ pageData }: IDesktopMainContentProps) {
             Related movies/TV-shows
           </h2>
           <div className='flex justify-start gap-1'>
-            {pageData.content.map(media => {
-              return <Poster key={media.id} poster={media.poster} />;
-            })}
+            {pageData.content
+              ? pageData.content.map(media => {
+                  return <Poster key={media.id} poster={media.poster} />;
+                })
+              : null}
           </div>
         </div>
         <div className='flex w-full flex-col gap-4 rounded-[8px] bg-first-surface px-4 py-8'>

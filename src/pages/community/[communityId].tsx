@@ -17,7 +17,7 @@ export interface ICommunityObject {
   discussions: [];
   communityImage: string;
   isPublic: boolean;
-  joinRequests: string[];
+  joinRequests?: string[];
   members: string[];
   name: string;
   rules: string;

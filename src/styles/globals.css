@@ -314,3 +314,12 @@ dialog::backdrop {
   border-radius: 10px;
   border: 1px solid transparent;
 }
+
+/***************************************
+    ONE OFF CUSTOM DESKTOPPOPULARCOMMUNTIES STYLE
+****************************************/
+@media (min-width: 987px) {
+  .custom-desktop-style {
+    display: flex;
+  }
+}

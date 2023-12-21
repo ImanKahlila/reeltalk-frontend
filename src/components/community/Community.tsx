@@ -4,17 +4,16 @@ import Link from 'next/link';
 import UserIcon from '../Icons/userIcon';
 import { Skeleton } from '../ui/skeleton';
 
-export interface CommunitiesProps {
-  title: string;
+interface CommunityProps {
+  name: string;
+  communityId: string;
   isPublic: boolean;
-  imageUrl: string;
-  members: number;
-  description?: string;
-  url: string;
+  communityImage: string;
+  members: string[];
 }
 
-const Community = (props: CommunitiesProps) => {
-  const { url, title, isPublic, imageUrl, members } = props;
+const Community = (props: CommunityProps) => {
+  const { communityId, name, isPublic, communityImage, members } = props;
   const [imageLoaded, setImageLoaded] = useState(false);
 
   const handleImageLoad = () => {
@@ -22,25 +21,25 @@ const Community = (props: CommunitiesProps) => {
     setImageLoaded(true);
   };
   return (
-    <Link href={url} className='w-[102.188px]'>
+    <Link href={`community/${communityId}`} className='w-[102.188px]'>
       <picture className='relative block h-[153.787px] overflow-hidden rounded-md'>
         <Image
           onLoad={handleImageLoad}
           onError={handleImageLoad}
           className={`object-cover ${!imageLoaded ? 'invisible' : 'visible'}`}
-          src={imageUrl}
+          src={communityImage}
           fill
           alt=''
         ></Image>
         {!imageLoaded && <Skeleton className='h-[153.787px] flex-grow rounded-md' />}
       </picture>
-      <h2 className='mt-2 text-sm tracking-eight text-high-emphasis'>{truncateString(title)}</h2>
+      <h2 className='mt-2 text-sm tracking-eight text-high-emphasis'>{truncateString(name)}</h2>
       <div className='mt-[10px] text-xs tracking-[0.06px] text-medium-emphasis'>
         <span>{isPublic ? 'Public' : 'Private'}</span>
         <span className='px-2'>
           ·
         </span> <UserIcon className='relative bottom-[1px] inline-block' />{' '}
-        <span className='pl-1'>{members.toString()}</span>
+        <span className='pl-1'>{members.length}</span>
       </div>
     </Link>
   );
