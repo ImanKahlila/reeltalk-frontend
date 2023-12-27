@@ -31,11 +31,11 @@ export const UserContextProvider = ({ children }: ComponentProps) => {
         // The ID token is specifically designed to be used on the client side for authenication and authorization purposes.
         setUser(user);
         setIdToken(token);
-        setCookie(undefined, '__session', token, { path: '/', secure: true });
+        setCookie(undefined, 'idToken', token, { path: '/', secure: true });
       } else {
         setUser(null);
         setIdToken('');
-        destroyCookie(undefined, '__session', { path: '/', secure: true });
+        destroyCookie(undefined, 'idToken', { path: '/', secure: true });
       }
     });
 

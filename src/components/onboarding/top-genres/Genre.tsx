@@ -24,7 +24,7 @@ const Genre = (props: ComponentProps) => {
       // Updates genres array in parent component
       toggleSelectedGenre(id, !isChecked);
     } else {
-      toast.error('Oops! Select just 5 genres.');
+      toast.error('Oops! Select just 5 genres.', { id: 'error' });
     }
   }
 
