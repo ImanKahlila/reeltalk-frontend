@@ -23,7 +23,7 @@ const tags = [
 
 const CommunityHomePage = () => {
   const { joinedCommunities, fetchingJoinedCommunities } = useRetrieveJoinedCommunites();
-  const { popularCommunities } = useRetrievePopularCommunities();
+  const { popularCommunities, fetchingPopularCommunities } = useRetrievePopularCommunities();
 
   return (
     <section className='mx-auto flex max-w-[1120px] flex-col gap-4 p-4 md:flex-row-reverse md:justify-between'>
@@ -31,6 +31,7 @@ const CommunityHomePage = () => {
         joinedCommunities={joinedCommunities}
         fetchingJoinedCommunities={fetchingJoinedCommunities}
         popularCommunities={popularCommunities}
+        fetchingPopularCommunities={fetchingPopularCommunities}
         tags={tags}
       />
     </section>

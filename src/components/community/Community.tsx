@@ -39,7 +39,7 @@ const Community = (props: CommunityProps) => {
         <span className='px-2'>
           ·
         </span> <UserIcon className='relative bottom-[1px] inline-block' />{' '}
-        <span className='pl-1'>{members.length}</span>
+        <span className='pl-1'>{members.length + 1}</span>
       </div>
     </Link>
   );

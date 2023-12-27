@@ -13,12 +13,14 @@ interface CommunityPageProps {
   joinedCommunities: ICommunityObject[];
   fetchingJoinedCommunities: boolean;
   popularCommunities: ICommunityObject[];
+  fetchingPopularCommunities: boolean;
   tags: string[];
 }
 
 const CommunityPage = ({
   joinedCommunities,
   fetchingJoinedCommunities,
+  fetchingPopularCommunities,
   popularCommunities,
   tags,
 }: CommunityPageProps) => {
@@ -33,9 +35,15 @@ const CommunityPage = ({
           fetchingJoinedCommunities={fetchingJoinedCommunities}
         />
 
-        <MobilePopularCommunities popularCommunities={popularCommunities} />
+        <MobilePopularCommunities
+          popularCommunities={popularCommunities}
+          fetchingPopularCommunities={fetchingPopularCommunities}
+        />
 
-        <DesktopPopularCommunities popularCommunities={popularCommunities} />
+        <DesktopPopularCommunities
+          popularCommunities={popularCommunities}
+          fetchingPopularCommunities={fetchingPopularCommunities}
+        />
       </div>
     </>
   );

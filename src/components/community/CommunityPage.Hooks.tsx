@@ -79,6 +79,7 @@ export const useRetrieveJoinedCommunites = () => {
 export const useRetrievePopularCommunities = () => {
   const { idToken } = useUserContext();
   const [popularCommunities, setPopularCommunities] = useState<ICommunityObject[]>([]);
+  const [fetchingPopularCommunities, setFetchingPopularCommunties] = useState(true);
 
   useEffect(() => {
     async function retrievePopularCommunities() {
@@ -91,10 +92,12 @@ export const useRetrievePopularCommunities = () => {
         setPopularCommunities(response.data);
       } catch (error: any) {
         // Handle error
+      } finally {
+        setFetchingPopularCommunties(false);
       }
     }
 
     retrievePopularCommunities();
   }, [idToken]);
-  return { popularCommunities };
+  return { popularCommunities, fetchingPopularCommunities };
 };
