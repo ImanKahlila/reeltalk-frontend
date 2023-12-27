@@ -25,7 +25,10 @@ const useJoinLeaveCommunity = (
   async function joinCommunityHandler() {
     if (!user || isAdmin) return;
     if (pendingJoin) {
-      toast.error('Your request is pending for approval!', { position: 'bottom-center' });
+      toast.error('Your request is pending for approval!', {
+        id: 'pending',
+        position: 'bottom-center',
+      });
       return;
     }
     const API = `http://localhost:8080/communities/join-community/${communityId}`;

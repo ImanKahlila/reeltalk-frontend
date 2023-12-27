@@ -23,7 +23,7 @@ interface UserData {
 export const useRetrieveJoinedCommunites = () => {
   const { user, idToken } = useUserContext();
   const [userData, setUserData] = useState<UserData | DocumentData | null>(null);
-  console.log(userData); //TODO: Figure out why this re renders 5 times
+  // console.log(userData); //TODO: Figure out why this re renders 5 times
   const [joinedCommunities, setJoinedCommunities] = useState<ICommunityObject[]>([]);
   const [fetchingJoinedCommunities, setFetchingingJoinedCommunities] = useState(true);
 
@@ -49,7 +49,7 @@ export const useRetrieveJoinedCommunites = () => {
     async function retrieveJoinedCommunities() {
       if (!userData) return;
       const joinedCommunities = userData.joinedCommunities;
-      const joinedDataArray: any[] = [];
+      const joinedDataArray: ICommunityObject[] = [];
       try {
         await Promise.all(
           joinedCommunities.map(async (communityId: string) => {
