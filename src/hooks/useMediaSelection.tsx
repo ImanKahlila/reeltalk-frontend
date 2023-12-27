@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import suggestedMovies from '@/lib/suggestedMovies';
-import suggestedShows from '@/lib/suggestedShows';
+import { useUserContext } from '@/lib/context';
 
 import axios from 'axios';
 
@@ -19,9 +18,12 @@ export type FloaterSelection = {
   isApi: boolean;
 }[];
 
-const backend_URL = 'https://us-central1-reeltalk-app.cloudfunctions.net/api';
+const backend_URL = 'https://us-central1-reeltalk-app.cloudfunctions.net/api/api';
 
 const useMediaSelection = (mediaType: 'movies' | 'series') => {
+  const { idToken } = useUserContext();
+  const [errorFetching, setErrorFetching] = useState(false);
+
   useEffect(() => {
     async function retrieveSuggestedMedia() {
       try {
@@ -30,28 +32,33 @@ const useMediaSelection = (mediaType: 'movies' | 'series') => {
         if (mediaType === 'movies') {
           response = await axios.get(`${backend_URL}/movies/getPossibleFilms`, {
             withCredentials: true,
+            headers: {
+              Authorization: `Bearer ${idToken}`,
+            },
           });
           mediaArray = response.data.data.films;
         } else {
           response = await axios.get(`${backend_URL}/movies/getPossibleShows`, {
             withCredentials: true,
+            headers: {
+              Authorization: `Bearer ${idToken}`,
+            },
           });
           mediaArray = response.data.data.shows;
         }
         const mediaData = mediaArray.map(media => ({ ...media, selected: false }));
-        if (response.statusText !== 'OK') return;
+        if (response.status !== 200) return;
         setMedia(mediaData);
       } catch (error: any) {
+        setErrorFetching(true);
         console.log(error.message);
       }
     }
 
     retrieveSuggestedMedia();
-  }, [mediaType]);
+  }, [mediaType, idToken]);
 
-  const [media, setMedia] = useState<Media>(
-    mediaType === 'movies' ? suggestedMovies : suggestedShows,
-  );
+  const [media, setMedia] = useState<Media>([]);
   const [floaterSelection, setFloaterSelection] = useState<FloaterSelection>([]);
 
   // Function to add a media selection
@@ -101,7 +108,7 @@ const useMediaSelection = (mediaType: 'movies' | 'series') => {
       return output;
     });
   }
-  return { media, floaterSelection, addSelectionHandler, removeSelectionHandler };
+  return { media, floaterSelection, addSelectionHandler, removeSelectionHandler, errorFetching };
 };
 
 export default useMediaSelection;

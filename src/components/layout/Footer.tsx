@@ -6,7 +6,7 @@ import GooglePlaySVG from '../LandingPage/GooglePlaySVG';
 
 const Footer = () => {
   return (
-    <footer className=' bg-secondary '>
+    <footer className='bg-secondary'>
       {/* Container */}
       <div className='mx-auto flex max-w-sm flex-col items-center gap-12 px-4 pb-[65px] pt-10 text-pure-white md:max-w-[960px] md:flex-row-reverse md:justify-between md:py-11'>
         {/* Call To Action */}
@@ -33,7 +33,7 @@ const Footer = () => {
         </div>
 
         {/* Site Map */}
-        <div className='flex flex-col gap-24'>
+        <div className='hidden flex-col gap-24 md:flex'>
           <div className='flex gap-9'>
             <ul className='flex flex-col gap-1 md:gap-3'>
               <h1 className='whitespace-nowrap text-[17px] font-bold'>Who we are</h1>

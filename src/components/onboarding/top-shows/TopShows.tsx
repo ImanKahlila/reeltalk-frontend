@@ -12,10 +12,11 @@ import FloatingSelection from '../shared/FloatingSelection';
 // Util
 import useMediaSelection from '../../../hooks/useMediaSelection';
 import { FloaterSelection } from '../../../hooks/useMediaSelection';
+import { logEvent } from 'firebase/analytics';
 
 // Firebase
 import { getFirestore, setDoc, doc } from 'firebase/firestore';
-import app from '@/firebase/firebase-config';
+import app, { analytics } from '@/firebase/firebase-config';
 import { User } from 'firebase/auth';
 const db = getFirestore(app);
 
@@ -27,7 +28,7 @@ const TopShows = ({ user }: ITopShowsProps) => {
   const { push } = useRouter();
   const [mediaToShow, setMediaToShow] = useState(8);
 
-  const { media, floaterSelection, addSelectionHandler, removeSelectionHandler } =
+  const { media, floaterSelection, addSelectionHandler, removeSelectionHandler, errorFetching } =
     useMediaSelection('series');
 
   // Placeholder tracker, tracks how many placeholders needed for selectionFloater
@@ -44,6 +45,7 @@ const TopShows = ({ user }: ITopShowsProps) => {
   function onPageSubmitHandler() {
     if (user) {
       const docRef = doc(db, 'users', user!.uid);
+      logEvent(analytics, 'favorite_shows_selected', { fav_shows: floaterSelection }); // Google Analytics
 
       setDoc(
         docRef,
@@ -85,6 +87,7 @@ const TopShows = ({ user }: ITopShowsProps) => {
         addSelectionHandler={addSelectionHandler}
         floaterSelection={floaterSelection}
         removeSelectionHandler={removeSelectionHandler}
+        errorFetching={errorFetching}
       />
       {media.length > 8 ? (
         <ShowMoreButton onShowMoreHandler={() => setMediaToShow(16)} mediaToShow={mediaToShow} />
