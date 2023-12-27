@@ -9,39 +9,32 @@ interface IGenresProps {
   filteredGenres: TypeGenre;
   toggleSelectedGenre: (id: string, newVal: boolean) => void;
   totalSelected: number;
-  errorFetching: boolean;
 }
 
 const Genres = (props: IGenresProps) => {
-  const { filteredGenres, toggleSelectedGenre, totalSelected, errorFetching } = props;
-
-  if (errorFetching) {
-    return (
-      <div className='mx-auto mt-14 w-fit text-medium-emphasis'>
-        Error fetching genres... Try refreshing the page
-      </div>
-    );
-  }
+  const { filteredGenres, toggleSelectedGenre, totalSelected } = props;
 
   return (
-    <motion.div
-      layout
-      className='mx-auto mt-14 grid grid-cols-2 gap-x-[23px] gap-y-4 md:max-w-[896px] md:grid-cols-4 md:gap-6 md:px-2 lg:grid-cols-5'
-    >
-      <AnimatePresence>
-        {filteredGenres.map(genre => (
-          <Genre
-            key={genre.id}
-            name={genre.name}
-            id={genre.id}
-            selected={genre.selected}
-            toggleSelectedGenre={toggleSelectedGenre}
-            totalSelected={totalSelected}
-            emoji={genre.emoji}
-          />
-        ))}
-      </AnimatePresence>
-    </motion.div>
+    <div className='h-[1042px] md:h-[608px] lg:h-[468px]'>
+      <motion.div
+        layout
+        className='mx-auto mt-14 grid grid-cols-2 gap-x-[23px] gap-y-4 md:max-w-[896px] md:grid-cols-4 md:gap-6 md:px-2 lg:grid-cols-5'
+      >
+        <AnimatePresence>
+          {filteredGenres.map(genre => (
+            <Genre
+              key={genre.id}
+              name={genre.name}
+              id={genre.id}
+              selected={genre.selected}
+              toggleSelectedGenre={toggleSelectedGenre}
+              totalSelected={totalSelected}
+              emoji={genre.emoji}
+            />
+          ))}
+        </AnimatePresence>
+      </motion.div>
+    </div>
   );
 };
 
