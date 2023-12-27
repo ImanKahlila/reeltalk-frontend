@@ -2,6 +2,7 @@ import React from 'react';
 
 // Components
 import { Poster } from './Poster';
+import Link from 'next/link';
 
 // Util
 import { useUserContext } from '@/lib/context';
@@ -10,6 +11,7 @@ import { ICommunityObject } from '@/pages/community/[communityId]';
 function DesktopMainContent({ pageData }: { pageData: ICommunityObject }) {
   const { user } = useUserContext();
   const isAdmin = user?.uid === pageData.userId;
+  const communityId = pageData.communityId;
   return (
     <div className='mx-auto mt-6 hidden max-w-[1120px] gap-8 px-4 md:flex'>
       <div className='flex h-[506px] w-full min-w-[px] flex-col items-center justify-center gap-6 rounded-[8px] bg-first-surface'>
@@ -35,12 +37,13 @@ function DesktopMainContent({ pageData }: { pageData: ICommunityObject }) {
             Create new post
           </button>
           {isAdmin && (
-            <button
+            <Link
+              href={`/community/${communityId}/admin`}
               type='button'
-              className='mx-auto h-12 w-full max-w-[256px] rounded-lg bg-white font-semibold tracking-eight text-secondary'
+              className='mx-auto flex h-12 w-full max-w-[256px] items-center justify-center rounded-lg bg-white font-semibold tracking-eight text-secondary'
             >
               Manage my community
-            </button>
+            </Link>
           )}
         </div>
         <div className='flex w-full flex-col gap-4 rounded-[8px] bg-first-surface px-4 py-8'>
