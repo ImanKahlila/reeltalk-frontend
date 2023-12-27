@@ -19,6 +19,7 @@
     "clsx": "^2.0.0",
     "cmdk": "^0.2.0",
     "date-fns": "^2.30.0",
+    "emoji-picker-react": "^4.6.0",
     "firebase": "^10.4.0",
     "framer-motion": "^10.16.12",
     "hamburger-react": "^2.5.0",

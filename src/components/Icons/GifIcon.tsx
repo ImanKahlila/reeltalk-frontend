@@ -1,6 +1,15 @@
-export default function GifIcon() {
+type GifIcon = React.SVGAttributes<SVGElement>;
+
+export default function GifIcon({ ...props }: GifIcon) {
   return (
-    <svg xmlns='http://www.w3.org/2000/svg' width='17' height='16' fill='none' viewBox='0 0 17 16'>
+    <svg
+      {...props}
+      xmlns='http://www.w3.org/2000/svg'
+      width='17'
+      height='16'
+      fill='none'
+      viewBox='0 0 17 16'
+    >
       <rect
         width='14.5'
         height='14.5'
