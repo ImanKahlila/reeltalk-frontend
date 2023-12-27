@@ -15,25 +15,20 @@ import { logEvent } from 'firebase/analytics';
 import { getFirestore, setDoc, doc } from 'firebase/firestore';
 import app, { analytics } from '@/firebase/firebase-config';
 import { User } from 'firebase/auth';
-import { useGetGenres } from './TopGenres.hooks';
+import { Genre, useGetGenres } from './TopGenres.hooks';
 const db = getFirestore(app);
 
 interface ITopGenres {
   user: User;
+  initialGenres: Genre;
 }
 
 const TopGenres = (props: ITopGenres) => {
-  const { user } = props;
+  const { user, initialGenres } = props;
   const { push } = useRouter();
 
-  const {
-    genres,
-    filteredGenres,
-    totalSelected,
-    setFilteredGenres,
-    toggleSelectedGenre,
-    errorFetching,
-  } = useGetGenres();
+  const { genres, filteredGenres, totalSelected, setFilteredGenres, toggleSelectedGenre } =
+    useGetGenres(initialGenres);
 
   const inputChangeHandler = debounce(e => {
     const value = e.target.value.toLowerCase();
@@ -77,7 +72,6 @@ const TopGenres = (props: ITopGenres) => {
         filteredGenres={filteredGenres}
         toggleSelectedGenre={toggleSelectedGenre}
         totalSelected={totalSelected}
-        errorFetching={errorFetching}
       />
 
       <Buttons
