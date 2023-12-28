@@ -29,6 +29,7 @@ const config: Config = {
         'medium-emphasis': 'rgba(255, 255, 255, 0.6)',
         'first-surface': 'rgba(255, 255, 255, 0.08)',
         'second-surface': '#3D3D3D',
+        'third-surface' : '#464646',
         disabled: 'rgba(255,255,255,0.38)',
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',

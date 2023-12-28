@@ -79,6 +79,18 @@
 }
 /************************ SHADCN END ************************/
 
+@layer utilities {
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+}
+
 :root {
 }
 
@@ -322,4 +334,25 @@ dialog::backdrop {
   .custom-desktop-style {
     display: flex;
   }
+}
+
+/***************************
+    EMOJI PICKER STYLING
+***************************/
+.EmojiPickerReact.epr-main {
+  --epr-bg-color: #333333;
+  --epr-category-label-bg-color: #333333;
+  --epr-picker-border-color: rgba(255, 255, 255, 0.38);
+  --epr-search-input-bg-color: #4c4c4c;
+  --epr-search-border-color: var(--epr-picker-border-color);
+  --epr-search-input-text-color: #fff;
+  --epr-category-icon-active-color: none;
+  --epr-hover-bg-color: rgba(255, 255, 255, 0.1);
+  --epr-focus-bg-color: rgba(255, 255, 255, 0.3);
+  --epr-horizontal-padding: 1rem;
+}
+
+h2.epr-emoji-category-label,
+input.epr-search {
+  font-family: 'Outfit', sans-serif;
 }
