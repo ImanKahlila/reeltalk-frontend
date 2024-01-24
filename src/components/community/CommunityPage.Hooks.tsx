@@ -53,11 +53,14 @@ export const useRetrieveJoinedCommunites = () => {
       try {
         await Promise.all(
           joinedCommunities.map(async (communityId: string) => {
-            let response = await axios.get(`http://localhost:8080/communities/${communityId}`, {
-              headers: {
-                Authorization: `Bearer ${idToken}`,
+            let response = await axios.get(
+              `https://us-central1-reeltalk-app.cloudfunctions.net/api/communities/${communityId}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${idToken}`,
+                },
               },
-            });
+            );
             joinedDataArray.push(response.data.communityData);
           }),
         );
@@ -84,11 +87,14 @@ export const useRetrievePopularCommunities = () => {
   useEffect(() => {
     async function retrievePopularCommunities() {
       try {
-        let response = await axios.get('http://localhost:8080/communities', {
-          headers: {
-            Authorization: `Bearer ${idToken}`,
+        let response = await axios.get(
+          'https://us-central1-reeltalk-app.cloudfunctions.net/api/communities',
+          {
+            headers: {
+              Authorization: `Bearer ${idToken}`,
+            },
           },
-        });
+        );
         setPopularCommunities(response.data);
       } catch (error: any) {
         // Handle error
