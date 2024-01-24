@@ -1,18 +1,24 @@
 import React from 'react';
 
 // Components
-import TabsMobile from '@/components/community/communityId/MobileMainContent';
-import DesktopMainContent from '@/components/community/communityId/DesktopMainContent';
+import MobileView from '@/components/community/communityId/MobileView';
+import DesktopView from '@/components/community/communityId/DesktopView';
 
-import { IPageData } from '@/pages/community/[communityId]';
+import { ICommunityObject, ValidJoinRequestsData } from '@/pages/community/[communityId]';
 import Header from './Header';
 
-const CreatedCommunity = ({ pageData }: { pageData: IPageData }) => {
+const CreatedCommunity = ({
+  pageData,
+  joinRequestsData,
+}: {
+  pageData: ICommunityObject;
+  joinRequestsData: ValidJoinRequestsData | null;
+}) => {
   return (
     <>
       <Header pageData={pageData} />
-      <TabsMobile pageData={pageData} />
-      <DesktopMainContent pageData={pageData} />
+      <MobileView pageData={pageData} joinRequestsData={joinRequestsData} />
+      <DesktopView pageData={pageData} joinRequestsData={joinRequestsData} />
     </>
   );
 };

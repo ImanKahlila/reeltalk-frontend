@@ -21,7 +21,7 @@ export function Poster({ poster }: IPosterProps) {
         src={poster}
         fill
         alt=''
-        onLoadingComplete={handleImageLoad}
+        onLoad={handleImageLoad}
         onError={handleImageLoad}
         className={`${!imageLoaded ? 'invisible' : 'visible'}`}
       ></Image>

@@ -74,7 +74,7 @@ const Poster = ({ imageUrl }: PosterProps) => {
     <picture className='relative block h-[109.092px] w-[72px]'>
       <Image
         src={imageUrl}
-        onLoadingComplete={handleImageLoad}
+        onLoad={handleImageLoad}
         onError={handleImageLoad}
         fill
         sizes='(max-width: 72px) 100vw, 72px'

@@ -61,7 +61,7 @@ const SearchOption = ({
       <picture className='relative block h-[84px] min-w-[56px]'>
         <Image
           src={posterUrl}
-          onLoadingComplete={handleImageLoad}
+          onLoad={handleImageLoad}
           onError={handleImageLoad}
           fill
           alt=''

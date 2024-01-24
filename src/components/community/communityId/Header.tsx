@@ -3,13 +3,16 @@ import Image from 'next/image';
 
 // Components
 import UserIcon from '@/components/Icons/userIcon';
+import Spinner from '@/components/shared/Spinner';
 
 // ShadCN/UI
 import { Skeleton } from '@/components/ui/skeleton';
 
-import { IPageData } from '@/pages/community/[communityId]';
+import { ICommunityObject } from '@/pages/community/[communityId]';
+import { cn } from '@/lib/utils';
+import useJoinLeaveCommunity from '@/hooks/useJoinLeaveCommunity';
 
-const Header = ({ pageData }: { pageData: IPageData }) => {
+const Header = ({ pageData }: { pageData: ICommunityObject }) => {
   // Skeleton Image Loader logic
   const [communityImageLoaded, setCommunityImageLoaded] = useState(false);
   const [coverImageLoaded, setCoverImageLoaded] = useState(false);
@@ -20,6 +23,16 @@ const Header = ({ pageData }: { pageData: IPageData }) => {
   const handleCoverImageload = () => {
     setCoverImageLoaded(true);
   };
+
+  const { isAdmin, isMember, pendingJoin, spinnerActive, joinCommunityHandler } =
+    useJoinLeaveCommunity(
+      pageData.userId,
+      pageData.isPublic,
+      pageData.members,
+      pageData.communityId,
+      pageData.joinRequests,
+    );
+
   return (
     <header className='relative mx-auto block h-[11.11vw] max-h-[170px] min-h-[160px] max-w-screen-2xl'>
       {pageData.coverPhoto ? (
@@ -27,7 +40,7 @@ const Header = ({ pageData }: { pageData: IPageData }) => {
           <Image
             className={`object-cover ${!coverImageLoaded ? 'invisible' : 'visible'}`}
             src={pageData.coverPhoto || ''}
-            onLoadingComplete={handleCoverImageload}
+            onLoad={handleCoverImageload}
             onError={handleCoverImageload}
             fill
             alt=''
@@ -42,7 +55,7 @@ const Header = ({ pageData }: { pageData: IPageData }) => {
           <Image
             className={`object-cover ${!communityImageLoaded ? 'invisible' : 'visible'}`}
             src={pageData?.communityImage || '/Pixel-160.png'}
-            onLoadingComplete={handleCommunityImageLoad}
+            onLoad={handleCommunityImageLoad}
             onError={handleCommunityImageLoad}
             fill
             alt=''
@@ -56,17 +69,19 @@ const Header = ({ pageData }: { pageData: IPageData }) => {
           </h1>
           <div className='flex h-full flex-col justify-between md:h-fit md:flex-row md:items-center md:justify-start md:gap-6'>
             <div className='tracking-eight text-high-emphasis'>
-              <span className=''>Public </span>
+              <span className=''>{pageData.isPublic ? 'Public' : 'Private'}</span>
               <span className='px-2'>·</span>{' '}
               <UserIcon className='relative bottom-[1px] inline-block' />{' '}
-              <span className='pl-1'>1</span>
+              <span className='pl-1'>{pageData.members.length + 1}</span>
             </div>
-            <button
-              type='button'
-              className='h-[34px] w-fit rounded-[4px] bg-gray px-4 font-semibold tracking-eight text-secondary'
-            >
-              Joined
-            </button>
+            <MemberButton
+              joinCommunityHandler={joinCommunityHandler}
+              isAdmin={isAdmin}
+              isMember={isMember}
+              pendingJoin={pendingJoin}
+              isPublic={pageData.isPublic}
+              spinnerActive={spinnerActive}
+            />
           </div>
         </div>
       </div>
@@ -75,3 +90,44 @@ const Header = ({ pageData }: { pageData: IPageData }) => {
 };
 
 export default Header;
+
+interface CustomButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  isAdmin: boolean;
+  isMember: boolean;
+  pendingJoin: boolean;
+  isPublic: boolean;
+  spinnerActive: boolean;
+  joinCommunityHandler(): Promise<void>;
+}
+
+function MemberButton({
+  isAdmin,
+  isMember,
+  joinCommunityHandler,
+  pendingJoin,
+  isPublic,
+  spinnerActive,
+}: CustomButtonProps) {
+  const display = isAdmin
+    ? 'Admin'
+    : pendingJoin
+      ? 'Pending'
+      : isMember
+        ? 'Joined'
+        : isPublic
+          ? 'Join'
+          : 'Ask to join';
+
+  return (
+    <button
+      type='button'
+      onClick={joinCommunityHandler}
+      className={cn(
+        'h-[34px] w-fit rounded-[4px] bg-primary px-4 font-semibold tracking-eight text-secondary transition-all duration-300',
+        (isMember || isAdmin || pendingJoin) && 'bg-gray text-disabled',
+      )}
+    >
+      {spinnerActive ? <Spinner /> : display}
+    </button>
+  );
+}

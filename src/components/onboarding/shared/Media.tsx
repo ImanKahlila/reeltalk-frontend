@@ -59,7 +59,7 @@ const Media = ({
           fill
           sizes='(max-width: 767px) 100vw, 96px'
           alt=''
-          onLoadingComplete={handleImageLoad}
+          onLoad={handleImageLoad}
           onError={handleImageLoad}
           className={`${!imageLoaded ? 'invisible' : 'visible'}`}
         ></Image>
