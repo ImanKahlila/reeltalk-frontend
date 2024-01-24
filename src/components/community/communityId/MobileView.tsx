@@ -5,15 +5,27 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Poster } from './Poster';
 
 import { ICommunityObject } from '@/pages/community/[communityId]';
+import AdminView from './AdminView';
 import { useUserContext } from '@/lib/context';
-import { cn } from '@/lib/utils';
+import { ValidJoinRequestsData } from '@/pages/community/[communityId]';
 
-interface ITabsMobileProps {
+export interface ITabsMobileProps {
   pageData: ICommunityObject;
 }
 
-function MobileMainContent({ pageData }: ITabsMobileProps) {
-  return (
+function MobileView({
+  pageData,
+  joinRequestsData,
+}: {
+  pageData: ITabsMobileProps['pageData'];
+  joinRequestsData: ValidJoinRequestsData | null;
+}) {
+  const { user } = useUserContext();
+  const isAdmin = user?.uid === pageData.userId;
+
+  return isAdmin ? (
+    <AdminView pageData={pageData} joinRequestsData={joinRequestsData} className='md:hidden' />
+  ) : (
     <Tabs defaultValue='posts' className='mx-auto mt-4 max-w-lg md:hidden'>
       <TabsList className='relative bg-transparent font-normal text-disabled'>
         <TabsTrigger value='posts'>Posts</TabsTrigger>
@@ -28,7 +40,7 @@ function MobileMainContent({ pageData }: ITabsMobileProps) {
     </Tabs>
   );
 }
-export default MobileMainContent;
+export default MobileView;
 
 function PostsTab() {
   return (
@@ -47,23 +59,11 @@ function PostsTab() {
 }
 
 function AboutTab({ pageData }: { pageData: ICommunityObject }) {
-  const { user } = useUserContext();
-  const isAdmin = user?.uid === pageData.userId;
-
   return (
     <div className='flex flex-col gap-6'>
       <div className='flex w-full flex-col gap-4 rounded-sm bg-first-surface px-4 py-8'>
         <h2 className='font-semibold tracking-eight text-high-emphasis'>About the community</h2>
         <p className='text-medium-emphasis'>{pageData.description}</p>
-        <button
-          type='button'
-          className={cn(
-            'mx-auto h-12 w-full max-w-[256px] rounded-lg bg-white font-semibold tracking-eight text-secondary',
-            !isAdmin && 'hidden',
-          )}
-        >
-          Community settings
-        </button>
       </div>
       <div className='flex w-full flex-col gap-4 rounded-sm bg-first-surface px-4 py-8'>
         <h2 className='font-semibold tracking-eight text-high-emphasis'>Related movies/TV-shows</h2>

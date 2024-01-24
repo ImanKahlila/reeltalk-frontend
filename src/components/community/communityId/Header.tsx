@@ -74,25 +74,14 @@ const Header = ({ pageData }: { pageData: ICommunityObject }) => {
               <UserIcon className='relative bottom-[1px] inline-block' />{' '}
               <span className='pl-1'>{pageData.members.length + 1}</span>
             </div>
-            <div className='flex gap-4'>
-              {isMember ||
-                (isAdmin && (
-                  <button
-                    className='h-[34px] w-fit rounded-[4px] bg-primary px-4 font-semibold tracking-eight text-secondary md:hidden'
-                    type='button'
-                  >
-                    Create new post
-                  </button>
-                ))}
-              <MemberButton
-                joinCommunityHandler={joinCommunityHandler}
-                isAdmin={isAdmin}
-                isMember={isMember}
-                pendingJoin={pendingJoin}
-                isPublic={pageData.isPublic}
-                spinnerActive={spinnerActive}
-              />
-            </div>
+            <MemberButton
+              joinCommunityHandler={joinCommunityHandler}
+              isAdmin={isAdmin}
+              isMember={isMember}
+              pendingJoin={pendingJoin}
+              isPublic={pageData.isPublic}
+              spinnerActive={spinnerActive}
+            />
           </div>
         </div>
       </div>
