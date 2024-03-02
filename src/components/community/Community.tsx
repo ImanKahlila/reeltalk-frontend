@@ -39,7 +39,7 @@ const Community = (props: CommunityProps) => {
         <span className='px-2'>
           ·
         </span> <UserIcon className='relative bottom-[1px] inline-block' />{' '}
-        <span className='pl-1'>{members.length + 1}</span>
+        <span className='pl-1'>{members?.length + 1}</span>
       </div>
     </Link>
   );
@@ -49,7 +49,7 @@ export default Community;
 
 // Helper Function
 function truncateString(str: string) {
-  if (str.length > 12) {
+  if (str?.length > 12) {
     return str.substring(0, 12) + '...';
   } else {
     return str;

@@ -115,7 +115,7 @@ export const useCreateCommunity = async ({
       headers: {
         'Content-Type': 'multipart/form-data',
       },
-      // withCredentials: true,
+      withCredentials: true,
     });
 
     const communityId = response.data.communityId;

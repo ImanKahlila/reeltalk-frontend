@@ -80,7 +80,7 @@ function DesktopPopularCommunity(props: DesktopPopularCommunityProps) {
           <UserIcon className='relative bottom-[1px] inline-block' />{' '}
           <span className='pl-1'>
             {/* Plus one to account for Admin as a member */}
-            {(members.length + 1).toString()}
+            {(members?.length + 1).toString()}
           </span>
         </div>
 

@@ -73,7 +73,7 @@ export async function getServerSideProps(context: NextPageContext) {
 
     if (!data.isPublic) {
       response = await axios.get(
-        `http://localhost:8080/communities/join-community/${communityId}`,
+        `https://us-central1-reeltalk-app.cloudfunctions.net/api/communities/join-community/${communityId}`,
         {
           headers: { Authorization: `Bearer ${idToken}` },
         },

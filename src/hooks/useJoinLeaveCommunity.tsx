@@ -3,6 +3,7 @@ import { AxiosResponse } from 'axios';
 import toast from 'react-hot-toast';
 import { useUserContext } from '@/lib/context';
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
 const useJoinLeaveCommunity = (
   ownerId: string, // Community Creator Id
@@ -15,8 +16,11 @@ const useJoinLeaveCommunity = (
   const isAdmin = user?.uid === ownerId;
   const [isMember, setIsMember] = useState(false);
   const [pendingJoin, setPendingJoin] = useState(false); // If u
+
+  const router = useRouter();
+
   useEffect(() => {
-    setIsMember(user ? members.includes(user.uid) : false);
+    setIsMember(user ? members?.includes(user.uid) : false);
     if (!joinRequests) return;
     setPendingJoin(user && !isPublic ? joinRequests.includes(user.uid) : false);
   }, [user, isPublic, joinRequests, members]);
@@ -31,7 +35,7 @@ const useJoinLeaveCommunity = (
       });
       return;
     }
-    const API = `http://localhost:8080/communities/join-community/${communityId}`;
+    const API = `https://us-central1-reeltalk-app.cloudfunctions.net/api/communities/join-community/${communityId}`;
     let response: AxiosResponse;
     try {
       setSpinnerActive(true);

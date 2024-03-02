@@ -88,7 +88,7 @@ export const useRetrievePopularCommunities = () => {
     async function retrievePopularCommunities() {
       try {
         let response = await axios.get(
-          'https://us-central1-reeltalk-app.cloudfunctions.net/api/communities',
+          'https://us-central1-reeltalk-app.cloudfunctions.net/api/communities/popular',
           {
             headers: {
               Authorization: `Bearer ${idToken}`,
