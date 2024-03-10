@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "dev": "next dev -c next.config.cjs",
+    "build": "next build -c next.config.cjs",
+    "start": "next start -c next.config.cjs",
     "lint": "next lint"
   },
   "dependencies": {
