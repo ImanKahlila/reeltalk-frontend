@@ -46,7 +46,7 @@ const SuccessModal: React.FC<SuccessModalProps> = ({ visible, onClose }) => {
         <div className='flex w-[75%] justify-center'>
           <p className='text-center text-xs text-high-emphasis'>
             We will notify you when the product is launched!
-          </p>
+          </p> 
         </div>
       </div>
     </Modal>
