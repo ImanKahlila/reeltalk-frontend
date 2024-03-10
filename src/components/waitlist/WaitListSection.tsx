@@ -7,6 +7,7 @@ import SecondWaitlistImg from '../../../public/LandingPage/Value-Discover.png';
 // Firebase
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
+import { useUserContext } from '@/lib/context';
 
 const SuccessModal = dynamic(() => import('../SuccessModal'), { ssr: false });
 
@@ -26,6 +27,8 @@ const WaitListSection = () => {
     setEmail(value);
     setIsEmailValid(validateEmail(value));
   };
+
+  const { user, idToken } = useUserContext();
 
   const handleSignup = async () => {
     try {
@@ -50,7 +53,14 @@ const WaitListSection = () => {
       const response = await axios.post(
         'https://us-central1-reeltalk-app.cloudfunctions.net/api/waitlist/add',
         requestData,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${idToken}`, // Ensure idToken is valid and available
+          },
+        }
       );
+  
 
       if (response.status === 201) {
         console.log('User signed up successfully:', name, email);

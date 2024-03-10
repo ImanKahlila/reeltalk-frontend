@@ -60,7 +60,7 @@ export const useRetrieveJoinedCommunites = () => {
                   Authorization: `Bearer ${idToken}`,
                 },
               },
-            );
+            ); 
             joinedDataArray.push(response.data.communityData);
           }),
         );
