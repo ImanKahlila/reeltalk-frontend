@@ -123,7 +123,7 @@ const WaitListSection = () => {
           onClick={handleSignup}
           className={`mx-auto flex h-[44px] w-[242px] items-center justify-center rounded-lg p-[10px] font-semibold tracking-eight transition-colors duration-300 ${
             !name || !email || !validateEmail(email)
-              ? 'text- bg-gray text-disabled'
+              ? 'bg-gray text-disabled'
               : 'bg-primary text-black'
           }`}
           disabled={!name || !email || !validateEmail(email)}

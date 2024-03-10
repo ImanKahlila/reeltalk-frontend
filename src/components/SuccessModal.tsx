@@ -17,7 +17,7 @@ const CustomHeader: React.FC<{ onClose: () => void }> = ({ onClose }) => (
       />
     </div>
     <div className=' h-[46px] w-[85%]'>
-      <h1 className='text-m text-center text-primary'>Thank you for joining the waitlist</h1>
+      <h1 className='text-center text-primary'>Thank you for joining the waitlist</h1>
     </div>
   </div>
 );
