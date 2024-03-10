@@ -72,7 +72,7 @@ const Header = ({ pageData }: { pageData: ICommunityObject }) => {
               <span className=''>{pageData.isPublic ? 'Public' : 'Private'}</span>
               <span className='px-2'>·</span>{' '}
               <UserIcon className='relative bottom-[1px] inline-block' />{' '}
-              <span className='pl-1'>{pageData.members.length + 1}</span>
+              <span className='pl-1'>{pageData?.members?.length + 1}</span>
             </div>
             <MemberButton
               joinCommunityHandler={joinCommunityHandler}

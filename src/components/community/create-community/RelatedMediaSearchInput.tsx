@@ -57,7 +57,7 @@ function RelatedMediaSearchInput({
           } outline-none`}
         >
           {/* Only Children allow to have padding else it will become visible */}
-          {queryMedia.length === 0 ? (
+          {queryMedia?.length === 0 ? (
             <div className='p-4'>No results...</div>
           ) : (
             <ScrollArea className='h-[444px]'>

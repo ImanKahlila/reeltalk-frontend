@@ -166,7 +166,7 @@ export const useRelatedMedia = () => {
 
   // Placeholder tracker, tracks how many placeholders needed for relatedTitlesSelections
   const selectionPlaceholder: { id: number; title: string; poster: string }[] = [];
-  for (let i = 0; i < 4 - relatedTitlesSelection.length; i++) {
+  for (let i = 0; i < 4 - relatedTitlesSelection?.length; i++) {
     selectionPlaceholder.push({ id: i, title: '', poster: '' });
   }
 

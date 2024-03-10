@@ -42,7 +42,7 @@ function Loader() {
 function displayPopularCommunities(
   popularCommunities: IPopularCommunitiesProps['popularCommunities'],
 ) {
-  if (popularCommunities.length > 0) {
+  if (popularCommunities?.length > 0) {
     return popularCommunities.map((title: ICommunityObject) => (
       <Community
         key={title.communityId}

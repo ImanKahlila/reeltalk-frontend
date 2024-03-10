@@ -85,10 +85,10 @@ function useFocusStartPost(
       const target = e.target as Element;
       const isFocused =
         !!target.closest('.start-post-container') ||
-        textInputRef.current.value.length > 0 ||
+        textInputRef.current.value?.length > 0 ||
         !!target.closest('.discussions-user-image-upload') ||
         target.classList.contains("ignore-collapse") ||
-        images.length > 0;
+        images?.length > 0;
       setInputFocus(isFocused);
     }
     window.addEventListener('click', handleTextExpand);

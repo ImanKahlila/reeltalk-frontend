@@ -56,7 +56,7 @@ export default function TagSearchInput({ fetching = false, addTagHandler }: ITag
           } outline-none`}
         >
           {/* Only Children allow to have padding else hidden content will become visible */}
-          {tagQuery.length < 1 ? (
+          {tagQuery?.length < 1 ? (
             <div className='px-6 py-[13px]'>No Results...</div>
           ) : (
             <ScrollArea className='h-fit min-h-[48px]'>
