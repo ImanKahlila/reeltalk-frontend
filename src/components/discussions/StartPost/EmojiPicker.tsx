@@ -30,7 +30,7 @@ export default function EmojiPicker({ setEmojiPickerOpen, textInputRef }: EmojiP
     }
     window.addEventListener('click', handleEmojiClose);
     return () => window.removeEventListener('click', handleEmojiClose);
-  }, []);
+  }, [setEmojiPickerOpen]);
 
   return (
     <Picker

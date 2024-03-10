@@ -6,7 +6,9 @@ import SecondWaitlistImg from '../../../public/LandingPage/Value-Discover.png';
 
 // Firebase
 import Image from 'next/image';
-import SuccessModal from '../SuccessModal';
+import dynamic from 'next/dynamic';
+
+const SuccessModal = dynamic(() => import('../SuccessModal'), { ssr: false });
 
 const WaitListSection = () => {
   const [name, setName] = useState<string>('');
