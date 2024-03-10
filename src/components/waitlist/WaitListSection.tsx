@@ -62,7 +62,7 @@ const WaitListSection = () => {
       );
   
 
-      if (response.status === 201) {
+      if (response.status === 201 || 200) {
         console.log('User signed up successfully:', name, email);
         setName('');
         setEmail('');
