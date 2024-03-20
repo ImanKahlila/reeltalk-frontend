@@ -133,7 +133,8 @@ function Request({
 
     try {
       await axios.post(
-        `https://us-central1-reeltalk-app.cloudfunctions.net/api/communities/${communityId}/pendingRequest`,
+        `https://us-central1-reeltalk-app.cloudfunctions.net/backend/communities/${communityId}/pendingRequest`,
+        // `http://localhost:8080/communities/${communityId}/pendingRequest`,
         { action: action, requestedUserId: request },
         {
           headers: { Authorization: `Bearer ${idToken}` },

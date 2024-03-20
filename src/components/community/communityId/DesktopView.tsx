@@ -9,33 +9,65 @@ import { useUserContext } from '@/lib/context';
 import { ICommunityObject } from '@/pages/community/[communityId]';
 import { ValidJoinRequestsData } from '@/pages/community/[communityId]';
 import AdminView from './AdminView';
+import Post from '@/components/discussions/Post';
 
-function DesktopView({
-  pageData,
-  joinRequestsData,
-}: {
+interface DesktopViewProps {
   pageData: ICommunityObject;
   joinRequestsData: ValidJoinRequestsData | null;
-}) {
+  discussions: any[]; // Update this line with the correct type for discussions
+}
+
+interface Discussion {
+    id: string;
+  //   content: string;
+    userId: string;
+    createAt: any; // Use 'any' for now; replace it with your specific type if needed
+    likes: string[];
+    comments: string[];
+    communityBelonged: string;
+    tagged: string[];
+  }
+
+function DesktopView({ pageData, joinRequestsData, discussions }: DesktopViewProps) {
   const { user } = useUserContext();
   const isAdmin = user?.uid === pageData.userId;
   const communityId = pageData.communityId;
 
   return (
-    <div className='mx-auto mt-6 hidden max-w-[1120px] gap-8 px-4 md:flex'>
+    <div className='mx-auto mt-8 hidden max-w-[1120px] gap-8 px-4 md:flex'>
       {isAdmin ? (
         <AdminView pageData={pageData} joinRequestsData={joinRequestsData} />
       ) : (
-        <div className='flex h-[506px] w-full min-w-[px] flex-col items-center justify-center gap-6 rounded-[8px] bg-first-surface'>
-          <p className='text-center tracking-eight text-high-emphasis'>
-            There is no discussion in this community. <br /> Post the first thread here!
-          </p>
-          <button
+        <div className='flex w-full min-w-[px] flex-col items-center justify-center gap-6 rounded-[8px] bg-first-surface'>
+          {discussions.length === 0 ? (
+            <p className='text-center tracking-eight text-high-emphasis'>
+              There are no discussions in this community. <br /> Post the first thread here!
+            </p>
+          ) : (
+          <div className='flex flex-col gap-6 lg:w-[46rem]'>
+          {
+            discussions.map((discussion) => (
+                <Post
+                key={discussion?.id}
+                discussionId={discussion?.discussionId}
+                userId={discussion?.userId}
+                createAt={discussion?.createAt}
+                likes={discussion?.likes}
+                comments={discussion?.comments}
+                communityBelonged={discussion?.communityBelonged}
+                content={"In your opinion, what are the top 5 scenes of Suits?"}
+                tagged={discussion?.tagged}
+              />
+            ))
+          }
+          </div>
+          )}
+          {/* <button
             type='button'
             className='h-[34px] rounded-[4px] bg-primary px-4 font-semibold tracking-eight text-secondary'
           >
             Create new post
-          </button>
+          </button> */}
         </div>
       )}
 

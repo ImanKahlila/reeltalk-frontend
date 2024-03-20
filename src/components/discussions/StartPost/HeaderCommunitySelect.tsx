@@ -2,24 +2,42 @@ import Image from 'next/image';
 import DownArrow from '../../Icons/DownArrow';
 import { useUserContext } from '@/lib/context';
 import { useEffect, useState } from 'react';
+import axios from 'axios';
+import Link from 'next/link';
+import { ICommunityObject } from '@/pages/community/[communityId]';
 
-type HeaderCommunitySelect = React.HTMLAttributes<HTMLDivElement>;
+type HeaderCommunitySelectProps = React.HTMLAttributes<HTMLDivElement> & {
+  onSelect?: (communityName: string) => void;
+};
 
-export default function HeaderCommunitySelect({ ...props }: HeaderCommunitySelect) {
-  const { user } = useUserContext();
+export default function HeaderCommunitySelect({ onSelect, ...props }: HeaderCommunitySelectProps) {
+  const { user, idToken } = useUserContext();
   const [dropdown, setDropdown] = useState(false);
+  const [selectedCommunity, setSelectedCommunity] = useState<ICommunityObject | null>(null);
 
-  //Click anywhere outside the dropdown to collapse
+  const [communities, setCommunities] = useState<ICommunityObject[]>([]);
+
   useEffect(() => {
-    function handleTextExpand(e: MouseEvent) {
-      const target = e.target as Element;
-      if (target.tagName === 'svg') return;
-      const isFocused = !!target.closest('.header-community-select');
-      setDropdown(isFocused);
+    async function fetchCommunities() {
+      try {
+        const response = await axios.get<ICommunityObject[]>(
+            'https://us-central1-reeltalk-app.cloudfunctions.net/backend/communities', 
+            // 'http://localhost:8080/communities', 
+            {
+          headers: {
+            Authorization: `Bearer ${idToken}`,
+          },
+        });
+        setCommunities(response.data);
+      } catch (error) {
+        console.error('Error fetching communities:', error);
+      }
     }
-    window.addEventListener('click', handleTextExpand);
-    return () => window.removeEventListener('click', handleTextExpand);
-  }, []);
+
+    if (dropdown && idToken) {
+      fetchCommunities();
+    }
+  }, [dropdown, idToken]);
 
   return (
     <div {...props}>
@@ -35,32 +53,70 @@ export default function HeaderCommunitySelect({ ...props }: HeaderCommunitySelec
           {user.displayName}
         </div>
       )}
+
       <div
-        onClick={() => {
-          if (dropdown) return;
-          setDropdown(true);
-        }}
+        onClick={() => setDropdown(prev => !prev)}
         className={`${
           dropdown
             ? 'h-[10.75rem] border-primary'
             : 'h-[2.875rem] cursor-pointer border-medium-emphasis'
-        } ignore-collapse bg-third-surface absolute right-2 top-2 z-10 w-[14rem] rounded border-[1px] px-3 pt-[0.9rem] text-medium-emphasis transition-all`}
+        } ignore-collapse absolute right-2 top-2 z-10 w-[14rem] rounded border-[1px] 
+          bg-third-surface px-3 pt-[9px] text-medium-emphasis transition-all`}
       >
-        <div className='flex items-center'>
-          <input
-            type='text'
-            placeholder='General Community'
-            className={`${
-              dropdown ? 'h-8 border-b-[1px] placeholder:text-transparent' : 'h-[2.75rem] cursor-pointer'
-            } transition-all placeholder:text-xs placeholder:absolute placeholder:top-[0.9rem] ignore-collapse absolute left-0 top-0 w-full border-disabled bg-transparent pl-3 pr-8 outline-none`}
-          />
+        <div className='relative mb-6 flex items-center'>
+          {!dropdown && (
+            <div className='flex items-center'>
+              <Image
+                height={24}
+                width={17}
+                src={selectedCommunity?.communityImage || '/default-image.png'}
+                alt={`${selectedCommunity?.name} Icon`}
+                className='mr-2'
+              />
+              <p className='text-xs font-medium'>
+                {selectedCommunity?.name || 'General Community'}
+              </p>
+            </div>
+          )}
           <DownArrow
-            onClick={() => setDropdown(prev => !prev)}
             className={`${
-              dropdown ? 'top-[0.75rem] ' : 'top-[1.1rem]'
+              dropdown ? 'top-[0.75rem] ' : ''
             } absolute right-3 cursor-pointer transition-all`}
           />
         </div>
+
+        {dropdown && (
+          <div className='mt-2 max-h-[8rem] overflow-y-auto'>
+            <div className='flex items-center justify-between'>
+              <p className='mb-1 text-xs font-medium'>Your Communities</p>
+              <Link legacyBehavior href='/create-community'>
+                <a className='text-[10px] font-medium text-primary '>Create New</a>
+              </Link>
+            </div>
+            {communities.map(community => (
+              <div className='hover:cursor-pointer' key={community.communityId}>
+                <div
+                  className='my-2 flex items-center'
+                  onClick={() => {
+                    setSelectedCommunity(community);
+                    if (onSelect) {
+                      onSelect(community.name);
+                    }
+                  }}
+                >
+                  <Image
+                    height={37}
+                    width={24}
+                    src={community.communityImage}
+                    alt={`${community.name} Icon`}
+                    className='mr-2'
+                  />
+                  <p className='ml-2'>{community.name}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

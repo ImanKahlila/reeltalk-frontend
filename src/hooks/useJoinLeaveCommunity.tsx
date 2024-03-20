@@ -35,7 +35,8 @@ const useJoinLeaveCommunity = (
       });
       return;
     }
-    const API = `https://us-central1-reeltalk-app.cloudfunctions.net/api/communities/join-community/${communityId}`;
+    const API = `https://us-central1-reeltalk-app.cloudfunctions.net/backend/communities/join-community/${communityId}`;
+    // const API = `http://localhost:8080/communities/join-community/${communityId}`;
     let response: AxiosResponse;
     try {
       setSpinnerActive(true);

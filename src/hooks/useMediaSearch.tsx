@@ -2,7 +2,8 @@ import { useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
-const backend_URL = 'https://us-central1-reeltalk-app.cloudfunctions.net/api';
+const backend_URL = 'https://us-central1-reeltalk-app.cloudfunctions.net/backend';
+// const backend_URL = 'http://localhost:8080';
 
 const useMediaSearch = (titleType: 'movie' | 'tvSeries' | null) => {
   const [queryMedia, setQueryMedia] = useState<any[]>([]);
