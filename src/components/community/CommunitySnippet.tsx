@@ -26,20 +26,20 @@ const CommunitySnippet = ({ pageData }: { pageData: ICommunityObject }) => {
 
   const { isAdmin, isMember, pendingJoin, spinnerActive, joinCommunityHandler } =
     useJoinLeaveCommunity(
-      pageData.userId,
-      pageData.isPublic,
-      pageData.members,
-      pageData.communityId,
-      pageData.joinRequests,
+      pageData?.userId,
+      pageData?.isPublic,
+      pageData?.members,
+      pageData?.communityId,
+      pageData?.joinRequests,
     );
 
   return (
     <header className='relative mx-auto block h-[11.11vw] max-h-[170px] min-h-[160px] max-w-screen-2xl'>
-      {pageData.coverPhoto ? (
+      {pageData?.coverPhoto ? (
         <>
           <Image
             className={`object-cover ${!coverImageLoaded ? 'invisible' : 'visible'}`}
-            src={pageData.coverPhoto || ''}
+            src={pageData?.coverPhoto || ''}
             onLoad={handleCoverImageload}
             onError={handleCoverImageload}
             fill
@@ -69,17 +69,17 @@ const CommunitySnippet = ({ pageData }: { pageData: ICommunityObject }) => {
           </h1>
           <div className='flex h-full flex-col justify-between md:h-fit md:flex-row md:items-center md:justify-start md:gap-6'>
             <div className='tracking-eight text-high-emphasis'>
-              <span className=''>{pageData.isPublic ? 'Public' : 'Private'}</span>
+              <span className=''>{pageData?.isPublic ? 'Public' : 'Private'}</span>
               <span className='px-2'>·</span>{' '}
               <UserIcon className='relative bottom-[1px] inline-block' />{' '}
-              <span className='pl-1'>{pageData.members.length + 1}</span>
+              <span className='pl-1'>{pageData?.members.length + 1}</span>
             </div>
             <MemberButton
               joinCommunityHandler={joinCommunityHandler}
               isAdmin={isAdmin}
               isMember={isMember}
               pendingJoin={pendingJoin}
-              isPublic={pageData.isPublic}
+              isPublic={pageData?.isPublic}
               spinnerActive={spinnerActive}
             />
           </div>

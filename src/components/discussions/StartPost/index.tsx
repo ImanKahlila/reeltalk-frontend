@@ -56,7 +56,7 @@ export default function StartPost() {
     }
   };
 
-  const handleCommunitySelect = (communityName: string) => {
+  const handleCommunitySelect = (communityName: any) => {
     setSelectedCommunity(communityName);
   };
 
@@ -137,7 +137,7 @@ function useFocusStartPost(
     }
     window.addEventListener('click', handleTextExpand);
     return () => window.removeEventListener('click', handleTextExpand);
-  }, [images]);
+  }, [images, textInputRef]);
 
   return inputFocus;
 }

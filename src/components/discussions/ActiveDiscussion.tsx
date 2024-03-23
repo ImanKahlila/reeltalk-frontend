@@ -56,11 +56,7 @@ const ActiveDiscussion: React.FC<DiscussionProps> = ({
     };
 
     fetchCommunityDetails();
-  }, [communityBelonged]);
-
-  useEffect(() => {
-    console.log('Community Name:', communityInfo?.communityData);
-  }, [communityInfo]);
+  }, [communityBelonged, idToken]);
 
   if (isLoading) {
     return <div>Loading...</div>;

@@ -63,7 +63,7 @@ const Post: React.FC<PostProps> = ({
     };
 
     fetchCommunityDetails();
-  }, [communityBelonged]);
+  }, [communityBelonged, idToken]);
 
   // Convert createAt to a Date object
   const dateObject = new Date(createAt?._seconds * 1000 + createAt?._nanoseconds / 1000000);

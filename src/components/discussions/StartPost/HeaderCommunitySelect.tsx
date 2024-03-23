@@ -21,13 +21,14 @@ export default function HeaderCommunitySelect({ onSelect, ...props }: HeaderComm
     async function fetchCommunities() {
       try {
         const response = await axios.get<ICommunityObject[]>(
-            'https://us-central1-reeltalk-app.cloudfunctions.net/backend/communities', 
-            // 'http://localhost:8080/communities', 
-            {
-          headers: {
-            Authorization: `Bearer ${idToken}`,
+          'https://us-central1-reeltalk-app.cloudfunctions.net/backend/communities',
+          // 'http://localhost:8080/communities',
+          {
+            headers: {
+              Authorization: `Bearer ${idToken}`,
+            },
           },
-        });
+        );
         setCommunities(response.data);
       } catch (error) {
         console.error('Error fetching communities:', error);
@@ -55,7 +56,8 @@ export default function HeaderCommunitySelect({ onSelect, ...props }: HeaderComm
       )}
 
       <div
-        onClick={() => setDropdown(prev => !prev)}
+        // onClick={() => setDropdown(prev => !prev)}
+        onClick={(event: any) => setDropdown(prev => !prev)}
         className={`${
           dropdown
             ? 'h-[10.75rem] border-primary'

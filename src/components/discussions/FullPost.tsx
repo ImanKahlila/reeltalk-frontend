@@ -60,7 +60,7 @@ const FullPost: React.FC<FullPostProps> = ({
     };
 
     fetchCommunityDetails();
-  }, [communityBelonged]);
+  }, [communityBelonged, idToken]);
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -89,7 +89,7 @@ const FullPost: React.FC<FullPostProps> = ({
     };
 
     fetchUserDetails();
-  }, [userId]);
+  }, [userId, idToken]);
 
   // Convert createAt to a Date object
   const dateObject = new Date(createAt?._seconds * 1000 + createAt?._nanoseconds / 1000000);

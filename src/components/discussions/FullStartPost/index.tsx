@@ -29,12 +29,12 @@ interface Comment {
   taggedUsers: string[];
 }
 
-interface FullPostProps{
-    discussionId: string;
-    communityBelonged: string;
+interface FullPostProps {
+  discussionId: string;
+  communityBelonged: string;
 }
 
-export default function FullStartPost({discussionId, communityBelonged}: FullPostProps) {
+export default function FullStartPost({ discussionId, communityBelonged }: FullPostProps) {
   const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
   const textInputRef = useRef<HTMLTextAreaElement>(null!);
   const [images, dispatch] = useReducer(imagesReducer, []);
@@ -45,36 +45,36 @@ export default function FullStartPost({discussionId, communityBelonged}: FullPos
 
   const inputFocus = useFocusFullStartPost(textInputRef, images);
 
-  const router = useRouter()
+  const router = useRouter();
 
-const postComment = async () => {
+  const postComment = async () => {
     try {
-        const commentData: Comment = {
-            uid: user?.uid || '', 
-            comment: text,
-            taggedUsers: [], 
-        };
-            
-        const response = await axios.post(
-            `https://us-central1-reeltalk-app.cloudfunctions.net/backend/communities/${communityBelonged}/discussions/${discussionId}/comments`,
-            // `http://localhost:8080/communities/${communityBelonged}/discussions/${discussionId}/comments`,
-            commentData,
-            {
-                headers: {
-                    Authorization: `Bearer ${idToken}`,
-                },
-            }
-        );
-      
-        console.log('Comment created:', response.data);
-        toast.success("Comment Posted")
-        
-        setText('');
+      const commentData: Comment = {
+        uid: user?.uid || '',
+        comment: text,
+        taggedUsers: [],
+      };
+
+      const response = await axios.post(
+        `https://us-central1-reeltalk-app.cloudfunctions.net/backend/communities/${communityBelonged}/discussions/${discussionId}/comments`,
+        // `http://localhost:8080/communities/${communityBelonged}/discussions/${discussionId}/comments`,
+        commentData,
+        {
+          headers: {
+            Authorization: `Bearer ${idToken}`,
+          },
+        },
+      );
+
+      console.log('Comment created:', response.data);
+      toast.success('Comment Posted');
+
+      setText('');
     } catch (error) {
-        console.error('Error creating comment:', error);
-        toast.error(`Error commenting`)
+      console.error('Error creating comment:', error);
+      toast.error(`Error commenting`);
     }
-};
+  };
 
   return (
     <>
@@ -90,9 +90,9 @@ const postComment = async () => {
         >
           <textarea
             className='w-full resize-none overflow-hidden bg-transparent px-4 pt-3 text-high-emphasis outline-none placeholder:text-disabled'
-            placeholder="What are your thoughts?"
+            placeholder='What are your thoughts?'
             ref={textInputRef}
-            onChange={(e) => setText(e.target.value)}
+            onChange={e => setText(e.target.value)}
             style={{ height: spanRef.current?.offsetHeight + 'px' }}
           />
           <span
@@ -130,7 +130,7 @@ const postComment = async () => {
 
 function useFocusFullStartPost(
   textInputRef: React.MutableRefObject<HTMLTextAreaElement>,
-  images: ImageState
+  images: ImageState,
 ) {
   const [inputFocus, setInputFocus] = useState(false);
 
@@ -147,9 +147,7 @@ function useFocusFullStartPost(
     }
     window.addEventListener('click', handleTextExpand);
     return () => window.removeEventListener('click', handleTextExpand);
-  }, [images]);
+  }, [images, textInputRef]);
 
   return inputFocus;
 }
-
-

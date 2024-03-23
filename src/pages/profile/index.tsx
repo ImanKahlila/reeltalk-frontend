@@ -35,7 +35,7 @@ import { User } from 'firebase/auth';
 
 interface Discussion {
   id: string;
-//   content: string;
+  //   content: string;
   userId: string;
   createAt: any; // Use 'any' for now; replace it with your specific type if needed
   likes: string[];
@@ -50,7 +50,7 @@ export default function DiscussionPage() {
   const [discussions, setDiscussions] = useState<Discussion[]>([]);
   const [discussionsToDisplay, setDiscussionsToDisplay] = useState<Discussion[]>([]);
   const [loadCount, setLoadCount] = useState(0);
-//   console.log(discussionsToDisplay)
+  //   console.log(discussionsToDisplay)
 
   const { user, idToken } = useUserContext();
 
@@ -121,13 +121,12 @@ export default function DiscussionPage() {
     communityImage instanceof File;
   //MY VARIABLES
 
-
   useEffect(() => {
     const fetchDiscussions = async () => {
       try {
         const response = await axios.get<Record<string, Discussion>>(
           'https://us-central1-reeltalk-app.cloudfunctions.net/backend/discussions/',
-        //   'http://localhost:3000/discussions/',
+          //   'http://localhost:3000/discussions/',
           {
             headers: {
               Authorization: `Bearer ${idToken}`,
@@ -135,7 +134,7 @@ export default function DiscussionPage() {
             },
           },
         );
-        console.log(response.data)
+        console.log(response.data);
 
         const discussionsArray = Object.values(response.data).map((discussionData: any) => {
           return {
@@ -151,97 +150,95 @@ export default function DiscussionPage() {
     };
 
     fetchDiscussions();
-  }, [loadCount]);
+  }, [loadCount, idToken]);
 
   useEffect(() => {
     const startIndex = (loadCount - 1) * DISCUSSIONS_TO_LOAD;
     const endIndex = startIndex + DISCUSSIONS_TO_LOAD;
 
-    setDiscussionsToDisplay((prevDiscussions) => [
+    setDiscussionsToDisplay(prevDiscussions => [
       ...prevDiscussions,
       ...discussions.slice(startIndex, endIndex),
     ]);
   }, [loadCount, discussions]);
 
   const loadMoreDiscussions = () => {
-    setLoadCount((prevCount) => prevCount + 1);
+    setLoadCount(prevCount => prevCount + 1);
   };
 
   return (
-//     <section className='my-[1.438rem] flex flex-col lg:flex-row justify-center lg:gap-8 gap-4 mx-4'>
-//       <DiscussionsSearch className='relative lg:hidden flex h-[3.5rem] w-full items-center overflow-hidden rounded-lg bg-white/[0.02] px-6' />
-//       <div className='flex flex-col gap-6 lg:w-[46rem]'>
-//         <StartPost />
-//         <TabBar />
-//         {/* {discussionsToDisplay.map((discussion) => ( */}
-//   <Post
-//     // key={discussion.id}
-//     // id={discussion.id}
-//     // userId={discussion.userId}
-//     // createAt={discussion.createAt}
-//     // likes={discussion.likes}
-//     // comments={discussion.comments}
-//     // communityBelonged={discussion.communityBelonged}
-//     // content={"In your opinion, what are the top 5 scenes of Suits?"}
-//     // tagged={discussion.tagged}
-//   />
-// {/* ))} */}
-//         {discussionsToDisplay.length < discussions.length && (
-//           <button onClick={loadMoreDiscussions} className='text-primary'>
-//             Load More
-//           </button>
-//         )}
-//       </div>
-//       {/* <Sidebar>
-//         {discussionsToDisplay.map((discussion) => (
-//           <ActiveDiscussion 
-//             key={discussion.id} 
-//             {...discussion} 
-//             id={discussion.id}
-//             comments={discussion.comments?.length}
-//             communityBelonged={discussion.communityBelonged}
-//             createAt={discussion.createAt}
-//             likes={discussion.likes?.length}
-//             tagged={discussion.tagged?.length}
-//             content={"In your opinion, what are the top 5 scenes of Suits?"}
-//           />
-//         ))}
-//       </Sidebar> */}
-//       <Sidebar>
-//          {/* SEARCH INPUT + COVER PHOTO + TAGS */}
-//          <div className='max-w-[352px]'>
-//           <div className='mb-8'>
-//             <h2 className='mb-1 font-medium tracking-eight text-high-emphasis'>
-//               Which movies/TV-shows is it about?
-//             </h2>
-//             <p className='mb-2 tracking-eight text-medium-emphasis'>
-//               Attach a movie or TV show to make it easier for other users to discover and join your
-//               community.
-//             </p>
+    //     <section className='my-[1.438rem] flex flex-col lg:flex-row justify-center lg:gap-8 gap-4 mx-4'>
+    //       <DiscussionsSearch className='relative lg:hidden flex h-[3.5rem] w-full items-center overflow-hidden rounded-lg bg-white/[0.02] px-6' />
+    //       <div className='flex flex-col gap-6 lg:w-[46rem]'>
+    //         <StartPost />
+    //         <TabBar />
+    //         {/* {discussionsToDisplay.map((discussion) => ( */}
+    //   <Post
+    //     // key={discussion.id}
+    //     // id={discussion.id}
+    //     // userId={discussion.userId}
+    //     // createAt={discussion.createAt}
+    //     // likes={discussion.likes}
+    //     // comments={discussion.comments}
+    //     // communityBelonged={discussion.communityBelonged}
+    //     // content={"In your opinion, what are the top 5 scenes of Suits?"}
+    //     // tagged={discussion.tagged}
+    //   />
+    // {/* ))} */}
+    //         {discussionsToDisplay.length < discussions.length && (
+    //           <button onClick={loadMoreDiscussions} className='text-primary'>
+    //             Load More
+    //           </button>
+    //         )}
+    //       </div>
+    //       {/* <Sidebar>
+    //         {discussionsToDisplay.map((discussion) => (
+    //           <ActiveDiscussion
+    //             key={discussion.id}
+    //             {...discussion}
+    //             id={discussion.id}
+    //             comments={discussion.comments?.length}
+    //             communityBelonged={discussion.communityBelonged}
+    //             createAt={discussion.createAt}
+    //             likes={discussion.likes?.length}
+    //             tagged={discussion.tagged?.length}
+    //             content={"In your opinion, what are the top 5 scenes of Suits?"}
+    //           />
+    //         ))}
+    //       </Sidebar> */}
+    //       <Sidebar>
+    //          {/* SEARCH INPUT + COVER PHOTO + TAGS */}
+    //          <div className='max-w-[352px]'>
+    //           <div className='mb-8'>
+    //             <h2 className='mb-1 font-medium tracking-eight text-high-emphasis'>
+    //               Which movies/TV-shows is it about?
+    //             </h2>
+    //             <p className='mb-2 tracking-eight text-medium-emphasis'>
+    //               Attach a movie or TV show to make it easier for other users to discover and join your
+    //               community.
+    //             </p>
 
-//             <RelatedMediaSearchInput
-//               addSelectionHandler={addSelectionHandler}
-//               selectedLength={relatedTitlesSelection.length}
-//             />
+    //             <RelatedMediaSearchInput
+    //               addSelectionHandler={addSelectionHandler}
+    //               selectedLength={relatedTitlesSelection.length}
+    //             />
 
-//             <RelatedMediaSelection
-//               relatedTitlesSelection={relatedTitlesSelection}
-//               removeSelectionHandler={removeSelectionHandler}
-//               selectionPlaceholder={selectionPlaceholder}
-//             />
-//           </div>
+    //             <RelatedMediaSelection
+    //               relatedTitlesSelection={relatedTitlesSelection}
+    //               removeSelectionHandler={removeSelectionHandler}
+    //               selectionPlaceholder={selectionPlaceholder}
+    //             />
+    //           </div>
 
-//           <CommunityCoverUpload
-//             coverImagePreview={coverImagePreview}
-//             setCoverImage={setCoverImage}
-//           />
+    //           <CommunityCoverUpload
+    //             coverImagePreview={coverImagePreview}
+    //             setCoverImage={setCoverImage}
+    //           />
 
-//           <Tags addTagHandler={addTagHandler} removeTagHandler={removeTagHandler} tags={tags} />
-//         </div>
-//       </Sidebar>
-//       </section>
-<>
-Profile Page
-</>
+    //           <Tags addTagHandler={addTagHandler} removeTagHandler={removeTagHandler} tags={tags} />
+    //         </div>
+    //       </Sidebar>
+    //       </section>
+    <>Profile Page</>
   );
 }

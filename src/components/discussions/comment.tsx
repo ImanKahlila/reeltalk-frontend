@@ -34,7 +34,7 @@ export function Comment({
       try {
         const response = await axios.get(
           `https://us-central1-reeltalk-app.cloudfunctions.net/backend/communities/${communityBelonged}/discussions/${discussionId}/comments/${commentId}`,
-        //   `http://localhost:8080/communities/${communityBelonged}/discussions/${discussionId}/comments/${commentId}`,
+          //   `http://localhost:8080/communities/${communityBelonged}/discussions/${discussionId}/comments/${commentId}`,
           {
             headers: {
               Authorization: `Bearer ${idToken}`,
@@ -43,7 +43,7 @@ export function Comment({
         );
         const commentData = response.data;
         setCommentInfo(commentData);
-        console.log(commentData)
+        console.log(commentData);
       } catch (error) {
         console.error('Error fetching comment:', error);
       } finally {
@@ -52,7 +52,7 @@ export function Comment({
     };
 
     fetchCommentDetails();
-  }, [commentId, discussionId, idToken]);
+  }, [commentId, discussionId, communityBelonged, idToken]);
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -78,7 +78,7 @@ export function Comment({
     };
 
     fetchUserDetails();
-  }, [userId]);
+  }, [userId, idToken]);
 
   // Render comment content if commentInfo is available
   if (!isLoading && commentInfo) {
