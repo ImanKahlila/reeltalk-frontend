@@ -84,7 +84,7 @@ const CreateCommunity = ({ user }: { user: User }) => {
 
   const isValid =
     Object.values(formValues).every(value => value.trim() !== '') &&
-    relatedTitlesSelection.length !== 0 &&
+    relatedTitlesSelection?.length !== 0 &&
     communityImage instanceof File;
 
   return (
@@ -122,7 +122,7 @@ const CreateCommunity = ({ user }: { user: User }) => {
 
             <RelatedMediaSearchInput
               addSelectionHandler={addSelectionHandler}
-              selectedLength={relatedTitlesSelection.length}
+              selectedLength={relatedTitlesSelection?.length}
             />
 
             <RelatedMediaSelection
