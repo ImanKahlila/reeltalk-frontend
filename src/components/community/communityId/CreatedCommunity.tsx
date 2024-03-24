@@ -72,5 +72,5 @@ const CreatedCommunity = ({
     </>
   );
 };
-
+ 
 export default CreatedCommunity;
