@@ -15,6 +15,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { ValidJoinRequestsData } from '@/pages/community/[communityId]';
+
 import { useUserContext } from '@/lib/context';
 
 const AdminView = ({
@@ -82,7 +83,7 @@ function Accordian({
       <AccordionItem value='item-1' className='border-second-surface'>
         <AccordionTrigger className='text-pure-white md:text-xl'>
           <div className='flex gap-2'>
-            <span>Requests ({joinRequests?.length})</span>
+            <span>Requests {joinRequests?.length}</span>
             <div
               className={cn(
                 'h-2 w-2 rounded-full bg-primary transition-all duration-300',
@@ -133,7 +134,8 @@ function Request({
 
     try {
       await axios.post(
-        `http://localhost:8080/communities/join-community/${communityId}/pendingRequest`,
+        `https://us-central1-reeltalk-app.cloudfunctions.net/backend/communities/${communityId}/pendingRequest`,
+        // `http://localhost:8080/communities/${communityId}/pendingRequest`,
         { action: action, requestedUserId: request },
         {
           headers: { Authorization: `Bearer ${idToken}` },

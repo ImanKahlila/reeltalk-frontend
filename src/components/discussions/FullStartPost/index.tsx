@@ -1,24 +1,40 @@
 import { useState, useRef, useEffect, useReducer } from 'react';
-import EmojiPicker from './EmojiPicker';
-import AddMediaButtions from './AddMediaButtons';
-import ImagesUploadDisplay, { ImageState, imagesReducer } from './ImagesUploadDisplay';
-import HeaderCommunitySelect from './HeaderCommunitySelect';
 import axios from 'axios';
 import { useUserContext } from '@/lib/context';
 import Image from 'next/image';
+import ImagesUploadDisplay, { ImageState, imagesReducer } from '../StartPost/ImagesUploadDisplay';
+import AddMediaButtions from '../StartPost/AddMediaButtons';
+import EmojiPicker from '../StartPost/EmojiPicker';
+import { useRouter } from 'next/router';
+import toast from 'react-hot-toast';
+
+// // Discussion interface
+// interface Comment {
+//   userId: string;
+//   comment: string;
+//   replies: string[]
+//   likes: string[];
+//   discussionBelonged: any;
+//   createdAt: Date;
+//   taggedUsers: string[];
+//   discussionId?: string;
+//   replyTo: any
+// //   content: string;
+// }
 
 // Discussion interface
-interface Discussion {
-  id: string;
-  content: string;
-  createdAt: Date;
-  likes: string[];
-  comments: string[];
-  tagged: string[];
-  discussionImages?: string[];
+interface Comment {
+  uid: string;
+  comment: string;
+  taggedUsers: string[];
 }
 
-export default function StartPost() {
+interface FullPostProps {
+  discussionId: string;
+  communityBelonged: string;
+}
+
+export default function FullStartPost({ discussionId, communityBelonged }: FullPostProps) {
   const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
   const textInputRef = useRef<HTMLTextAreaElement>(null!);
   const [images, dispatch] = useReducer(imagesReducer, []);
@@ -27,22 +43,22 @@ export default function StartPost() {
   const { user, idToken } = useUserContext();
   const [selectedCommunity, setSelectedCommunity] = useState<string | null>(null);
 
-  const inputFocus = useFocusStartPost(textInputRef, images);
+  const inputFocus = useFocusFullStartPost(textInputRef, images);
 
-  const postDiscussion = async () => {
+  const router = useRouter();
+
+  const postComment = async () => {
     try {
-      const discussionData: Discussion = {
-        id: '',
-        content: text,
-        createdAt: new Date(),
-        likes: [],
-        comments: [],
-        tagged: [],
+      const commentData: Comment = {
+        uid: user?.uid || '',
+        comment: text,
+        taggedUsers: [],
       };
 
       const response = await axios.post(
-        'https://us-central1-reeltalk-app.cloudfunctions.net/api/discussions',
-        discussionData,
+        `https://us-central1-reeltalk-app.cloudfunctions.net/backend/communities/${communityBelonged}/discussions/${discussionId}/comments`,
+        // `http://localhost:8080/communities/${communityBelonged}/discussions/${discussionId}/comments`,
+        commentData,
         {
           headers: {
             Authorization: `Bearer ${idToken}`,
@@ -50,14 +66,14 @@ export default function StartPost() {
         },
       );
 
-      console.log('Discussion created successfully:', response.data);
-    } catch (error) {
-      console.error('Error creating discussion:', error);
-    }
-  };
+      console.log('Comment created:', response.data);
+      toast.success('Comment Posted');
 
-  const handleCommunitySelect = (communityName: any) => {
-    setSelectedCommunity(communityName);
+      setText('');
+    } catch (error) {
+      console.error('Error creating comment:', error);
+      toast.error(`Error commenting`);
+    }
   };
 
   return (
@@ -67,12 +83,6 @@ export default function StartPost() {
           inputFocus ? 'h-[16rem] bg-second-surface' : 'h-[6.5rem] bg-first-surface'
         } start-post-container relative flex w-full flex-col overflow-hidden rounded-lg border-[1px] border-medium-emphasis transition-all`}
       >
-        <HeaderCommunitySelect
-          onSelect={handleCommunitySelect}
-          className={`${
-            inputFocus ? 'min-h-[3.875rem] opacity-100' : 'h-0 min-h-0 opacity-0'
-          } header-community-select flex w-full items-center pl-4 pr-2 transition-all`}
-        />
         <div
           className={`${
             inputFocus ? 'overflow-x-hidden overflow-y-scroll' : 'overflow-hidden'
@@ -80,7 +90,7 @@ export default function StartPost() {
         >
           <textarea
             className='w-full resize-none overflow-hidden bg-transparent px-4 pt-3 text-high-emphasis outline-none placeholder:text-disabled'
-            placeholder={`Start a post in ${selectedCommunity || 'General Community'}`}
+            placeholder='What are your thoughts?'
             ref={textInputRef}
             onChange={e => setText(e.target.value)}
             style={{ height: spanRef.current?.offsetHeight + 'px' }}
@@ -104,7 +114,7 @@ export default function StartPost() {
             dispatch={dispatch}
           />
           <button
-            onClick={postDiscussion}
+            onClick={postComment}
             className='h-[2.125rem] w-16 rounded bg-primary font-bold text-secondary'
           >
             Post
@@ -118,7 +128,7 @@ export default function StartPost() {
   );
 }
 
-function useFocusStartPost(
+function useFocusFullStartPost(
   textInputRef: React.MutableRefObject<HTMLTextAreaElement>,
   images: ImageState,
 ) {
@@ -129,10 +139,10 @@ function useFocusStartPost(
       const target = e.target as Element;
       const isFocused =
         !!target.closest('.start-post-container') ||
-        textInputRef.current.value?.length > 0 ||
+        textInputRef.current.value.length > 0 ||
         !!target.closest('.discussions-user-image-upload') ||
-        target.classList.contains("ignore-collapse") ||
-        images?.length > 0;
+        target.classList.contains('ignore-collapse') ||
+        images.length > 0;
       setInputFocus(isFocused);
     }
     window.addEventListener('click', handleTextExpand);

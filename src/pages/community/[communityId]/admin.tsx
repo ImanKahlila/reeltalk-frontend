@@ -20,7 +20,8 @@ const CommunityAdminPage: React.FC<{ data?: string }> = ({ data }) => {
     let response;
     try {
       response = await axios.post(
-        `http://localhost:8080/communities/join-community/${communityId}/pendingRequest`,
+        `https://us-central1-reeltalk-app.cloudfunctions.net/backend/communities/join-community/${communityId}/pendingRequest`,
+        // `http://localhost:8080/communities/join-community/${communityId}/pendingRequest`,
         { action: action, requestedUserId: request },
         {
           headers: { Authorization: `Bearer ${idToken}` },
@@ -68,6 +69,7 @@ export async function getServerSideProps(context: NextPageContext) {
 
   let response;
   try {
+    // response = await axios.get(`https://us-central1-reeltalk-app.cloudfunctions.net/api/communities/join-community/${communityId}`, {
     response = await axios.get(`http://localhost:8080/communities/join-community/${communityId}`, {
       headers: { Authorization: `Bearer ${idToken}` },
     });

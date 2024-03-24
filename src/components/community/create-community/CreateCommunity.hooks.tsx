@@ -50,7 +50,8 @@ export const useImageUpload = () => {
 //
 import axios from 'axios';
 import { User } from 'firebase/auth';
-const API_URL = 'https://us-central1-reeltalk-app.cloudfunctions.net/api/communities';
+// const API_URL = 'http://localhost:8080/communities';
+const API_URL = 'https://us-central1-reeltalk-app.cloudfunctions.net/backend/communities';
 
 import toast from 'react-hot-toast';
 
@@ -115,7 +116,7 @@ export const useCreateCommunity = async ({
       headers: {
         'Content-Type': 'multipart/form-data',
       },
-      // withCredentials: true,
+      withCredentials: true,
     });
 
     const communityId = response.data.communityId;
