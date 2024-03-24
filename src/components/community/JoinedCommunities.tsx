@@ -41,7 +41,7 @@ function Loader() {
 }
 
 function displayJoinedCommunities(joinedCommunities: IJoinedCommunityProps['joinedCommunities']) {
-  if (joinedCommunities.length > 0) {
+  if (joinedCommunities?.length > 0) {
     return joinedCommunities.map((title: ICommunityObject) => (
       <Community
         key={title.communityId}

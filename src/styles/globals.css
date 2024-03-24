@@ -356,3 +356,30 @@ h2.epr-emoji-category-label,
 input.epr-search {
   font-family: 'Outfit', sans-serif;
 }
+
+/***************************
+    MODAL STYLING
+***************************/
+
+.black-modal .ant-modal-content {
+  background-color: black;
+  border-radius: 4px; /* Add this line to set the border-radius */
+}
+
+.modal-bg .ant-modal-mask {
+    border-radius: 4px; /* Add this line to set the border-radius */
+  }
+  
+  .modal-bg .ant-modal-wrap {
+    border-radius: 4px; /* Add this line to set the border-radius */
+  }
+
+  .modal-bg .ant-modal {
+    border-radius: 4px; /* Add this line to set the border-radius */
+  }
+  
+  .modal-bg .ant-modal-content {
+    background-color: #464646;
+
+    border-radius: 4px; /* Add this line to set the border-radius */
+  }
