@@ -24,7 +24,7 @@ import CreatedCommunity from '@/components/community/communityId/CreatedCommunit
 interface Discussion {
   id: string;
   discussionId: string;
-  //   content: string;
+  body: string;
   userId: string;
   createAt: any;
   likes: string[];
@@ -34,23 +34,6 @@ interface Discussion {
 }
 
 const db = getFirestore(app);
-
-// interface ICommunityObject {
-//   content: { id: string; isApi: boolean; poster: string; title: string }[];
-//   coverPhoto: string;
-//   createdAt: any;
-//   description: string;
-//   discussions: any[];
-//   communityImage: string;
-//   isPublic: boolean;
-//   joinRequests?: string[];
-//   members: string[];
-//   name: string;
-//   rules: string;
-//   tags: string[];
-//   userId: string;
-//   communityId: string;
-// }
 
 interface ValidJoinRequestsData {
   displayName: string;
@@ -70,6 +53,8 @@ const DiscussionPage: React.FC<Props> = ({ data, validJoinRequests, discussions 
     : null;
 
   const { user, idToken } = useUserContext();
+
+  console.log(idToken)
 
   const DISCUSSIONS_TO_LOAD = 1;
 
@@ -107,15 +92,15 @@ const DiscussionPage: React.FC<Props> = ({ data, validJoinRequests, discussions 
       }
     };
     fetchCommunityDetails();
-  }, [communityId]);
+  }, [communityId, discussionId, idToken]);
 
   //TODO: Make sure to fix rerender issue in case refresh etc...
   useEffect(() => {
     const fetchDiscussion = async () => {
       try {
         const response = await axios.get<Record<string, Discussion>>(
-          `https://us-central1-reeltalk-app.cloudfunctions.net/backend/communities/${communityId}/discussions/${discussionId}/`,
-          //   `http://localhost:8080/communities/${communityId}/discussions/${discussionId}/`,
+            `https://us-central1-reeltalk-app.cloudfunctions.net/backend/communities/${communityId}/discussions/${discussionId}/`,
+        //   `http://localhost:8080/communities/${communityId}/discussions/${discussionId}/`,
           {
             headers: {
               Authorization: `Bearer ${idToken}`,
@@ -132,58 +117,12 @@ const DiscussionPage: React.FC<Props> = ({ data, validJoinRequests, discussions 
     };
 
     fetchDiscussion();
-  }, [discussionId]);
+  }, [communityId, discussionId, idToken]);
 
-  // useEffect(() => {
-  //     const fetchCommunityDetails = async () => {
-  //       try {
-  //         if (communityId) {
-  //           const response = await axios.get(
-  //             `https://us-central1-reeltalk-app.cloudfunctions.net/backend/communities/${communityId}/`,
-  //             {
-  //               headers: { Authorization: `Bearer ${idToken}` },
-  //             }
-  //           );
-  //           const communityData = response.data;
-  //           setCommunityInfo(communityData);
-  //         }
-  //       } catch (error) {
-  //         console.error('Error fetching community details:', error);
-  //         setError('Error fetching community details');
-  //       } finally {
-  //         setIsLoading(false);
-  //       }
-  //     };
-  //     fetchCommunityDetails();
-  //   }, [communityId, discussionId, idToken]);
-
-  //   useEffect(() => {
-  //     const fetchDiscussion = async () => {
-  //       try {
-  //         const response = await axios.get<Record<string, Discussion>>(
-  //           `https://us-central1-reeltalk-app.cloudfunctions.net/backend/communities/${communityId}/discussions/${discussionId}/`,
-  //           {
-  //             headers: {
-  //               Authorization: `Bearer ${idToken}`,
-  //             },
-  //           },
-  //         );
-
-  //         setDiscussion(response.data);
-  //         console.log(discussion);
-  //       } catch (error) {
-  //         console.error('Error fetching discussions:', error);
-  //       }
-  //     };
-
-  //     if (discussionId && communityId) {
-  //       fetchDiscussion();
-  //     }
-  //   }, [communityId, discussionId, idToken, discussion]);
-
-  //   if (!user) {
-  //     return <div>Please login to view this page.</div>;
-  //   }
+  //TODO: POSSIBLE FIX FOR RENDER ISSUE
+  //Is to maybe match all useffect depencies that
+  //may intertwine
+  //UPDATED TODO: CHECK IF IT WORKS
 
   return (
     <section className='mx-4 my-[1.438rem] flex flex-col justify-center gap-4 lg:flex-row lg:gap-8'>
@@ -196,7 +135,7 @@ const DiscussionPage: React.FC<Props> = ({ data, validJoinRequests, discussions 
           likes={discussion?.likes}
           comments={discussion?.comments}
           communityBelonged={discussion?.communityBelonged}
-          content={'In your opinion, what are the top 5 scenes of Suits?'}
+          body={discussion?.body}
           tagged={discussion?.tagged}
         />
       </div>
@@ -234,3 +173,60 @@ const DiscussionPage: React.FC<Props> = ({ data, validJoinRequests, discussions 
 };
 
 export default DiscussionPage;
+
+export async function getServerSideProps(context: NextPageContext) {
+  const communityId = context.query.communityId;
+  const idToken = nookies.get(context).idToken;
+
+  try {
+    const docRef = doc(db, `/communities/${communityId}`);
+    const docSnapshot = await getDoc(docRef);
+
+    if (!docSnapshot.exists()) {
+      return {
+        notFound: true,
+      };
+    }
+
+    const data: DocumentData | ICommunityObject = docSnapshot.data();
+
+    let validJoinRequests = null;
+
+    if (!data.isPublic) {
+      const response = await axios.get(
+        `https://us-central1-reeltalk-app.cloudfunctions.net/backend/communities/join-community/${communityId}/`,
+        // `http://localhost:8080/communities/join-community/${communityId}/`,
+        {
+          headers: { Authorization: `Bearer ${idToken}` },
+        },
+      );
+
+      validJoinRequests = response.data;
+    }
+
+    const discussionsResponse = await axios.get(
+        `https://us-central1-reeltalk-app.cloudfunctions.net/backend/communities/${communityId}/discussions/`,
+    //   `http://localhost:8080/communities/${communityId}/discussions/`,
+      {
+        headers: { Authorization: `Bearer ${idToken}` },
+      },
+    );
+
+    const discussionsArray = Object.values(discussionsResponse.data);
+
+    console.log(discussionsArray);
+
+    return {
+      props: {
+        data: JSON.stringify(data),
+        validJoinRequests: JSON.stringify(validJoinRequests),
+        discussions: discussionsArray,
+      },
+    };
+  } catch (error) {
+    console.log('Error fetching data:', error);
+    return {
+      notFound: true,
+    };
+  }
+}

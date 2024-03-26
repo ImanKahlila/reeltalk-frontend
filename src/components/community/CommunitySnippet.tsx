@@ -24,6 +24,8 @@ const CommunitySnippet = ({ pageData }: { pageData: ICommunityObject }) => {
     setCoverImageLoaded(true);
   };
 
+  console.log(pageData);
+
   const { isAdmin, isMember, pendingJoin, spinnerActive, joinCommunityHandler } =
     useJoinLeaveCommunity(
       pageData?.userId,

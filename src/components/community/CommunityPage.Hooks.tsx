@@ -54,14 +54,14 @@ export const useRetrieveJoinedCommunites = () => {
         await Promise.all(
           joinedCommunities.map(async (communityId: string) => {
             let response = await axios.get(
-                `https://us-central1-reeltalk-app.cloudfunctions.net/backend/communities/${communityId}`,
+              `https://us-central1-reeltalk-app.cloudfunctions.net/backend/communities/${communityId}`,
             //   `http://localhost:8080/communities/${communityId}`,
               {
                 headers: {
                   Authorization: `Bearer ${idToken}`,
                 },
               },
-            ); 
+            );
             joinedDataArray.push(response.data.communityData);
           }),
         );
@@ -89,7 +89,7 @@ export const useRetrievePopularCommunities = () => {
     async function retrievePopularCommunities() {
       try {
         let response = await axios.get(
-            'https://us-central1-reeltalk-app.cloudfunctions.net/backend/communities/popular',
+          'https://us-central1-reeltalk-app.cloudfunctions.net/backend/communities/popular',
         //   'http://localhost:8080/communities/popular',
           {
             headers: {
