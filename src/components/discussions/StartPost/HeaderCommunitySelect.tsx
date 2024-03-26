@@ -22,7 +22,7 @@ export default function HeaderCommunitySelect({ onSelect, ...props }: HeaderComm
       try {
         const response = await axios.get<ICommunityObject[]>(
           'https://us-central1-reeltalk-app.cloudfunctions.net/backend/communities',
-          // 'http://localhost:8080/communities',
+        //   'http://localhost:8080/communities',
           {
             headers: {
               Authorization: `Bearer ${idToken}`,

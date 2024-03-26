@@ -14,7 +14,7 @@ interface FullPostProps {
   comments: string[];
   communityBelonged: string;
   tagged: string[];
-  content: string; // Add content prop
+  body: string;
 }
 const FullPost: React.FC<FullPostProps> = ({
   discussionId,
@@ -24,9 +24,10 @@ const FullPost: React.FC<FullPostProps> = ({
   comments,
   communityBelonged,
   tagged,
-  content,
+  body,
 }) => {
   const { user, idToken } = useUserContext();
+  console.log(idToken)
 
   const [communityInfo, setCommunityInfo] = useState<any>(null);
   const [userInfo, setUserInfo] = useState<any>(null);
@@ -37,7 +38,7 @@ const FullPost: React.FC<FullPostProps> = ({
   useEffect(() => {
     const fetchCommunityDetails = async () => {
       try {
-        if (communityBelonged) {
+        // if (communityBelonged) {
           const response = await axios.get(
             `https://us-central1-reeltalk-app.cloudfunctions.net/backend/communities/${communityBelonged}/`,
             // `http://localhost:8080/communities/${communityBelonged}/`,
@@ -50,7 +51,7 @@ const FullPost: React.FC<FullPostProps> = ({
           if (communityData) {
             setCommunityInfo(communityData);
           }
-        }
+        // }
       } catch (error) {
         console.error('Error fetching community details:', error);
         setError('Error fetching community details');
@@ -60,53 +61,61 @@ const FullPost: React.FC<FullPostProps> = ({
     };
 
     fetchCommunityDetails();
-  }, [communityBelonged, idToken]);
+  }, [communityBelonged, userId, idToken]);
+
+
 
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        if (userId) {
-          // const response = await axios.get(`http://localhost:8080/api/user/profile/${userId}/`,
-          const response = await axios.get(
-            `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/profile/${userId}/`,
-            {
-              headers: { Authorization: `Bearer ${idToken}` },
-            },
-          );
-          const userData = response.data;
-
-          if (userData) {
+        // if (userId) {
+            const response = await axios.get(
+              `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/profile/${userId}`,
+                // `http://localhost:8080/api/user/profile/${userId}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${idToken}`,
+                },
+              },
+            );
+            const userData = response.data.data;
             setUserInfo(userData);
             console.log(userData);
-          }
-        }
+        
       } catch (error) {
-        console.error('Error fetching user details:', error);
-        setError('Error fetching user details');
+        console.error('Error fetching user:', error);
       } finally {
-        setIsLoading(false);
+        setIsLoading(false); // Set loading state to false after data fetch attempt
       }
     };
 
     fetchUserDetails();
-  }, [userId, idToken]);
+  }, [communityBelonged, userId, idToken]);
+
 
   // Convert createAt to a Date object
   const dateObject = new Date(createAt?._seconds * 1000 + createAt?._nanoseconds / 1000000);
   const isDateValid = !isNaN(dateObject.getTime());
 
-  // Format the date if it's valid
-  const formattedDate = isDateValid
-    ? dateObject.toLocaleString('en-US', {
-        month: 'long',
-        day: 'numeric',
-        year: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        second: 'numeric',
-        timeZoneName: 'short',
-      })
-    : 'Invalid Date';
+    const currentTime = new Date();
+    const timeDifference = currentTime.getTime() - dateObject.getTime();
+    
+    let formattedDate;
+    
+    if (timeDifference < 60000) { // Less than a minute
+      formattedDate = `${Math.floor(timeDifference / 1000)}s ago`;
+    } else if (timeDifference < 3600000) { // Less than an hour
+      formattedDate = `${Math.floor(timeDifference / 60000)}m ago`;
+    } else if (timeDifference < 86400000) { // Less than a day
+      formattedDate = `${Math.floor(timeDifference / 86400000)}d ago`;
+    } else if (timeDifference < 2592000000) { // Less than a month (30 days)
+      formattedDate = `${Math.floor(timeDifference / 86400000)}d ago`;
+    } else if (timeDifference < 31536000000) { // Less than a year (365 days)
+      const months = Math.floor(timeDifference / 2592000000);
+      formattedDate = `${months === 1 ? '1 month' : `${months} months`} ago`;
+    } else { // More than a year
+      formattedDate = `${Math.floor(timeDifference / 31536000000)}y ago`;
+    }
 
   return (
     <div className='flex w-full flex-col gap-[0.625rem] rounded-lg bg-first-surface px-6 py-4 '>
@@ -127,7 +136,7 @@ const FullPost: React.FC<FullPostProps> = ({
           </div>
         </div>
       </div>
-      <h2 className='text-base text-high-emphasis'>{content}</h2>
+      <h2 className='text-base text-high-emphasis'>{body}</h2>
       <LikesReplies likes={likes?.length} replies={comments?.length} />
       <div className='my-2'>
         <FullStartPost communityBelonged={communityBelonged} discussionId={discussionId} />
@@ -140,10 +149,7 @@ const FullPost: React.FC<FullPostProps> = ({
           idToken={idToken}
           discussionId={discussionId}
           communityBelonged={communityBelonged}
-          userId={'testing'}
           commentId={comment}
-          likes={2}
-          replies={2}
         />
       ))}
     </div>

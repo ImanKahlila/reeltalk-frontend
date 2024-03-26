@@ -5,30 +5,44 @@ import LikesReplies from '@/components/shared/LikesReplies';
 import { useUserContext } from '@/lib/context';
 
 interface DiscussionProps {
-  id: string;
+  discussionId: string;
   userId: string;
   createAt: any;
   likes: number;
   comments: string[];
   communityBelonged: string;
   tagged: string[];
-  content: string; // Add content prop
+  body: string; // Add body prop
+}
+
+interface Discussion {
+  discussionId: string;
+  id: string;
+  body: string;
+  userId: string;
+  createAt: any;
+  likes: string[];
+  comments: string[];
+  communityBelonged: string;
+  tagged: string[];
 }
 
 const ActiveDiscussion: React.FC<DiscussionProps> = ({
-  id,
+  discussionId,
   userId,
   comments,
   communityBelonged,
   createAt,
   likes,
   tagged,
-  content,
+  body,
 }) => {
   const [communityInfo, setCommunityInfo] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const { user, idToken } = useUserContext();
+
+  const [discussions, setDiscussions] = useState<Discussion[]>([]);
 
   useEffect(() => {
     const fetchCommunityDetails = async () => {
@@ -58,6 +72,38 @@ const ActiveDiscussion: React.FC<DiscussionProps> = ({
     fetchCommunityDetails();
   }, [communityBelonged, idToken]);
 
+  useEffect(() => {
+    const fetchDiscussions = async () => {
+      try {
+        const response = await axios.get<Record<string, Discussion>>(
+            'https://us-central1-reeltalk-app.cloudfunctions.net/backend/communities/14j9jP03strFhDmDmScz/discussions/',
+        //   'http://localhost:8080/communities/14j9jP03strFhDmDmScz/discussions/',
+          {
+            headers: {
+              Authorization: `Bearer ${idToken}`,
+              'Content-Type': 'multipart/form-data',
+            },
+          },
+        );
+
+        const discussionsArray = Object.values(response.data).map((discussionData: any) => {
+          return {
+            ...discussionData,
+          };
+        });
+
+        setDiscussions(prevDiscussions => [...prevDiscussions, ...discussionsArray]);
+        // setLoadCount(prevCount => prevCount + 1);
+      } catch (error) {
+        console.error('Error fetching discussions:', error);
+      }
+    };
+
+    if (idToken) {
+      fetchDiscussions();
+    }
+  }, [idToken]);
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -67,25 +113,38 @@ const ActiveDiscussion: React.FC<DiscussionProps> = ({
   }
 
   // Convert createAt to a Date object
-  const dateObject = new Date(createAt._seconds * 1000 + createAt._nanoseconds / 1000000);
+  const dateObject = new Date(createAt?._seconds * 1000 + createAt?._nanoseconds / 1000000);
   const isDateValid = !isNaN(dateObject.getTime());
 
-  // Format the date if it's valid
-  const formattedDate = isDateValid
-    ? dateObject.toLocaleString('en-US', {
-        month: 'long',
-        day: 'numeric',
-        year: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        second: 'numeric',
-        timeZoneName: 'short',
-      })
-    : 'Invalid Date';
+  const currentTime = new Date();
+  const timeDifference = currentTime.getTime() - dateObject.getTime();
+
+  let formattedDate;
+
+  if (timeDifference < 60000) {
+    // Less than a minute
+    formattedDate = `${Math.floor(timeDifference / 1000)}s ago`;
+  } else if (timeDifference < 3600000) {
+    // Less than an hour
+    formattedDate = `${Math.floor(timeDifference / 60000)}m ago`;
+  } else if (timeDifference < 86400000) {
+    // Less than a day
+    formattedDate = `${Math.floor(timeDifference / 86400000)}d ago`;
+  } else if (timeDifference < 2592000000) {
+    // Less than a month (30 days)
+    formattedDate = `${Math.floor(timeDifference / 86400000)}d ago`;
+  } else if (timeDifference < 31536000000) {
+    // Less than a year (365 days)
+    const months = Math.floor(timeDifference / 2592000000);
+    formattedDate = `${months === 1 ? '1 month' : `${months} months`} ago`;
+  } else {
+    // More than a year
+    formattedDate = `${Math.floor(timeDifference / 31536000000)}y ago`;
+  }
 
   /////USE THIS LATER ON TIMESTAMP
-  const timestampSeconds = createAt._seconds;
-  const timestampMilliseconds = timestampSeconds * 1000 + createAt._nanoseconds / 1000000;
+  const timestampSeconds = createAt?._seconds;
+  const timestampMilliseconds = timestampSeconds * 1000 + createAt?._nanoseconds / 1000000;
   const currentDate = new Date(); // Current date and time
 
   // Calculate the difference in milliseconds
@@ -118,7 +177,7 @@ const ActiveDiscussion: React.FC<DiscussionProps> = ({
           <div className='text-white/[0.6]'>{formattedDate}</div>
         </div>
       </div>
-      <div className='text-high-emphasis'>{comments[0]}</div>
+      <div className='text-high-emphasis'>{body}</div>
       <LikesReplies likes={likes} replies={comments?.length} />
     </div>
   );

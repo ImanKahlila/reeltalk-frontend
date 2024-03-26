@@ -126,7 +126,7 @@ export default function DiscussionPage() {
       try {
         const response = await axios.get<Record<string, Discussion>>(
           'https://us-central1-reeltalk-app.cloudfunctions.net/backend/discussions/',
-          //   'http://localhost:3000/discussions/',
+            // 'http://localhost:3000/discussions/',
           {
             headers: {
               Authorization: `Bearer ${idToken}`,
