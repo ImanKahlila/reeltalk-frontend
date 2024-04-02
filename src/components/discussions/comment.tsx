@@ -94,7 +94,6 @@ export function Comment({
           );
           const userData = response.data.data; // Assuming the user data is nested under 'data'
           setUserInfo(userData);
-          console.log(userData);
         }
       } catch (error) {
         console.error('Error fetching user:', error);

@@ -69,8 +69,8 @@ export async function getServerSideProps(context: NextPageContext) {
 
   let response;
   try {
-    // response = await axios.get(`https://us-central1-reeltalk-app.cloudfunctions.net/api/communities/join-community/${communityId}`, {
-    response = await axios.get(`http://localhost:8080/communities/join-community/${communityId}`, {
+    response = await axios.get(`https://us-central1-reeltalk-app.cloudfunctions.net/api/communities/join-community/${communityId}`, {
+    // response = await axios.get(`http://localhost:8080/communities/join-community/${communityId}`, {
       headers: { Authorization: `Bearer ${idToken}` },
     });
 

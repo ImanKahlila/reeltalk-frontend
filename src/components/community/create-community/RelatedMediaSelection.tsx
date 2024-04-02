@@ -2,6 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 
 import { IRelatedTitlesSelection } from './CreateCommunity.hooks';
+import { PlusIcon } from 'lucide-react';
 
 interface IRelatedMediaSelectionProps {
   relatedTitlesSelection: IRelatedTitlesSelection['relatedTitles'];
@@ -53,6 +54,7 @@ function Media({ id, poster, removeSelectionHandler }: IMediaProps) {
     >
       <picture>
         <Image src={poster} fill alt=''></Image>
+        <PlusIcon />
       </picture>
     </div>
   );

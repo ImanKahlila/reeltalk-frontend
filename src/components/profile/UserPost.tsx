@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useUserContext } from '@/lib/context';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { Skeleton } from '../ui/skeleton';
 
 interface PostProps {
   discussionId: string;
@@ -14,10 +15,10 @@ interface PostProps {
   comments: string[];
   communityBelonged: string;
   tagged: string[];
-  body: string; // Add body prop
+  body: string;
 }
 
-const Post: React.FC<PostProps> = ({
+const UserPost: React.FC<PostProps> = ({
   discussionId,
   userId,
   createAt,
@@ -71,8 +72,7 @@ const Post: React.FC<PostProps> = ({
       try {
         if (comments) {
           const response = await axios.get(
-              `https://us-central1-reeltalk-app.cloudfunctions.net/backend/communities/${communityBelonged}/discussions/${discussionId}/comments/${commentInfo?.commentId}`,
-            // `http://localhost:8080/communities/${communityBelonged}/discussions/${discussionId}/comments/0J53xfBr9fR2GlN0rcUn`,
+            `https://us-central1-reeltalk-app.cloudfunctions.net/backend/communities/${communityBelonged}/discussions/${discussionId}/comments/${commentInfo?.commentId}`,
             // `http://localhost:8080/communities/${communityBelonged}/discussions/${discussionId}/comments/0J53xfBr9fR2GlN0rcUn`,
             {
               headers: {
@@ -86,19 +86,19 @@ const Post: React.FC<PostProps> = ({
       } catch (error) {
         console.error('Error fetching comment:', error);
       } finally {
-        setIsLoading(false); // Set loading state to false after data fetch attempt
+        setIsLoading(false);
       }
     };
 
     fetchCommentDetails();
-  }, [commentInfo?.commentId, discussionId, communityBelonged, comments, idToken]);
+  }, [comments, idToken, commentInfo?.commentId, communityBelonged, discussionId]);
 
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
         if (userId) {
           const response = await axios.get(
-              `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/profile/${userId}`,
+            `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/profile/${userId}`,
             // `http://localhost:8080/api/user/profile/${userId}`,
             {
               headers: {
@@ -112,7 +112,7 @@ const Post: React.FC<PostProps> = ({
       } catch (error) {
         console.error('Error fetching user:', error);
       } finally {
-        setIsLoading(false); // Set loading state to false after data fetch attempt
+        setIsLoading(false);
       }
     };
 
@@ -151,58 +151,68 @@ const Post: React.FC<PostProps> = ({
   }
 
   return (
-    // <Link href={`${communityId}/discussions/${communityBelonged}`}
     <Link
       href={`${communityId}/discussions/${discussionId}`}
       className='flex w-full flex-col gap-[0.625rem] rounded-lg bg-first-surface px-6 py-4 hover:bg-black '
     >
-      <div className='flex h-[2.357rem] gap-2'>
-        <Image
-          width={24}
-          height={37.71}
-          src={communityInfo?.communityData?.communityImage}
-          alt='movie thumbnail'
-        />
-        <div className='flex grow flex-col justify-center text-xs lg:justify-end'>
-          {/* <div className='text-primary'>The Best Closers in the City</div>
-          <div className='text-primary'>{communityBelonged}</div> */}
-          <div className='text-primary'>{communityInfo?.communityData?.name}</div>
-          {/* <Author className='flex h-4 items-center gap-1 text-high-emphasis lg:hidden' /> */}
-          <div className='flex h-4 items-center gap-1 text-high-emphasis lg:hidden'>
-            <div>Posted by</div>
-            <Image width={16} height={16} src='/Discussions/ProfileIcon.png' alt='profile icon' />
-            {/* <div>Jennifer L.</div> */}
-
-            {/* <div>{userId}</div> */}
-            <div>{userInfo?.displayName}</div>
-          </div>
-          <div className='flex'>
-            <div className='grow text-white/[0.6]'>{formattedDate}</div>
-            <div className='hidden h-4 items-center gap-1 text-high-emphasis lg:flex'>
-              <div>Posted by</div>
-              <Image width={16} height={16} src='/Discussions/ProfileIcon.png' alt='profile icon' />
-              {/* <div>Jennifer L.</div> */}
-
-              <div>{userInfo?.displayName}</div>
+      {isLoading ? (
+        <Skeleton className='w-full' />
+      ) : (
+        <>
+          <div className='flex h-[2.357rem] gap-2'>
+            <Image
+              width={24}
+              height={37.71}
+              src={communityInfo?.communityData?.communityImage}
+              alt='movie thumbnail'
+            />
+            <div className='flex grow flex-col justify-center text-xs lg:justify-end'>
+              <div className='text-primary'>{communityInfo?.communityData?.name}</div>
+              <div className='flex h-4 items-center gap-1 text-high-emphasis lg:hidden'>
+                <div>Posted by</div>
+                <Image
+                  width={16}
+                  height={16}
+                  src='/Discussions/ProfileIcon.png'
+                  alt='profile icon'
+                />
+                <div>{userInfo?.displayName}</div>
+              </div>
+              <div className='flex'>
+                <div className='grow text-white/[0.6]'>{formattedDate}</div>
+                <div className='hidden h-4 items-center gap-1 text-high-emphasis lg:flex'>
+                  <div>Posted by</div>
+                  <Image
+                    width={16}
+                    height={16}
+                    src='/Discussions/ProfileIcon.png'
+                    alt='profile icon'
+                  />
+                  <div>{userInfo?.displayName}</div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
-      <h2 className='text-base text-high-emphasis'>{body}</h2>
-      <LikesReplies likes={likes?.length} replies={comments?.length} />
-      {/* Render additional discussion details if needed */}
-
-      {/* Comment on a Discussion */}
-      <div className='flex grow flex-col gap-2 rounded bg-white/[0.12] p-2'>
-        <div className='flex h-[1.188rem] gap-2 text-[0.875rem] text-white/[0.92]'>
-          <Image width={16} height={16} src='/Discussions/ProfileIcon2.png' alt='profile icon' />
-          <p className='text-xs text-high-emphasis'>{userInfo?.displayName}</p>
-        </div>
-
-        <p className='text-xs text-high-emphasis'>{commentInfo?.comment}</p>
-
-        <LikesReplies likes={commentInfo?.likes?.length} replies={commentInfo?.replies?.length} />
-      </div>
+          <h2 className='text-base text-high-emphasis'>{body}</h2>
+          <LikesReplies likes={likes?.length} replies={comments?.length} />
+          <div className='flex grow flex-col gap-2 rounded bg-white/[0.12] p-2'>
+            <div className='flex h-[1.188rem] gap-2 text-[0.875rem] text-white/[0.92]'>
+              <Image
+                width={16}
+                height={16}
+                src='/Discussions/ProfileIcon2.png'
+                alt='profile icon'
+              />
+              <p className='text-xs text-high-emphasis'>{userInfo?.displayName}</p>
+            </div>
+            <p className='text-xs text-high-emphasis'>{commentInfo?.comment}</p>
+            <LikesReplies
+              likes={commentInfo?.likes?.length}
+              replies={commentInfo?.replies?.length}
+            />
+          </div>
+        </>
+      )}
     </Link>
   );
 };
@@ -220,4 +230,4 @@ function Author({ ...props }: Author) {
   );
 }
 
-export default Post;
+export default UserPost;

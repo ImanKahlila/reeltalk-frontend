@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import MinusIcon from '../../Icons/MinusIcon';
 
 //reducer function for adding/removing images
@@ -29,7 +30,8 @@ export default function ImagesUploadDisplay({ images, dispatch, ...props }: Imag
               onClick={() => dispatch({ type: 'remove', payload: src })}
               className='absolute right-[-6px] top-[-6px] cursor-pointer'
             />
-            <img src={src} alt='user uploaded image' className='h-full object-contain' />
+            {/* <img src={src} alt='user uploaded image' className='h-full object-contain' /> */}
+            <Image src={src} alt='user uploaded image' className='h-full object-contain' />
           </div>
         );
       })}

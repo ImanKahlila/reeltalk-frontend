@@ -27,7 +27,6 @@ const FullPost: React.FC<FullPostProps> = ({
   body,
 }) => {
   const { user, idToken } = useUserContext();
-  console.log(idToken)
 
   const [communityInfo, setCommunityInfo] = useState<any>(null);
   const [userInfo, setUserInfo] = useState<any>(null);
@@ -80,7 +79,6 @@ const FullPost: React.FC<FullPostProps> = ({
             );
             const userData = response.data.data;
             setUserInfo(userData);
-            console.log(userData);
         
       } catch (error) {
         console.error('Error fetching user:', error);
