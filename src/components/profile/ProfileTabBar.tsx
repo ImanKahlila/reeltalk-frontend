@@ -528,9 +528,9 @@ const UserPosts = ({ userId }: any) => {
   }, [userId, idToken]);
 
   return (
-    <div className='mx-auto mb-12 flex max-w-[343px] flex-col gap-6 md:max-w-none md:flex-row md:gap-[20px] lg:gap-[40px]'>
+    // <div className='mx-auto mb-12 flex max-w-[343px] flex-col gap-6 md:max-w-none md:flex-row md:gap-[20px] lg:gap-[40px]'>
+    <div className='mx-auto mb-12 flex max-w-[343px] flex-col gap-6 md:max-w-none md:gap-[20px] lg:gap-[40px]'>
       {userDiscussions?.map((discussion: any) => (
-        <div className='flex flex-col'>
           <UserPost
             key={discussion?.id}
             discussionId={discussion?.discussionId}
@@ -542,7 +542,6 @@ const UserPosts = ({ userId }: any) => {
             body={discussion?.body}
             tagged={discussion?.tagged}
           />
-        </div>
       ))}
     </div>
   );
