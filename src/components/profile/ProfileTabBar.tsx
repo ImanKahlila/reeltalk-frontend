@@ -528,20 +528,19 @@ const UserPosts = ({ userId }: any) => {
   }, [userId, idToken]);
 
   return (
-    // <div className='mx-auto mb-12 flex max-w-[343px] flex-col gap-6 md:max-w-none md:flex-row md:gap-[20px] lg:gap-[40px]'>
     <div className='mx-auto mb-12 flex max-w-[343px] flex-col gap-6 md:max-w-none md:gap-[20px] lg:gap-[40px]'>
       {userDiscussions?.map((discussion: any) => (
-          <UserPost
-            key={discussion?.id}
-            discussionId={discussion?.discussionId}
-            userId={discussion?.userId}
-            createAt={discussion?.createAt}
-            likes={discussion?.likes}
-            comments={discussion?.comments}
-            communityBelonged={discussion?.communityBelonged}
-            body={discussion?.body}
-            tagged={discussion?.tagged}
-          />
+        <UserPost
+          key={discussion?.id}
+          discussionId={discussion?.discussionId}
+          userId={discussion?.userId}
+          createAt={discussion?.createAt}
+          likes={discussion?.likes}
+          comments={discussion?.comments}
+          communityBelonged={discussion?.communityBelonged}
+          body={discussion?.body}
+          tagged={discussion?.tagged}
+        />
       ))}
     </div>
   );
