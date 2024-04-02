@@ -193,14 +193,14 @@ const AboutMe = ({ userId }: any) => {
               <h2 className='mb-3 font-medium tracking-eight text-high-emphasis'>Top 5 Movies</h2>
               <div className='flex space-x-2'>
                 {userInfo?.favoriteMovies?.map((movie: any) => (
-                  <TopUserMovies key={movie.id} poster={movie.primaryImage?.url} />
+                  <TopUserMovies key={movie?.id} poster={movie?.primaryImage?.url} />
                 ))}
               </div>
 
               <h2 className='mb-3 font-medium tracking-eight text-high-emphasis'>Top 5 TV shows</h2>
               <div className='flex space-x-2'>
                 {userInfo?.favoriteShows?.map((show: any) => (
-                  <TopUserShows key={show.id} poster={show.primaryImage?.url} />
+                  <TopUserShows key={show?.id} poster={show?.primaryImage?.url} />
                 ))}
               </div>
             </div>

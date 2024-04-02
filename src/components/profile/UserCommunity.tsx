@@ -23,7 +23,7 @@ const UserCommunity = ({ communityId }: any) => {
   useEffect(() => {
     const fetchCommunityDetails = async () => {
       try {
-        // if (communityId) {
+        if (communityId) {
         const response = await axios.get(
           `https://us-central1-reeltalk-app.cloudfunctions.net/backend/communities/${communityId}/`,
           //   `http://localhost:8080/communities/${communityId}/`,
@@ -36,7 +36,7 @@ const UserCommunity = ({ communityId }: any) => {
         if (communityData) {
           setCommunityInfo(communityData);
         }
-        // }
+        }
       } catch (error) {
         console.error('Error fetching community details:', error);
         setError('Error fetching community details');
