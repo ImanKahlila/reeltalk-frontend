@@ -7,6 +7,7 @@ import ProfileTabBar from '@/components/profile/ProfileTabBar';
 
 import UserImg from '@/assets/user.png';
 import Image from 'next/image';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function ProfilePage() {
   const { user, idToken } = useUserContext();
@@ -57,6 +58,34 @@ export default function ProfilePage() {
         year: 'numeric',
       })
     : 'Invalid Date';
+
+  if (isLoading || !userInfo) {
+    return (
+      <section className='mx-4 my-[1.438rem] flex flex-col justify-center gap-4 lg:flex-row lg:gap-8'>
+        <div className='flex flex-col gap-6 lg:w-[46rem]'>
+          <div className='flex items-center'>
+            <div className='flex h-[100px] w-[100px] items-center'>
+              <Skeleton className='h-[100px] w-[100px] rounded-full' />
+            </div>
+            <div className='px-[32px]'>
+              <div>
+                <Skeleton className='h-8 w-64 text-high-emphasis md:text-[36px]' />
+              </div>
+              <div className='flex items-center py-3'>
+                <Skeleton className='h-4 w-32 text-medium-emphasis md:text-[16px]' />
+                <span className='px-2 text-medium-emphasis md:text-[20px]'>•</span>
+                <Skeleton className='h-4 w-32 text-medium-emphasis md:text-[16px]' />
+              </div>
+              <div>
+                <Skeleton className='h-4 w-96 text-medium-emphasis md:text-[16px]' />
+              </div>
+            </div>
+          </div>
+          <ProfileTabBar userId={String(userId)} />
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className='mx-4 my-[1.438rem] flex flex-col justify-center gap-4 lg:flex-row lg:gap-8'>
