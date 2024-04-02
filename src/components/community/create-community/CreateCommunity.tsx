@@ -7,7 +7,7 @@ import {
   useImageUpload,
   useRelatedMedia,
   useTags,
-} from './CreateCommunity.hooks';
+} from '@/components/community/create-community/CreateCommunity.hooks';
 
 // Components
 import CommunityImageUpload from '@/components/community/create-community/CommunityImageUpload';

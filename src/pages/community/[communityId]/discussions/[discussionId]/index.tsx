@@ -92,7 +92,7 @@ const DiscussionPage: React.FC<Props> = ({ data, validJoinRequests, discussions 
       }
     };
     fetchCommunityDetails();
-  }, [communityId, discussionId, idToken]);
+  }, [discussion, communityId, discussionId, idToken]);
 
   //TODO: Make sure to fix rerender issue in case refresh etc...
   useEffect(() => {
@@ -117,7 +117,7 @@ const DiscussionPage: React.FC<Props> = ({ data, validJoinRequests, discussions 
     };
 
     fetchDiscussion();
-  }, [communityId, discussionId, idToken]);
+  }, [discussion, communityId, discussionId, idToken]);
 
   //TODO: POSSIBLE FIX FOR RENDER ISSUE
   //Is to maybe match all useffect depencies that

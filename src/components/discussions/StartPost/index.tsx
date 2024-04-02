@@ -141,3 +141,8 @@ function useFocusStartPost(
 
   return inputFocus;
 }
+
+
+//TODO: 
+// Discussion creation error could be due 
+// to use of contnetn instead of body
