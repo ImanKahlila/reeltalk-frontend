@@ -61,7 +61,6 @@ export default function ProfilePage() {
   return (
     <section className='mx-4 my-[1.438rem] flex flex-col justify-center gap-4 lg:flex-row lg:gap-8'>
       <div className='flex flex-col gap-6 lg:w-[46rem]'>
-      {userInfo && ( // Render content only when userInfo is available
         <div className='flex items-center'>
           <div className='flex h-[100px] w-[100px] items-center'>
             <Image src={UserImg} alt={''} className='h-[100px] w-[100px] rounded-full' />
@@ -84,7 +83,6 @@ export default function ProfilePage() {
             </div>
           </div>
         </div>
-        )}
         <ProfileTabBar userId={String(userId)} />
       </div>
     </section>
