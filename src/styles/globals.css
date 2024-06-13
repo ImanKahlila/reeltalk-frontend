@@ -383,3 +383,76 @@ input.epr-search {
 
     border-radius: 4px; /* Add this line to set the border-radius */
   }
+/* global.css */
+.profile-achievements {
+  padding: 1rem;
+  background-color: var(--card);
+  border-radius: var(--radius);
+}
+
+.profile-strength {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: var(--background);
+  border-radius: var(--radius);
+}
+
+.profile-strength-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  color: var(--foreground);
+  font-family: 'Outfit', sans-serif;
+}
+.profile-strength-bar {
+  display: flex;
+  width: 100%;
+  height: 20px; /* Adjust height as needed */
+  background-color: #333;
+  border-radius: 10px; /* Rounded corners for the progress bar */
+  overflow: hidden; /* Hide overflowing content */
+}
+
+.profile-strength-divider {
+  flex: 1;
+  height: 100%;
+  background-color: #666; /* Color for segment dividers */
+  position: relative;
+}
+
+.profile-strength-divider::after {
+  content: '';
+  position: absolute;
+  width: 4px; /* Adjust thickness of vertical divider */
+  height: 100%;
+  top: 0;
+  right: 0;
+  background-color: #666; /* Color of vertical divider */
+}
+
+.profile-strength-fill {
+  height: 100%;
+  background-color: #FFA724; /* Color for filled portion */
+  border-radius: 10px 0 0 10px; /* Rounded corners for filled portion */
+  transition: width 0.3s ease; /* Optional: Add transition effect */
+}
+
+.diamond {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.diamond span {
+  display: block;
+}
+
+/* New CSS for segmented progress bar */
+
+.segment {
+  flex: 1;
+  height: 100%;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.3) 25%, transparent 25%, transparent 100%);
+}
+
