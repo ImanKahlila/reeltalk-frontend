@@ -383,76 +383,78 @@ input.epr-search {
 
     border-radius: 4px; /* Add this line to set the border-radius */
   }
-/* global.css */
-.profile-achievements {
-  padding: 1rem;
-  background-color: var(--card);
-  border-radius: var(--radius);
-}
 
-.profile-strength {
-  margin-top: 1rem;
-  padding: 1rem;
-  background-color: var(--background);
-  border-radius: var(--radius);
-}
-
-.profile-strength-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-  color: var(--foreground);
-  font-family: 'Outfit', sans-serif;
-}
 .profile-strength-bar {
+  position: relative; /* Position relative to allow absolute positioning of children */
   display: flex;
   width: 100%;
-  height: 20px; /* Adjust height as needed */
-  background-color: #333;
+  height: 10px; /* Adjust height as needed */
+  background-color: #3D3D3D;
   border-radius: 10px; /* Rounded corners for the progress bar */
   overflow: hidden; /* Hide overflowing content */
+}
+
+.profile-strength-fill {
+  position: absolute; /* Position absolute to fill from the start */
+  left: 0;
+  top: 0;
+  height: 100%;
+  background-color: #FFA724; /* Color for filled portion */
+  border-radius: 10px 0 0 10px; /* Rounded corners for filled portion */
+  transition: width 0.3s ease; /* Optional: Add transition effect */
+  z-index: 1; /* Ensure it appears below the dividers */
 }
 
 .profile-strength-divider {
   flex: 1;
   height: 100%;
-  background-color: #666; /* Color for segment dividers */
+  background-color: transparent; /* Make the background of dividers transparent */
   position: relative;
+  z-index: 2; /* Ensure dividers appear above the fill */
 }
 
 .profile-strength-divider::after {
   content: '';
   position: absolute;
-  width: 4px; /* Adjust thickness of vertical divider */
+  width: 1px;
   height: 100%;
   top: 0;
   right: 0;
-  background-color: #666; /* Color of vertical divider */
+  background-color: #676565;
 }
-
-.profile-strength-fill {
-  height: 100%;
-  background-color: #FFA724; /* Color for filled portion */
-  border-radius: 10px 0 0 10px; /* Rounded corners for filled portion */
-  transition: width 0.3s ease; /* Optional: Add transition effect */
+.profile-strength-diamonds {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 2px;
 }
 
 .diamond {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  background: #3D3D3D;
+  width: 20px;
+  height: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 7px;
+  margin: 1px;
+  text-align: center;
+  visibility: hidden;
 }
 
-.diamond span {
-  display: block;
+.diamond.show {
+  visibility: visible;
+  border-radius: 50%;
 }
 
-/* New CSS for segmented progress bar */
+.diamond.hidden {
+  visibility: hidden;
+}
 
-.segment {
-  flex: 1;
-  height: 100%;
-  background: linear-gradient(to right, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.3) 25%, transparent 25%, transparent 100%);
+.diamond span[role="img"] {
+  margin-top: 1px;
+  font-size: 6px;
 }
 

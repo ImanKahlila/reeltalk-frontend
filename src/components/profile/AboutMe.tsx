@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useUserContext } from '@/lib/context';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import TopUserMovies from '@/components/profile/TopUserMovies';
 import TopUserShows from '@/components/profile/TopUserShows';
 import CheckIconSVG from '@/components/Icons/CheckIcon';
@@ -12,31 +12,37 @@ export const AboutMe = ({ userId }: any) => {
 
   const { user, idToken } = useUserContext();
   const AchievementCriteria = [
-    { level: "Reel Apprentice", icon: "🎬", requirements: ["Select Genres", "Select Top 5 Movies and Shows"] },
-    { level: "Reel Enthusiast", icon: "🌟", requirements: ["Add a Profile Pic"] },
-    { level: "Reel Buff", icon: "🎥", requirements: ["Add a Bio"], reward: 10 },
-    { level: "Reel Addict", icon: "🍿", requirements: ["Join a discussion", "Review a movie or TV Show"], reward: 25 },
-    { level: "Reel Fanatic", icon: "🎞️", requirements: ["Rate 10 Movies/Shows"], reward: 40 },
+    { level: "Reel Apprentice", icon: "🎒", requirements: ["Select top genres", "Select top 5 movies","Select top 5 shows"] , reward: 0 },
+    { level: "Reel Enthusiast", icon: "🍿", requirements: ["Add a Profile Pic"], reward: 0  },
+    { level: "Reel Buff", icon: "🎞️", requirements: ["Add a Bio"], reward: 10 },
+    { level: "Reel Addict", icon: "🔥", requirements: ["Join a discussion", "Review a movie / TV Show"], reward: 25 },
+    { level: "Reel Fanatic", icon: "❤️‍🔥", requirements: ["Rate 10" +
+      " Movies/Shows"], reward: 40 },
     { level: "Reel Fiend", icon: "📽️", requirements: ["Review 10 Movies/Shows"], reward: 50 },
-    { level: "Reel Aficionado", icon: "🎬", requirements: ["Join 10 Communities"], reward: 75 },
-    { level: "Reel Cinephile", icon: "🌟", requirements: ["Start 10 Discussions"], reward: 125 },
-    { level: "Reel Connoisseur", icon: "🎥", requirements: ["Rate 50 Movies/Shows"], reward: 175 },
-    { level: "Reel Virtuoso", icon: "🍿", requirements: ["Review 50 Movies/Shows"], reward: 250 },
-    { level: "Reel Savant", icon: "🎞️", requirements: ["Start 20 Discussions", "Amass 100 Ratings"], reward: 1000 },
+    { level: "Reel Aficionado", icon: "🎥", requirements: ["Join 10 Communities"], reward: 75 },
+    { level: "Reel Cinephile", icon: "🎬", requirements: ["Start 10 Discussions"], reward: 125 },
+    { level: "Reel Connoisseur", icon: "🎖️", requirements: ["Rate 50 Movies/Shows"], reward: 175 },
+    { level: "Reel Virtuoso", icon: "🏅", requirements: ["Review 50 Movies/Shows"], reward: 250 },
+    { level: "Reel Savant", icon: "🏆", requirements: ["Start 20 Discussions", "Amass 100 Ratings"], reward: 1000 },
   ];
 
 
-  const ProfileAchievements = ({ userId }: any) => {
-    const [userAchievements, setUserAchievements] = useState<string[]>([]);
-    const [profileStrength, setProfileStrength] = useState<string>("Novice");
-    const [nextLevel, setNextLevel] = useState<any>(null);
-    const [strengthPercentage, setStrengthPercentage] = useState<number>(0);
+  const ProfileAchievements = () => {
+    const [userAchievements, setUserAchievements] = useState([]);
+    const [profileStrength, setProfileStrength] = useState("Novice");
+    const [nextLevel, setNextLevel] = useState<any>();
+    // for nextLevel
+    const [strengthPercentage, setStrengthPercentage] = useState(0);
+    const [currentRequirementIndex, setCurrentRequirementIndex] = useState(0); // Initialize to 0
 
     useEffect(() => {
+      if (!userInfo) return;
+
       // Determine Achievements
-      const achieved: string[] = [];
+      const achieved: any[] = [];
       let strength = "Novice";
       let percentage = 0;
+      let nextReqIndex = 0;
 
       for (let i = 0; i < AchievementCriteria.length; i++) {
         const criteria = AchievementCriteria[i];
@@ -45,76 +51,139 @@ export const AboutMe = ({ userId }: any) => {
         if (userInfo.profileLevel === criteria.level) {
           // Add all previous achievements up to this level
           for (let j = 0; j <= i; j++) {
-            achieved.push(AchievementCriteria[j].level);
+            achieved.push(AchievementCriteria[j]);
           }
           strength = criteria.level;
           percentage = ((i + 1) / AchievementCriteria.length) * 100;
-          break; // Exit loop once matched
+          nextReqIndex = i + 1;
+          break;
         }
       }
 
       setUserAchievements(achieved);
       setProfileStrength(strength);
       setStrengthPercentage(percentage);
+      setCurrentRequirementIndex(nextReqIndex);
 
       // Determine next level and its requirements
-      const nextIndex = achieved.length;
-      if (nextIndex < AchievementCriteria.length) {
-        setNextLevel(AchievementCriteria[nextIndex]);
-      } else {
-        setNextLevel(null); // If all levels achieved
+      if (nextReqIndex < AchievementCriteria.length) {
+        setNextLevel(AchievementCriteria[nextReqIndex]);
+      } else{
+        setNextLevel("null");
       }
-    }, [userInfo.profileLevel]); // Update when profileLevel changes
+      if(userAchievements.length  === AchievementCriteria.length){
+        setNextLevel("Congrats! you did it.")
+      }
+    }, [userInfo]); // Update when userInfo changes
+
+    const nextRequirement = () => {
+      if (currentRequirementIndex < AchievementCriteria.length - 1) {
+        setCurrentRequirementIndex(currentRequirementIndex + 1);
+        setNextLevel(AchievementCriteria[currentRequirementIndex + 1]);
+      }
+    };
+
+    const prevRequirement = () => {
+      if (currentRequirementIndex > 0) {
+        setCurrentRequirementIndex(currentRequirementIndex - 1);
+        setNextLevel(AchievementCriteria[currentRequirementIndex - 1]);
+      }
+    };
 
     return (
-      <div className="achievements-section">
-        <h2 className="font-light tracking-eight text-xl text-high-emphasis">
-          My Achievements
-          ({userAchievements.length}/{AchievementCriteria.length})
-        </h2>
-        <div className="flex tracking-eight text-sm">
-          <div className="text-neutral-400 mr-2 font- text-disabled">Profile Strength:</div>
-          <div className="text-pure-white"> {profileStrength} {AchievementCriteria.find(ac => ac.level === profileStrength)?.icon}</div>
-        </div>
-        {nextLevel && (
-          <div className="next-level text-medium-emphasis">
-            <div className="flex"> Level up to
-              <div className="ml-1 font-bold">{nextLevel.level}</div>
-              <div className="ml-1 achievement-icon">{nextLevel.icon}</div>
+      <div className="profile-achievements p-4">
+        <div className="absolute">
+          <h2 className="tracking-eight text-xl text-high-emphasis">
+            My Achievements
+            ({userAchievements.length}/{AchievementCriteria.length})
+          </h2>
+          <div className="flex tracking-eight text-sm">
+            <div className="text-neutral-400 mr-2 text-disabled">Profile
+              Strength:
             </div>
-            <div className="profile-strength-bar">
-              {AchievementCriteria.map((criteria, index) => (
-                <div
-                  key={index}
-                  className={`profile-strength-divider ${index < userAchievements.length ? 'filled' : ''}`}
-                ></div>
-              ))}
-              <div
-                className="profile-strength-fill"
-                style={{ width: `${strengthPercentage}%` }}
-              ></div>
+            <div className="text-pure-white">
+              {profileStrength} <span
+              className="ml-1"> {AchievementCriteria.find(ac => ac.level === profileStrength)?.icon}</span>
             </div>
-
-            <ul className="list-disc list-inside">
-              {nextLevel.requirements.map((req: string) => (
-                <li key={req} className="flex items-center">
-                  <CheckIconSVG className="mr-2"
-                                checked={isRequirementMet(req)} />
-                  <span
-                    className={isRequirementMet(req) ? 'line-through' : ''}>{req}</span>
-                </li>
-              ))}
-            </ul>
           </div>
-        )}
-        <div className="achievements-list">
-          {userAchievements.map((achievement, index) => (
-            <div key={index} className="achievement-item">
-              <span
-                className="achievement-icon">{AchievementCriteria.find(ac => ac.level === achievement)?.icon}</span>
-              {achievement}
+
+          {nextLevel && (
+            <div className="next-level text-medium-emphasis">
+              <div className="mt-2 mb-2 profile-strength-bar">
+                <div className="profile-strength-fill"
+                     style={{ width: `${strengthPercentage}%` }}></div>
+                {AchievementCriteria.map((criteria, index) => (
+                  <div key={index}
+                       className={`profile-strength-divider ${index < userAchievements.length ? 'filled' : ''}`}></div>
+                ))}
+              </div>
+
+              {/* Diamonds section */}
+              <div className="profile-strength-diamonds">
+                {AchievementCriteria.length === userAchievements.length ? (
+                  <div className="celebration">🎉</div>
+                ) : (
+                  AchievementCriteria.map((criteria, index) => (
+                    <div
+                      key={index}
+                      className={`diamond ${criteria.reward > 0 && index >= userAchievements.length ? 'show' : 'hidden'}`}
+                    >
+                      {
+                        criteria.reward > 0 && index >= userAchievements.length &&
+                        <>
+                          <span role="img" aria-label="diamond">💎</span>
+                          <span className="reward">+{criteria.reward}</span>
+                        </>
+                      }
+                    </div>
+                  ))
+                )}
+              </div>
+
+              {/* Level up message */}
+              {typeof nextLevel === 'string' ? (
+                <div className="next-level-text">
+                  <p>{nextLevel}</p>
+                </div>
+              ) : (
+                <div className="flex items-center text-sm">
+            <span className="mt-2 font-thin">
+              Level up to
+              <span className="pl-1 font-semibold">{nextLevel.level}</span>
+              <span className="pl-1 achievement-icon">{nextLevel.icon}</span>
+            </span>
+                </div>
+              )}
+
+              {/* Requirements List */}
+              <ul
+                className="text-medium-emphasis font-sans mt-3 list-disc list-inside">
+                {nextLevel.requirements.map((req, index) => (
+                  <li key={index} className="flex items-center text-left">
+                    <CheckIconSVG className="mr-2"
+                                  checked={isRequirementMet(req)} />
+                    <span
+                      className={isRequirementMet(req) ? 'line-through text-disabled' : ''}>{req}</span>
+                  </li>
+                ))}
+              </ul>
+
+              {/* Navigation Chevrons */}
+              <div
+                className="flex justify-center text-sm text-high-emphasis mt-3">
+          <span onClick={prevRequirement}>
+            <ChevronLeft
+              className={`${currentRequirementIndex === 0 ? 'text-disabled' : ''}`} />
+          </span>
+                <span className="mx-2">
+            {currentRequirementIndex + 1}/{AchievementCriteria.length}
+          </span>
+                <span onClick={nextRequirement}>
+            <ChevronRight className={`${currentRequirementIndex === AchievementCriteria.length - 1 ? 'text-disabled' : ''}`} />
+          </span>
+              </div>
             </div>
-          ))}
+          )}
         </div>
       </div>
     );
@@ -132,94 +201,94 @@ export const AboutMe = ({ userId }: any) => {
         //   },
         // );
         // const userData = response.data.data;
-        const userData= {
-          "uid": "6PxTdBlaSpNQjrDaSVnH0oZCNxq2",
-          "isPublic": true,
-          "email": "cikokwu@gmail.com",
-          "profileLevel": "Reel Enthusiast",
-          "birthday": {
-            "_nanoseconds": 1123299328,
-            "_seconds": 460684800000
+        const userData = {
+          'uid': '6PxTdBlaSpNQjrDaSVnH0oZCNxq2',
+          'isPublic': true,
+          'email': 'cikokwu@gmail.com',
+          'profileLevel': 'Reel Addict',
+          'birthday': {
+            '_nanoseconds': 1123299328,
+            '_seconds': 460684800000,
           },
-          "displayName": "chuka",
-          "agreedToGuideline": true,
-          "createdCommunities": [
-            "0Ksv4Vz2xHzK1O3cGUZ1"
+          'displayName': 'chuka',
+          'agreedToGuideline': true,
+          'createdCommunities': [
+            '0Ksv4Vz2xHzK1O3cGUZ1',
           ],
-          "createdDiscussions": [
-            "u9NXeWU5uVoczlnzrCrd",
-            "kkcNe45t4X8cC7R5BzFO",
-            "2zUPrIVA8kaouMPpSGqK",
-            "WmPtDEKKWZ1N8Yc0imP6",
-            "ao3Ma0IiQNQ3o82AqC4q",
-            "Zs3a799lOLO2Vk6wRgcy",
-            "hRZ47gLPrpR6lOQYQAB3",
-            "caa8l6WJ7xr2xSvZ1NJV",
-            "X1sPu7Cp8Wb938pmK2vs",
-            "GEQClfa5vSrSEzcfcoVE",
-            "ZKB2vIrUC42HLNAsYhTR",
-            "Utp3XMUK2RoDvQjJtDG4"
+          'createdDiscussions': [
+            'u9NXeWU5uVoczlnzrCrd',
+            'kkcNe45t4X8cC7R5BzFO',
+            '2zUPrIVA8kaouMPpSGqK',
+            'WmPtDEKKWZ1N8Yc0imP6',
+            'ao3Ma0IiQNQ3o82AqC4q',
+            'Zs3a799lOLO2Vk6wRgcy',
+            'hRZ47gLPrpR6lOQYQAB3',
+            'caa8l6WJ7xr2xSvZ1NJV',
+            'X1sPu7Cp8Wb938pmK2vs',
+            'GEQClfa5vSrSEzcfcoVE',
+            'ZKB2vIrUC42HLNAsYhTR',
+            'Utp3XMUK2RoDvQjJtDG4',
           ],
-          "name": "Chuka",
-          "favoriteMovies": [
+          'name': 'Chuka',
+          'favoriteMovies': [
             {
-              "titleType": {
-                "isEpisode": false,
-                "text": "Movie",
-                "id": "movie",
-                "isSeries": false
+              'titleType': {
+                'isEpisode': false,
+                'text': 'Movie',
+                'id': 'movie',
+                'isSeries': false,
               },
-              "primaryImage": {
-                "width": 1383,
-                "id": "rm4023877632",
-                "url": "https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_.jpg",
-                "height": 2048
+              'primaryImage': {
+                'width': 1383,
+                'id': 'rm4023877632',
+                'url': 'https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_.jpg',
+                'height': 2048,
               },
-              "releaseDate": {
-                "month": 7,
-                "year": 2008,
-                "day": 24
+              'releaseDate': {
+                'month': 7,
+                'year': 2008,
+                'day': 24,
               },
-              "titleText": {
-                "text": "The Dark Knight"
+              'titleText': {
+                'text': 'The Dark Knight',
               },
-              "id": "tt0468569",
-              "releaseYear": {
-                "year": 2008
-              }
+              'id': 'tt0468569',
+              'releaseYear': {
+                'year': 2008,
+              },
             },
             {
-              "titleType": {
-                "isEpisode": false,
-                "text": "Movie",
-                "id": "movie",
-                "isSeries": false
+              'titleType': {
+                'isEpisode': false,
+                'text': 'Movie',
+                'id': 'movie',
+                'isSeries': false,
               },
-              "primaryImage": {
-                "width": 1396,
-                "id": "rm746868224",
-                "url": "https://m.media-amazon.com/images/M/MV5BM2MyNjYxNmUtYTAwNi00MTYxLWJmNWYtYzZlODY3ZTk3OTFlXkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_.jpg",
-                "height": 1982
+              'primaryImage': {
+                'width': 1396,
+                'id': 'rm746868224',
+                'url': 'https://m.media-amazon.com/images/M/MV5BM2MyNjYxNmUtYTAwNi00MTYxLWJmNWYtYzZlODY3ZTk3OTFlXkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_.jpg',
+                'height': 1982,
               },
-              "releaseDate": {
-                "month": 9,
-                "year": 1972,
-                "day": 28
+              'releaseDate': {
+                'month': 9,
+                'year': 1972,
+                'day': 28,
               },
-              "titleText": {
-                "text": "The Godfather"
+              'titleText': {
+                'text': 'The Godfather',
               },
-              "id": "tt0068646",
-              "releaseYear": {
-                "year": 1972
-              }
+              'id': 'tt0068646',
+              'releaseYear': {
+                'year': 1972,
+              },
             },
             {
-              "titleType": {
-                "isEpisode": false,
-                "text": "Movie",
-                "id": "movie",
-                "isSeries": false
+              'titleType': {
+                'isEpisode': false,
+                'text': 'Movie',
+                'id': 'movie',
+                'isSeries': false,
               },
               "primaryImage": {
                 "width": 800,
@@ -475,18 +544,19 @@ export const AboutMe = ({ userId }: any) => {
 
   const checkRequirement = (userInfo: any, requirement: string) => {
     switch (requirement) {
-      case "Select Genres":
+      case "Select top genres":
         return userInfo.favoriteGenres && userInfo.favoriteGenres.length > 0;
-      case "Select Top 5 Movies and Shows":
-        return userInfo.favoriteMovies && userInfo.favoriteMovies.length >= 5 &&
-          userInfo.favoriteShows && userInfo.favoriteShows.length >= 5;
+      case "Select top 5 movies":
+        return userInfo.favoriteMovies && userInfo.favoriteMovies.length >= 5;
+      case "Select top 5 shows":
+      return userInfo.favoriteShows && userInfo.favoriteShows.length >= 5;
       case "Add a Profile Pic":
         return Boolean(userInfo.imageUrl);
       case "Add a Bio":
         return Boolean(userInfo.bio);
       case "Join a discussion":
         return userInfo.createdDiscussions && userInfo.createdDiscussions.length > 0;
-      case "Review a movie or TV Show":
+      case "Review a movie / TV Show":
         return userInfo.reviews && userInfo.reviews.length > 0;
       case "Rate 10 Movies/Shows":
         return userInfo.ratings && userInfo.ratings.length >= 10;
@@ -515,26 +585,13 @@ export const AboutMe = ({ userId }: any) => {
       ) : (
         <>
           <div className='flex w-full flex-col gap-4 rounded-[8px]'>
-            <div className='flex w-full flex-col rounded-[8px] bg-first-surface px-4 pb-[180px] pt-4'>
-              {/*<h2 className='font-light tracking-eight text-high-emphasis'>*/}
-                {/*Profile Strength:{''}*/}
-                {/*<span className='font-bold tracking-eight text-high-emphasis'>*/}
-                {/*  {userInfo?.data.profileLevel || 'Novice'}*/}
-                {/*</span>*/}
-                <ProfileAchievements userId={userId}/>
-              {/*</h2>*/}
-              <div className='flex items-center text-sm'>
-                <p className='font- text-disabled'>Up Next:</p>
-                <span className='pl-1 font-semibold text-disabled'>Reel Enthusiast</span>
-                <p className='font-thin text-disabled'>
-                  <ChevronRight />
-                </p>
-              </div>
+            <div className='flex w-full flex-col rounded-[8px] bg-first-surface px-4 pb-[100px] pt-4 h-[280px]'>
+                <ProfileAchievements/>
             </div>
 
             <div className='flex w-full justify-between gap-4 rounded-[8px] bg-first-surface px-4 py-4'>
-              <p className='text-medium-emphasis'>Your Screen Gems</p>
-              <p className='pr-8 text-medium-emphasis'>{userInfo?.gems || 10}💎</p>
+              <p className='text-medium-emphasis'>Your Screen Gems <span className="ml-2 text-primary">ⓘ</span></p>
+              <p className='pr-8 text-medium-emphasis font-bold'>{userInfo?.gems || 10}💎</p>
             </div>
           </div>
 

@@ -17,12 +17,10 @@ const CheckIconSVG = ({ className, checked }: Props) => {
     >
       <defs>
         <linearGradient id="orangeGradient" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#ff7e5f" />
-          <stop offset="100%" stopColor="#feb47b" />
+          <stop offset="100%" stopColor="#FF6928" />
         </linearGradient>
         <linearGradient id="grayGradient" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#c0c0c0" />
-          <stop offset="100%" stopColor="#e0e0e0" />
+          <stop offset="100%" stopColor="#6d6d6d" />
         </linearGradient>
       </defs>
       <circle cx="8" cy="8" r="8" fill={checked ? 'url(#orangeGradient)' : 'url(#grayGradient)'} />
@@ -30,6 +28,7 @@ const CheckIconSVG = ({ className, checked }: Props) => {
         <path
           d="M4 8.5L7 11.5L12.5 6L11 4.5L7 8.5L5.5 7L4 8.5z"
           fill="white"
+          strokeWidth="2"
         />
       )}
     </svg>
