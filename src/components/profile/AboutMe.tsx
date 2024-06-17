@@ -28,17 +28,15 @@ export const AboutMe = ({ userId }: any) => {
 
 
   const ProfileAchievements = () => {
-    const [userAchievements, setUserAchievements] = useState([]);
+    const [userAchievements, setUserAchievements] = useState<any>([]);
     const [profileStrength, setProfileStrength] = useState("Novice");
     const [nextLevel, setNextLevel] = useState<any>();
-    // for nextLevel
     const [strengthPercentage, setStrengthPercentage] = useState(0);
-    const [currentRequirementIndex, setCurrentRequirementIndex] = useState(0); // Initialize to 0
+    const [currentRequirementIndex, setCurrentRequirementIndex] = useState(0);
 
     useEffect(() => {
       if (!userInfo) return;
 
-      // Determine Achievements
       const achieved: any[] = [];
       let strength = "Novice";
       let percentage = 0;
@@ -47,9 +45,7 @@ export const AboutMe = ({ userId }: any) => {
       for (let i = 0; i < AchievementCriteria.length; i++) {
         const criteria = AchievementCriteria[i];
 
-        // Check if the user has reached this level or any higher level
         if (userInfo.profileLevel === criteria.level) {
-          // Add all previous achievements up to this level
           for (let j = 0; j <= i; j++) {
             achieved.push(AchievementCriteria[j]);
           }
@@ -65,16 +61,15 @@ export const AboutMe = ({ userId }: any) => {
       setStrengthPercentage(percentage);
       setCurrentRequirementIndex(nextReqIndex);
 
-      // Determine next level and its requirements
       if (nextReqIndex < AchievementCriteria.length) {
         setNextLevel(AchievementCriteria[nextReqIndex]);
-      } else{
+      } else {
         setNextLevel("null");
       }
-      if(userAchievements.length  === AchievementCriteria.length){
-        setNextLevel("Congrats! you did it.")
+      if (userAchievements.length === AchievementCriteria.length) {
+        setNextLevel("Congrats! you did it.");
       }
-    }, [userInfo]); // Update when userInfo changes
+    }, [userInfo]);
 
     const nextRequirement = () => {
       if (currentRequirementIndex < AchievementCriteria.length - 1) {
@@ -91,99 +86,76 @@ export const AboutMe = ({ userId }: any) => {
     };
 
     return (
-      <div className="profile-achievements p-4">
-        <div className="absolute">
+      <div className="profile-achievements p-4 flex flex-col h-full">
+        <div className="flex-grow">
           <h2 className="tracking-eight text-xl text-high-emphasis">
-            My Achievements
-            ({userAchievements.length}/{AchievementCriteria.length})
+            My Achievements ({userAchievements.length}/{AchievementCriteria.length})
           </h2>
           <div className="flex tracking-eight text-sm">
-            <div className="text-neutral-400 mr-2 text-disabled">Profile
-              Strength:
-            </div>
+            <div className="text-neutral-400 mr-2 text-disabled">Profile Strength:</div>
             <div className="text-pure-white">
-              {profileStrength} <span
-              className="ml-1"> {AchievementCriteria.find(ac => ac.level === profileStrength)?.icon}</span>
+              {profileStrength} <span className="ml-1"> {AchievementCriteria.find(ac => ac.level === profileStrength)?.icon}</span>
             </div>
           </div>
-
           {nextLevel && (
-            <div className="next-level text-medium-emphasis">
-              <div className="mt-2 mb-2 profile-strength-bar">
-                <div className="profile-strength-fill"
-                     style={{ width: `${strengthPercentage}%` }}></div>
-                {AchievementCriteria.map((criteria, index) => (
-                  <div key={index}
-                       className={`profile-strength-divider ${index < userAchievements.length ? 'filled' : ''}`}></div>
-                ))}
-              </div>
-
-              {/* Diamonds section */}
-              <div className="profile-strength-diamonds">
-                {AchievementCriteria.length === userAchievements.length ? (
-                  <div className="celebration">🎉</div>
+            <>
+              <div className="next-level text-medium-emphasis">
+                <div className="mt-2 mb-2 profile-strength-bar">
+                  <div className="profile-strength-fill" style={{ width: `${strengthPercentage}%` }}></div>
+                  {AchievementCriteria.map((criteria, index) => (
+                    <div key={index} className={`profile-strength-divider ${index < userAchievements.length ? 'filled' : ''}`}></div>
+                  ))}
+                </div>
+                <div className="profile-strength-diamonds">
+                  {AchievementCriteria.length === userAchievements.length ? (
+                    <div className="relative">🎉</div>
+                  ) : (
+                    AchievementCriteria.map((criteria, index) => (
+                      <div key={index} className={`diamond place-self-end ${criteria.reward > 0 && index >= userAchievements.length ? 'show' : 'hidden'}`}>
+                        {criteria.reward > 0 && index >= userAchievements.length && (
+                          <>
+                            <span role="img" aria-label="diamond">💎</span>
+                            <span className="reward">+{criteria.reward}</span>
+                          </>
+                        )}
+                      </div>
+                    ))
+                  )}
+                </div>
+                {typeof nextLevel === 'string' ? (
+                  <div className="next-level-text">
+                    <p>{nextLevel}</p>
+                  </div>
                 ) : (
-                  AchievementCriteria.map((criteria, index) => (
-                    <div
-                      key={index}
-                      className={`diamond ${criteria.reward > 0 && index >= userAchievements.length ? 'show' : 'hidden'}`}
-                    >
-                      {
-                        criteria.reward > 0 && index >= userAchievements.length &&
-                        <>
-                          <span role="img" aria-label="diamond">💎</span>
-                          <span className="reward">+{criteria.reward}</span>
-                        </>
-                      }
-                    </div>
-                  ))
+                  <div className="flex items-center text-sm">
+                  <span className="mt-2 font-thin">
+                    Level up to <span className="pl-1 font-semibold">{nextLevel.level}</span>
+                    <span className="pl-1 achievement-icon">{nextLevel.icon}</span>
+                  </span>
+                  </div>
                 )}
+                <ul className="text-medium-emphasis font-sans mt-3 list-disc list-inside">
+                  {nextLevel.requirements.map((req: string, index: number) => (
+                    <li key={index} className="flex items-center text-left">
+                      <CheckIconSVG className="mr-2" checked={isRequirementMet(req)} />
+                      <span className={isRequirementMet(req) ? 'line-through text-disabled' : ''}>{req}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-
-              {/* Level up message */}
-              {typeof nextLevel === 'string' ? (
-                <div className="next-level-text">
-                  <p>{nextLevel}</p>
-                </div>
-              ) : (
-                <div className="flex items-center text-sm">
-            <span className="mt-2 font-thin">
-              Level up to
-              <span className="pl-1 font-semibold">{nextLevel.level}</span>
-              <span className="pl-1 achievement-icon">{nextLevel.icon}</span>
-            </span>
-                </div>
-              )}
-
-              {/* Requirements List */}
-              <ul
-                className="text-medium-emphasis font-sans mt-3 list-disc list-inside">
-                {nextLevel.requirements.map((req, index) => (
-                  <li key={index} className="flex items-center text-left">
-                    <CheckIconSVG className="mr-2"
-                                  checked={isRequirementMet(req)} />
-                    <span
-                      className={isRequirementMet(req) ? 'line-through text-disabled' : ''}>{req}</span>
-                  </li>
-                ))}
-              </ul>
-
-              {/* Navigation Chevrons */}
-              <div
-                className="flex justify-center text-sm text-high-emphasis mt-3">
-          <span onClick={prevRequirement}>
-            <ChevronLeft
-              className={`${currentRequirementIndex === 0 ? 'text-disabled' : ''}`} />
-          </span>
-                <span className="mx-2">
-            {currentRequirementIndex + 1}/{AchievementCriteria.length}
-          </span>
-                <span onClick={nextRequirement}>
-            <ChevronRight className={`${currentRequirementIndex === AchievementCriteria.length - 1 ? 'text-disabled' : ''}`} />
-          </span>
-              </div>
-            </div>
+            </>
           )}
+        </div>
+        <div className="flex justify-center text-sm text-high-emphasis mt-3">
+        <span onClick={prevRequirement}>
+          <ChevronLeft className={`${currentRequirementIndex === 0 ? 'text-disabled' : ''}`} />
+        </span>
+          <span className="mx-2">
+          {currentRequirementIndex + 1}/{AchievementCriteria.length}
+        </span>
+          <span onClick={nextRequirement}>
+          <ChevronRight className={`${currentRequirementIndex === AchievementCriteria.length - 1 ? 'text-disabled' : ''}`} />
+        </span>
         </div>
       </div>
     );
@@ -585,7 +557,7 @@ export const AboutMe = ({ userId }: any) => {
       ) : (
         <>
           <div className='flex w-full flex-col gap-4 rounded-[8px]'>
-            <div className='flex w-full flex-col rounded-[8px] bg-first-surface px-4 pb-[100px] pt-4 h-[280px]'>
+            <div className='flex w-full flex-col rounded-[8px] bg-first-surface px-4 pb-[280px] pt-4 h-[280px]'>
                 <ProfileAchievements/>
             </div>
 
