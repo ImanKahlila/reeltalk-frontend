@@ -34,7 +34,7 @@ export const AboutMe = ({ userId }: any) => {
     const [nextLevel, setNextLevel] = useState<any>();
     const [strengthPercentage, setStrengthPercentage] = useState(0);
     const [currentRequirementIndex, setCurrentRequirementIndex] = useState(0);
-
+    const [isAllRequirementMet, setIsAllRequirementMet] = useState(false);
     useEffect(() => {
       if (!userInfo) return;
 
@@ -45,18 +45,16 @@ export const AboutMe = ({ userId }: any) => {
 
       for (let i = 0; i < AchievementCriteria.length; i++) {
         const criteria = AchievementCriteria[i];
-
         if (userInfo.profileLevel === criteria.level) {
           for (let j = 0; j <= i; j++) {
             achieved.push(AchievementCriteria[j]);
           }
           strength = criteria.level;
           percentage = ((i + 1) / AchievementCriteria.length) * 100;
-          nextReqIndex = i + 1;
+          nextReqIndex = achieved.length === AchievementCriteria.length?i: i + 1;
           break;
         }
       }
-
       setUserAchievements(achieved);
       setProfileStrength(strength);
       setStrengthPercentage(percentage);
@@ -65,10 +63,12 @@ export const AboutMe = ({ userId }: any) => {
       if (nextReqIndex < AchievementCriteria.length) {
         setNextLevel(AchievementCriteria[nextReqIndex]);
       }
+      setIsAllRequirementMet(AchievementCriteria.every(criteria =>
+        criteria.requirements.every(requirement => checkRequirement(userInfo, requirement))));
     }, [userInfo]);
 
     const nextRequirement = () => {
-      if (currentRequirementIndex < AchievementCriteria.length ) {
+      if (currentRequirementIndex < AchievementCriteria.length-1 ) {
         setCurrentRequirementIndex(currentRequirementIndex + 1);
         setNextLevel(AchievementCriteria[currentRequirementIndex + 1]);
       }
@@ -103,7 +103,7 @@ export const AboutMe = ({ userId }: any) => {
                   ))}
                 </div>
                 <div className="profile-strength-diamonds">
-                  {AchievementCriteria.length === userAchievements.length ? (
+                  {userAchievements.length==AchievementCriteria.length ? (
                     <div className="relative">🎉</div>
                   ) : (
                     AchievementCriteria.map((criteria, index) => (
@@ -118,7 +118,7 @@ export const AboutMe = ({ userId }: any) => {
                     ))
                   )}
                 </div>
-                {AchievementCriteria.length === userAchievements.length? (
+                {isAllRequirementMet? (
                   <div className="next-level-text">
                     <p>Congrats! you did it.</p>
                   </div>
@@ -147,7 +147,7 @@ export const AboutMe = ({ userId }: any) => {
           <ChevronLeft className={`${currentRequirementIndex === 0 ? 'text-disabled' : ''}`} />
         </span>
           <span className="mx-2">
-          {currentRequirementIndex != AchievementCriteria.length ?currentRequirementIndex:currentRequirementIndex+1}/{AchievementCriteria.length}
+          {currentRequirementIndex+1}/{AchievementCriteria.length}
         </span>
           <span onClick={nextRequirement}>
           <ChevronRight className={`${currentRequirementIndex === AchievementCriteria.length - 1 ? 'text-disabled' : ''}`} />
@@ -158,6 +158,7 @@ export const AboutMe = ({ userId }: any) => {
   };
   useEffect(() => {
     const fetchUserDetails = async () => {
+      console.log(idToken);
       try {
         const response = await axios.get(
           `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/profile/${userId}`,
@@ -182,8 +183,10 @@ export const AboutMe = ({ userId }: any) => {
   const isRequirementMet = (requirement: string) => {
     return checkRequirement(userInfo, requirement);
   };
-
   const checkRequirement = (userInfo: any, requirement: string) => {
+    if (!userInfo) {
+      return false;
+    }
     switch (requirement) {
       case "Select top genres":
         return userInfo.favoriteGenres && userInfo.favoriteGenres.length > 0;
@@ -212,11 +215,9 @@ export const AboutMe = ({ userId }: any) => {
       case "Review 50 Movies/Shows":
         return userInfo.reviews && userInfo.reviews.length >= 50;
       case "Start 20 Discussions":
-        // return userInfo.createdDiscussions && userInfo.createdDiscussions.length >= 20;
-        return true;
+        return userInfo.createdDiscussions && userInfo.createdDiscussions.length >= 20;
       case "Amass 100 Ratings":
-        // return userInfo.ratings && userInfo.ratings.length >= 100;
-        return true;
+        return userInfo.ratings && userInfo.ratings.length >= 100;
 
       default:
         return false;

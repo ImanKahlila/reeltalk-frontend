@@ -14,44 +14,52 @@ export default function ProfileTabBar({ userId }: any) {
 
   const { user, idToken } = useUserContext();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [
-          userPostsResponse,
-          userCommunitiesResponse,
-          userFollowersResponse,
-          userFriendsResponse,
-        ] = await Promise.all([
-          axios.get(
-            `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/discussions/${userId}`,
-            { headers: { Authorization: `Bearer ${idToken}` } },
-          ),
-          axios.get(
-            `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/profile/${userId}`,
-            { headers: { Authorization: `Bearer ${idToken}` } },
-          ),
-          axios.get(
-            `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/followers/${userId}`,
-            { headers: { Authorization: `Bearer ${idToken}` } },
-          ),
-          axios.get(
-            `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/friends/${userId}`,
-            { headers: { Authorization: `Bearer ${idToken}` } },
-          ),
-        ]);
-
-        setPostCount(userPostsResponse?.data?.length || 0);
-        setCommunityCount(userCommunitiesResponse?.data?.data?.joinedCommunities?.length || 0);
-        setFollowerCount(userFollowersResponse?.data?.data?.followers?.length || 0);
-        setFriendCount(userFriendsResponse?.data?.data?.length || 0);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData();
-  }, [userId, idToken]);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const [
+  //         userPostsResponse,
+  //         userCommunitiesResponse,
+  //         userFollowersResponse,
+  //         userFriendsResponse,
+  //       ] = await Promise.all([
+  //         axios.get(
+  //           // `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/discussions/${userId}`,
+  //           `http://localhost:8080/api/user/discussions/${userId}`,
+  //
+  //           { headers: { Authorization: `Bearer ${idToken}` } },
+  //         ),
+  //         axios.get(
+  //
+  //           // `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/profile/${userId}`,
+  //           `http://localhost:8080/api/user/profile/${userId}`,
+  //
+  //           { headers: { Authorization: `Bearer ${idToken}` } },
+  //         ),
+  //         axios.get(
+  //           // `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/followers/${userId}`,
+  //           `http://localhost:8080/api/user/followers/${userId}`,
+  //           { headers: { Authorization: `Bearer ${idToken}` } },
+  //         ),
+  //         axios.get(
+  //           // `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/friends/${userId}`,
+  //           `http://localhost:8080/api/user/friends/${userId}`,
+  //
+  //           { headers: { Authorization: `Bearer ${idToken}` } },
+  //         ),
+  //       ]);
+  //
+  //       setPostCount(userPostsResponse?.data?.length || 0);
+  //       setCommunityCount(userCommunitiesResponse?.data?.data?.joinedCommunities?.length || 0);
+  //       setFollowerCount(userFollowersResponse?.data?.data?.followers?.length || 0);
+  //       setFriendCount(userFriendsResponse?.data?.data?.length || 0);
+  //     } catch (error) {
+  //       console.error('Error fetching data:', error);
+  //     }
+  //   };
+  //
+  //   fetchData();
+  // }, [userId, idToken]);
 
   const tabs: string[] = [
     `About Me`,
