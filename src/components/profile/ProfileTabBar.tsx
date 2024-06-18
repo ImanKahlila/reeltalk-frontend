@@ -111,7 +111,7 @@ const UserPosts = ({ userId }: any) => {
     const fetchUserDiscussions = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/backend/api/user/discussions/${userId}`,
+          `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/discussions/${userId}`,
           // `http://localhost:8080/api/user/discussions/${userId}`,
           {
             headers: {
@@ -160,7 +160,7 @@ const UserCommunities = ({ userId }: any) => {
     const fetchUserDetails = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/backend/api/user/profile/${userId}`,
+          `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/profile/${userId}`,
           // `http://localhost:8080/api/user/profile/${userId}`,
           {
             headers: {

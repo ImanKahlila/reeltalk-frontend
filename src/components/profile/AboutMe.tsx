@@ -64,16 +64,11 @@ export const AboutMe = ({ userId }: any) => {
 
       if (nextReqIndex < AchievementCriteria.length) {
         setNextLevel(AchievementCriteria[nextReqIndex]);
-      } else {
-        setNextLevel("null");
-      }
-      if (userAchievements.length === AchievementCriteria.length) {
-        setNextLevel("Congrats! you did it.");
       }
     }, [userInfo]);
 
     const nextRequirement = () => {
-      if (currentRequirementIndex < AchievementCriteria.length - 1) {
+      if (currentRequirementIndex < AchievementCriteria.length ) {
         setCurrentRequirementIndex(currentRequirementIndex + 1);
         setNextLevel(AchievementCriteria[currentRequirementIndex + 1]);
       }
@@ -87,12 +82,12 @@ export const AboutMe = ({ userId }: any) => {
     };
 
     return (
-      <div className="profile-achievements p-4 flex flex-col h-full">
+      <div className="mx-10 p-4 flex flex-col h-full">
         <div className="flex-grow">
-          <h2 className="tracking-eight text-xl text-high-emphasis">
+          <h2 className="mt-2 text-xl text-high-emphasis">
             My Achievements ({userAchievements.length}/{AchievementCriteria.length})
           </h2>
-          <div className="flex tracking-eight text-sm">
+          <div className="mt-2 flex tracking-eight text-sm">
             <div className="text-neutral-400 mr-2 text-disabled">Profile Strength:</div>
             <div className="text-pure-white">
               {profileStrength} <span className="ml-1"> {AchievementCriteria.find(ac => ac.level === profileStrength)?.icon}</span>
@@ -112,20 +107,20 @@ export const AboutMe = ({ userId }: any) => {
                     <div className="relative">🎉</div>
                   ) : (
                     AchievementCriteria.map((criteria, index) => (
-                      <div key={index} className={`diamond place-self-end ${criteria.reward > 0 && index >= userAchievements.length ? 'show' : 'hidden'}`}>
+                      <p key={index} className={`diamond justify-items-end ${criteria.reward > 0 && index >= userAchievements.length ? 'show' : 'hidden'}`}>
                         {criteria.reward > 0 && index >= userAchievements.length && (
                           <>
                             <span role="img" aria-label="diamond">💎</span>
                             <span className="reward">+{criteria.reward}</span>
                           </>
                         )}
-                      </div>
+                      </p>
                     ))
                   )}
                 </div>
-                {typeof nextLevel === 'string' ? (
+                {AchievementCriteria.length === userAchievements.length? (
                   <div className="next-level-text">
-                    <p>{nextLevel}</p>
+                    <p>Congrats! you did it.</p>
                   </div>
                 ) : (
                   <div className="flex items-center text-sm">
@@ -137,7 +132,7 @@ export const AboutMe = ({ userId }: any) => {
                 )}
                 <ul className="text-medium-emphasis font-sans mt-3 list-disc list-inside">
                   {nextLevel.requirements.map((req: string, index: number) => (
-                    <li key={index} className="flex items-center text-left">
+                    <li key={index} className="mt-2 flex items-center text-left">
                       <CheckIconSVG className="mr-2" checked={isRequirementMet(req)} />
                       <span className={isRequirementMet(req) ? 'line-through text-disabled' : ''}>{req}</span>
                     </li>
@@ -152,7 +147,7 @@ export const AboutMe = ({ userId }: any) => {
           <ChevronLeft className={`${currentRequirementIndex === 0 ? 'text-disabled' : ''}`} />
         </span>
           <span className="mx-2">
-          {currentRequirementIndex + 1}/{AchievementCriteria.length}
+          {currentRequirementIndex != AchievementCriteria.length ?currentRequirementIndex:currentRequirementIndex+1}/{AchievementCriteria.length}
         </span>
           <span onClick={nextRequirement}>
           <ChevronRight className={`${currentRequirementIndex === AchievementCriteria.length - 1 ? 'text-disabled' : ''}`} />
@@ -217,9 +212,12 @@ export const AboutMe = ({ userId }: any) => {
       case "Review 50 Movies/Shows":
         return userInfo.reviews && userInfo.reviews.length >= 50;
       case "Start 20 Discussions":
-        return userInfo.createdDiscussions && userInfo.createdDiscussions.length >= 20;
+        // return userInfo.createdDiscussions && userInfo.createdDiscussions.length >= 20;
+        return true;
       case "Amass 100 Ratings":
-        return userInfo.ratings && userInfo.ratings.length >= 100;
+        // return userInfo.ratings && userInfo.ratings.length >= 100;
+        return true;
+
       default:
         return false;
     }
@@ -231,13 +229,13 @@ export const AboutMe = ({ userId }: any) => {
       ) : (
         <>
           <div className='flex w-full flex-col gap-4 rounded-[8px]'>
-            <div className='flex w-full flex-col rounded-[8px] bg-first-surface px-4 pb-[280px] pt-4 h-[280px]'>
+            <div className='flex w-full flex-col rounded-[8px] bg-first-surface'>
                 <ProfileAchievements/>
             </div>
 
-            <div className='flex w-full justify-between gap-4 rounded-[8px] bg-first-surface px-4 py-4'>
-              <p className='text-medium-emphasis'>Your Screen Gems <span className="ml-2 text-primary">ⓘ</span></p>
-              <p className='pr-8 text-medium-emphasis font-bold'>{userInfo?.gems || 10}💎</p>
+            <div className='flex text-medium-emphasis w-full justify-between gap-4 rounded-[8px] bg-first-surface px-4 py-4'>
+              <p className='mx-10 '>Your Screen Gems <span className="ml-2 text-primary">ⓘ</span></p>
+              <p className='pr-24 font-bold'>{userInfo?.gems || 10}💎</p>
             </div>
           </div>
 
