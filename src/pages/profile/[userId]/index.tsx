@@ -1,4 +1,4 @@
-import { useState, useEffect, ChangeEvent } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useUserContext } from '@/lib/context';
 import { useRouter } from 'next/router';
@@ -23,7 +23,7 @@ export default function ProfilePage() {
         if (userId) {
           const response = await axios.get(
             `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/profile/${userId}`,
-            // `http://localhost:8080/api/user/profile/${userId}`,
+            // `http://localhost:3000/backend/api/user/profile/${userId}`,
             {
               headers: {
                 Authorization: `Bearer ${idToken}`,
@@ -60,7 +60,7 @@ export default function ProfilePage() {
 
   return (
     <section className='mx-4 my-[1.438rem] flex flex-col justify-center gap-4 lg:flex-row lg:gap-8'>
-      <div className='flex flex-col gap-6 lg:w-[46rem]'>
+      <div className='flex flex-col gap-4 lg:w-[900px]'>
         <div className='flex items-center'>
           <div className='flex h-[100px] w-[100px] items-center'>
             <Image src={UserImg} alt={''} className='h-[100px] w-[100px] rounded-full' />
