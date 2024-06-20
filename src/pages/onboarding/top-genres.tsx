@@ -34,8 +34,8 @@ export async function getServerSideProps(context: NextPageContext) {
   let response;
   try {
     response = await axios.get(
-        'https://us-central1-reeltalk-app.cloudfunctions.net/backend/movies/getPossibleGenres',
-      // 'http://localhost:8080/movies/getPossibleGenres',
+        'https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/movies/getPossibleGenres',
+      // 'http://localhost:8080/api/movies/getPossibleGenres',
       {
         withCredentials: true,
         headers: {
