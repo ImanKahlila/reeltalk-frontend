@@ -126,11 +126,11 @@ export const AboutMe = ({ userId }: any) => {
                   <div className="flex items-center text-sm">
                   <span className="mt-2 font-thin">
                     Level up to <span className="pl-1 font-semibold">{nextLevel.level}</span>
-                    <span className="pl-1 achievement-icon">{nextLevel.icon}</span>
+                    <span className="pl-1">{nextLevel.icon}</span>
                   </span>
                   </div>
                 )}
-                <ul className="text-medium-emphasis font-sans mt-3 list-disc list-inside">
+                <ul className="text-medium-emphasis mt-3 list-disc list-inside">
                   {nextLevel.requirements.map((req: string, index: number) => (
                     <li key={index} className="mt-2 flex items-center text-left">
                       <CheckIconSVG className="mr-2" checked={isRequirementMet(req)} />
@@ -144,13 +144,13 @@ export const AboutMe = ({ userId }: any) => {
         </div>
         <div className="flex justify-center text-sm text-high-emphasis mt-3">
         <span onClick={prevRequirement}>
-          <ChevronLeft className={`${currentRequirementIndex === 0 ? 'text-disabled' : ''}`} />
+          <ChevronLeft className={`cursor-pointer ${currentRequirementIndex === 0 ? 'text-disabled' : ''}`} />
         </span>
           <span className="mx-2">
           {currentRequirementIndex+1}/{AchievementCriteria.length}
         </span>
           <span onClick={nextRequirement}>
-          <ChevronRight className={`${currentRequirementIndex === AchievementCriteria.length - 1 ? 'text-disabled' : ''}`} />
+          <ChevronRight className={`cursor-pointer ${currentRequirementIndex === AchievementCriteria.length - 1 ? 'text-disabled' : ''}`} />
         </span>
         </div>
       </div>
@@ -158,7 +158,6 @@ export const AboutMe = ({ userId }: any) => {
   };
   useEffect(() => {
     const fetchUserDetails = async () => {
-      console.log(idToken);
       try {
         const response = await axios.get(
           `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/profile/${userId}`,
@@ -195,7 +194,7 @@ export const AboutMe = ({ userId }: any) => {
       case "Select top 5 shows":
       return userInfo.favoriteShows && userInfo.favoriteShows.length >= 5;
       case "Add a Profile Pic":
-        return Boolean(userInfo.imageUrl);
+        return Boolean(userInfo?.imageUrl);
       case "Add a Bio":
         return Boolean(userInfo.bio);
       case "Join a discussion":
@@ -234,9 +233,11 @@ export const AboutMe = ({ userId }: any) => {
                 <ProfileAchievements/>
             </div>
 
-            <div className='flex text-medium-emphasis w-full justify-between gap-4 rounded-[8px] bg-first-surface px-4 py-4'>
-              <p className='mx-10 '>Your Screen Gems <span className="ml-2 text-primary">ⓘ</span></p>
-              <p className='pr-24 font-bold'>{userInfo?.gems || 10}💎</p>
+            <div
+              className="flex text-medium-emphasis w-full justify-between gap-4 rounded-[8px] bg-first-surface px-4 py-4">
+              <p className="mx-10 ">Your Screen Gems <span
+                className="ml-2 text-primary">ⓘ</span></p>
+              <p className="pr-24 font-medium">{userInfo?.gems || 10}💎</p>
             </div>
           </div>
 
