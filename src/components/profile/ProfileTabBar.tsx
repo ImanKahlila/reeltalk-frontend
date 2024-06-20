@@ -63,10 +63,10 @@ export default function ProfileTabBar({ userId }: any) {
 
   const tabs: string[] = [
     `About Me`,
-    `Posts(${postCount})`,
-    `Communities(${communityCount})`,
-    `Followers(${followerCount})`,
-    `Friends(${friendCount})`,
+    `Posts (${postCount})`,
+    `Communities (${communityCount})`,
+    `Followers (${followerCount})`,
+    `Friends (${friendCount})`,
   ];
 
   // Define content for each tab
@@ -75,10 +75,12 @@ export default function ProfileTabBar({ userId }: any) {
       <AboutMe userId={userId} />
     </div>,
     <div key={1} className='mt-8'>
-      <UserPosts userId={userId} />
+      {/*<UserPosts userId={userId} />*/}
+      UserPosts
     </div>,
     <div key={2} className='mt-8'>
-      <UserCommunities userId={userId} />
+      {/*<UserCommunities userId={userId} />*/}
+      UserCommunities
     </div>,
     <div key={3}>Followers Content</div>,
     <div key={4}>Friends Content</div>,
