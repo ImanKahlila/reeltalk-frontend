@@ -37,7 +37,7 @@ const useMediaSelection = (mediaType: 'movies' | 'series') => {
               Authorization: `Bearer ${idToken}`,
             },
           });
-          mediaArray = response.data.data.films;
+          mediaArray = response.data.data.movies;
         } else {
           response = await axios.get(`${backend_URL}/api/movies/getPossibleShows`, {
             withCredentials: true,
