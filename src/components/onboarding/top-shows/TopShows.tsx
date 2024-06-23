@@ -50,7 +50,7 @@ const TopShows = ({ user }: ITopShowsProps) => {
       setDoc(
         docRef,
         {
-          top5Shows: floaterSelection,
+          favoriteShows: floaterSelection,
         },
         { merge: true },
       )

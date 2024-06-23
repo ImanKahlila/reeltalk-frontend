@@ -65,9 +65,9 @@ function verifyOnboardingComplete(userData: DocumentData, push: NextRouter['push
       push('/onboarding/birthday');
     } else if (!userData['topGenres']) {
       push('/onboarding/top-genres');
-    } else if (!userData['top5Movies']) {
+    } else if (!userData['favoriteMovies']) {
       push('/onboarding/top-movies');
-    } else if (!userData['top5Shows']) {
+    } else if (!userData['favoriteShows']) {
       push('/onboarding/top-shows');
     } else {
       push('/onboarding/guideline-agreement');

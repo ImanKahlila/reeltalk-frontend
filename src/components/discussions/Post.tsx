@@ -72,6 +72,7 @@ const Post: React.FC<PostProps> = ({
         if (comments) {
           const response = await axios.get(
               `https://us-central1-reeltalk-app.cloudfunctions.net/backend/communities/${communityBelonged}/discussions/${discussionId}/comments/${commentInfo?.commentId}`,
+            // `http://localhost:8080/communities/${communityBelonged}/discussions/${discussionId}/comments/${commentInfo?.commentId}`,
             // `http://localhost:8080/communities/${communityBelonged}/discussions/${discussionId}/comments/0J53xfBr9fR2GlN0rcUn`,
             // `http://localhost:8080/communities/${communityBelonged}/discussions/${discussionId}/comments/0J53xfBr9fR2GlN0rcUn`,
             {
@@ -98,8 +99,8 @@ const Post: React.FC<PostProps> = ({
       try {
         if (userId) {
           const response = await axios.get(
-              `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/profile/${userId}`,
-            // `http://localhost:8080/api/user/profile/${userId}`,
+              // `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/profile/${userId}`,
+            `http://localhost:8080/api/user/profile/${userId}`,
             {
               headers: {
                 Authorization: `Bearer ${idToken}`,

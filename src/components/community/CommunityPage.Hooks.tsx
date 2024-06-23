@@ -15,8 +15,8 @@ interface UserData {
   createdCommunities: string[];
   displayName: string;
   joinedCommunities: string[];
-  top5Movies: any[];
-  top5Shows: any[];
+  favoriteMovies: any[];
+  favoriteShows: any[];
   favouriteGenres: string[];
 }
 

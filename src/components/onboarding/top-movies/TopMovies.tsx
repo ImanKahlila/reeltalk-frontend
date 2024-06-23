@@ -50,7 +50,7 @@ const TopMovies = ({ user }: ITopMovies) => {
       setDoc(
         docRef,
         {
-          top5Movies: floaterSelection,
+          favoriteMovies: floaterSelection,
         },
         { merge: true },
       )

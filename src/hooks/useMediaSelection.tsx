@@ -35,18 +35,31 @@ const useMediaSelection = (mediaType: 'movies' | 'series') => {
             withCredentials: true,
             headers: {
               Authorization: `Bearer ${idToken}`,
+              'Content-Type': 'application/json',
             },
           });
-          mediaArray = response.data.data.movies;
+          mediaArray = response.data.data.movies.map((movie: any) => ({
+            id: movie.id,
+            selected: false,
+            title: movie.titleText.text,
+            releaseYear: movie.releaseYear.year,
+            poster: movie.primaryImage.url
+          }));
         } else {
           response = await axios.get(`${backend_URL}/api/movies/getPossibleShows`, {
             withCredentials: true,
             headers: {
               Authorization: `Bearer ${idToken}`,
+              'Content-Type': 'application/json',
             },
           });
-          mediaArray = response.data.data.shows;
-        }
+          mediaArray = response.data.data.shows.map((movie: any) => ({
+            id: movie.id,
+            selected: false,
+            title: movie.titleText.text,
+            releaseYear: movie.releaseYear.year,
+            poster: movie.primaryImage.url
+          }));        }
         const mediaData = mediaArray.map(media => ({ ...media, selected: false }));
         if (response.status !== 200) return;
         setMedia(mediaData);
