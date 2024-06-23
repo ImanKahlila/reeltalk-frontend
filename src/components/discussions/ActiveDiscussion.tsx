@@ -49,8 +49,8 @@ const ActiveDiscussion: React.FC<DiscussionProps> = ({
       try {
         if (communityBelonged) {
           const response = await axios.get(
-            `https://us-central1-reeltalk-app.cloudfunctions.net/backend/communities/${communityBelonged}/`,
-            // `http://localhost:8080/communities/${communityBelonged}/`,
+            // `https://us-central1-reeltalk-app.cloudfunctions.net/backend/communities/${communityBelonged}/`,
+            `http://localhost:8080/communities/${communityBelonged}/`,
             {
               headers: { Authorization: `Bearer ${idToken}` },
             },

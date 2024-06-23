@@ -42,6 +42,7 @@ export default function StartPost() {
 
       const response = await axios.post(
         'https://us-central1-reeltalk-app.cloudfunctions.net/api/discussions',
+        // 'http://localhost:8080/api/discussions',
         discussionData,
         {
           headers: {
