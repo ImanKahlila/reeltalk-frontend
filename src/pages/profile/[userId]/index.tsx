@@ -23,7 +23,7 @@ export default function ProfilePage() {
         if (userId) {
           const response = await axios.get(
             `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/profile/${userId}`,
-            // `http://localhost:8080/backend/api/user/profile/${userId}`,
+            // `http://localhost:8080/api/user/profile/${userId}`,
             {
               headers: {
                 Authorization: `Bearer ${idToken}`,
@@ -73,7 +73,6 @@ export default function ProfilePage() {
       .join(' ');
   };
 
-  console.log(userInfo);
   return (
     <section className='mx-4 my-[1.438rem] flex flex-col justify-center gap-4 lg:flex-row lg:gap-8'>
       <div className='flex flex-col gap-4 lg:w-[900px]'>
