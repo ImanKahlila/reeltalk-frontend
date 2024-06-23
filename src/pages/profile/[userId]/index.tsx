@@ -44,15 +44,14 @@ export default function ProfilePage() {
   }, [idToken, userId]);
 
   const formatFirestoreTimestamp = (timestamp:any) => {
-    if (!timestamp || !timestamp._seconds || !timestamp._nanoseconds) {
+    if (!timestamp || typeof timestamp._seconds !== 'number' || typeof timestamp._nanoseconds !== 'number') {
       return 'Invalid Date';
     }
 
     // Convert Firestore timestamp to a JavaScript Date object
-    const dateObject = new Date(
-      timestamp._seconds * 1000 + timestamp._nanoseconds / 1000000
-    );
+    const dateObject = new Date(timestamp._seconds * 1000 + timestamp._nanoseconds / 1000000);
 
+    // Check if the date is valid
     const isDateValid = !isNaN(dateObject.getTime());
 
     // Format the birthday if it's valid
@@ -63,8 +62,9 @@ export default function ProfilePage() {
         year: 'numeric',
       })
       : 'Invalid Date';
-  return formattedBirthday;
-  }
+
+    return formattedBirthday;
+  };
   const formatDisplayName = (name:string) => {
     if (!name) return '';
     return name
@@ -73,7 +73,7 @@ export default function ProfilePage() {
       .join(' ');
   };
 
-
+  console.log(userInfo);
   return (
     <section className='mx-4 my-[1.438rem] flex flex-col justify-center gap-4 lg:flex-row lg:gap-8'>
       <div className='flex flex-col gap-4 lg:w-[900px]'>
