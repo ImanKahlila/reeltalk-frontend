@@ -248,8 +248,13 @@ export const AboutMe = ({ userId }: any) => {
                   Favorite genres
                 </h2>
                 <p className='mb-2 tracking-eight text-medium-emphasis'>
-                  {userInfo?.favoriteGenres?.[0]?.name}, {userInfo?.favoriteGenres?.[1]?.name}, and{' '}
-                  {userInfo?.favoriteGenres?.[2]?.name}
+                  {userInfo?.favoriteGenres?.map((genre:string, index:number, array:any) => (
+                    <span key={index}>
+                      {genre}
+                      {index < array.length - 2 ? ', ' : ''}
+                      {index === array.length - 2 ? ' and ' : ''}
+                    </span>
+                  ))}
                 </p>
               </div>
 
