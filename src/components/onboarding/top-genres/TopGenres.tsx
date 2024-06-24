@@ -44,7 +44,7 @@ const TopGenres = (props: ITopGenres) => {
       setDoc(
         docRef,
         {
-          topGenres: top5Genres,
+          favoriteGenres: top5Genres,
         },
         { merge: true },
       )

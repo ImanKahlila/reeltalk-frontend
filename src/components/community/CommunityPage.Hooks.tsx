@@ -17,7 +17,7 @@ interface UserData {
   joinedCommunities: string[];
   favoriteMovies: any[];
   favoriteShows: any[];
-  favouriteGenres: string[];
+  favoriteGenres: string[];
 }
 
 export const useRetrieveJoinedCommunites = () => {
