@@ -237,7 +237,7 @@ export const AboutMe = ({ userId }: any) => {
               className="flex text-medium-emphasis w-full justify-between gap-4 rounded-[8px] bg-first-surface px-4 py-4">
               <p className="mx-10 ">Your Screen Gems <span
                 className="ml-2 text-primary">ⓘ</span></p>
-              <p className="pr-24 font-medium">{userInfo?.gems || 10}💎</p>
+              <p className="pr-24 font-medium">{userInfo?.gems || 0}💎</p>
             </div>
           </div>
 
