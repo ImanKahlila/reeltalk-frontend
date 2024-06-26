@@ -15,7 +15,7 @@ export const useGetGenres = (initialGenres: Genre) => {
   const totalSelected = calculateTotalSelected(genres);
 
   function toggleSelectedGenre(id: string, newVal: boolean) {
-    if (totalSelected < 5 || !newVal) {
+    if (totalSelected < 3 || !newVal) {
       setGenres(prevState =>
         prevState.map(genre => (genre.id === id ? { ...genre, selected: newVal } : genre)),
       );
