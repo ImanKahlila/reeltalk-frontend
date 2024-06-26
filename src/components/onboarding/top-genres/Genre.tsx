@@ -17,14 +17,14 @@ const Genre = (props: ComponentProps) => {
   const [isChecked, setIsChecked] = useState(selected);
 
   function onChangeHandler() {
-    if (totalSelected < 3 || isChecked) {
+    if (totalSelected < 5 || isChecked) {
       // Manages checkbox state in this component
       setIsChecked(!isChecked);
 
       // Updates genres array in parent component
       toggleSelectedGenre(id, !isChecked);
     } else {
-      toast.error('Oops! Select just 3 genres.', { id: 'error' });
+      toast.error('Oops! Select just 5 genres.', { id: 'error' });
     }
   }
 
