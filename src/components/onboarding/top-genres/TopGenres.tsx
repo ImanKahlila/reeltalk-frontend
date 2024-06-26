@@ -77,7 +77,7 @@ const TopGenres = (props: ITopGenres) => {
       <Buttons
         prevPage='/onboarding/birthday'
         onPageSubmit={pageSubmitHandler}
-        valid={totalSelected >= 3}
+        valid={totalSelected === 3}
         required
       />
     </div>
