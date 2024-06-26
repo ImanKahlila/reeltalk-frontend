@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useUserContext } from '@/lib/context';
 import { useRouter } from 'next/router';
@@ -7,6 +7,7 @@ import ProfileTabBar from '@/components/profile/ProfileTabBar';
 
 import UserImg from '@/assets/user.png';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function ProfilePage() {
   const { user, idToken } = useUserContext();
@@ -22,8 +23,8 @@ export default function ProfilePage() {
       try {
         if (userId) {
           const response = await axios.get(
-            `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/profile/${userId}`,
-            // `http://localhost:8080/api/user/profile/${userId}`,
+            // `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/profile/${userId}`,
+            `http://localhost:8080/api/user/profile/UeCcRUJTOpZ8FzaxZ3XB68gna3k2`,
             {
               headers: {
                 Authorization: `Bearer ${idToken}`,
@@ -80,21 +81,44 @@ export default function ProfilePage() {
           <div className='flex h-[100px] w-[100px] items-center'>
             <Image src={userInfo?.imageUrl ?? UserImg} width={100} height={100}  alt={''} className='h-[100px] w-[100px] rounded-full' />
           </div>
-          <div className='px-[32px]'>
+          <div className="px-[32px]">
             <div>
-              <h1 className='text-high-emphasis md:text-[36px]'>{formatDisplayName(userInfo?.displayName)}</h1>
+              <h1
+                className="text-high-emphasis md:text-[36px]">{formatDisplayName(userInfo?.displayName)}</h1>
             </div>
-            <div className='flex items-center py-3'>
-              <p className='text-medium-emphasis md:text-[16px]'>📍 {userInfo?.location}</p>
+            <div className="flex items-center py-3">
+              <p
+                className="text-medium-emphasis md:text-[16px]">📍 {userInfo?.location}</p>
               {/* <p className='text-medium-emphasis md:text-[16px]'>📍 {userInfo?.location}</p> */}
-              <span className='px-2 text-medium-emphasis md:text-[20px]'>•</span>
+              <span
+                className="px-2 text-medium-emphasis md:text-[20px]">•</span>
               {/*<p className='text-medium-emphasis md:text-[16px] '>🎂 April 23, 2001</p>*/}
-              { <p className='text-medium-emphasis md:text-[16px] '>
+              {<p className="text-medium-emphasis md:text-[16px] ">
                 🎂 {formatFirestoreTimestamp(userInfo?.birthday)}
-              </p> }
+              </p>}
             </div>
             <div>
-              <p className='text-medium-emphasis md:text-[16px]'>{userInfo?.bio}</p>
+              <p
+                className="text-medium-emphasis md:text-[16px]">{userInfo?.bio}</p>
+            </div>
+            <div className="flex space-x-2">
+              <Link href="/profile/edit-profile"
+                className="min-w-[140px] rounded-lg border-2 bg-high-emphasis p-2 text-center tracking-[0.08px] text-black"
+              >
+                <span>Edit Profile</span>
+              </Link>
+              <Link href="/profile/store"
+                className="min-w-[140px] rounded-lg border-2 border-pure-white p-2 text-center tracking-[0.08px] text-pure-white flex items-center"
+              >
+                <div className="relative w-5 h-5">
+                  <Image
+                    src="/Profile/statusIcon.png"
+                    layout="fill"
+                    alt="status"
+                  />
+                </div>
+                <span className="ml-2">Status: Basic</span>
+              </Link>
             </div>
           </div>
         </div>
