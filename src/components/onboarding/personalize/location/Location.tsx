@@ -113,9 +113,3 @@ const Location = (props: ILocationProps) => {
 
 export default Location;
 
-export function extractDateValues(yearValue: string, monthValue: string, dayValue: string) {
-  const year = +yearValue;
-  const month = new Date(`${monthValue} 1, 2000`).getMonth();
-  const day = +dayValue.replace(/\D/g, '');
-  return { day, month, year };
-}
