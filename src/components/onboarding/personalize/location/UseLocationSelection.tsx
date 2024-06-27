@@ -10,15 +10,18 @@ export type ReqBody = {
 type ResponseData = {
   results: string[];
 };
-const backend_URL = 'https://us-central1-reeltalk-app.cloudfunctions.net/backend';
-  // const backend_URL = 'http://localhost:8080';
 
-const useLocationSelection = (key: string) => {
+const backend_URL = 'https://us-central1-reeltalk-app.cloudfunctions.net/backend';
+// const backend_URL = 'http://localhost:8080';
+
+const useLocationSelection = (initialKey: string) => {
   const [errorFetching, setErrorFetching] = useState(false);
   const [locationSuggestions, setLocationSuggestions] = useState<ResponseData>({ results: [] });
 
   useEffect(() => {
-    async function retrieveSuggestedLocation() {
+    const source = axios.CancelToken.source(); // Create a cancel token source
+
+    async function retrieveSuggestedLocation(key: string) {
       try {
         if (key !== '') {
           const body: ReqBody = { key, scrollCount: 0, limit: 30 };
@@ -26,6 +29,7 @@ const useLocationSelection = (key: string) => {
             headers: {
               'Content-Type': 'application/json',
             },
+            cancelToken: source.token // Pass the cancel token to the request
           });
 
           if (response.status !== 200) {
@@ -34,17 +38,30 @@ const useLocationSelection = (key: string) => {
           }
 
           setLocationSuggestions(response.data);
+        } else {
+          // Clear suggestions when input is empty
+          setLocationSuggestions({ results: [] });
         }
       } catch (error: any) {
-        setErrorFetching(true);
-        console.log(error.message);
+        if (!axios.isCancel(error)) {
+          setErrorFetching(true);
+          console.log(error.message);
+        }
       }
     }
 
-    retrieveSuggestedLocation();
-  }, [key]);
+    retrieveSuggestedLocation(initialKey);
 
-  return { locations: locationSuggestions, errorFetching };
+    return () => {
+      source.cancel('Operation canceled by cleanup'); // Cancel request on cleanup
+    };
+  }, [initialKey]);
+
+  const clearSuggestions = () => {
+    setLocationSuggestions({ results: [] });
+  };
+
+  return { locations: locationSuggestions, errorFetching, clearSuggestions };
 };
 
 export default useLocationSelection;
