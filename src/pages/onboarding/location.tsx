@@ -7,7 +7,7 @@ import { useAuthRequired } from '@/hooks/routeProtection';
 import { usePasswordlessSignin } from '@/components/onboarding/personalize/birthday/Birthday.hooks';
 import Location from '@/components/onboarding/personalize/location/Location';
 
-const BirthdayPage = () => {
+const LocationPage = () => {
   // Handles passwordlessSignIn Logic
   usePasswordlessSignin();
 
@@ -23,4 +23,4 @@ const BirthdayPage = () => {
   );
 };
 
-export default BirthdayPage;
+export default LocationPage;
