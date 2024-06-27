@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { BirthdayComboBox } from '@/components/onboarding/birthday/BirthdayComboBox';
+import { BirthdayComboBox } from '@/components/onboarding/personalize/birthday/BirthdayComboBox';
 import { daysOfMonth, monthsOfYear } from '@/lib/inputsData';
 
 // Values for Birthday Inputs
