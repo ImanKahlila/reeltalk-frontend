@@ -16,6 +16,7 @@ import Inputs from './Inputs';
 import { getFirestore, setDoc, Timestamp, doc } from 'firebase/firestore';
 import { User } from 'firebase/auth';
 import app from '@/firebase/firebase-config';
+import { getFirstName } from '@/lib/utils';
 const db = getFirestore(app);
 
 // Memoize Carousel to prevent uneccessary re-renders when input change handler causes page to rerender
@@ -65,9 +66,11 @@ const Birthday = (props: IBirthdayProps) => {
         ></Image>
       </picture>
 
-      <div className='mx-auto mt-14 max-w-[343px] md:max-w-[536px]'>
+      <div className="mx-auto mt-14 max-w-[343px] md:max-w-[536px]">
         <Header user={user} />
-
+        <input
+          className='min-w-full mt-4 h-9 p-2 flex gap-2 bg-second-surface justify-between text-medium-emphasis border border-primary rounded'
+          disabled placeholder={getFirstName(user.displayName)}/>
         <Inputs inputChangeHandler={inputChangeHandler} />
 
         <MemoizedCarousel />
@@ -75,7 +78,7 @@ const Birthday = (props: IBirthdayProps) => {
 
       <Buttons
         valid={birthdayValid}
-        prevPage='/onboarding'
+        prevPage="/onboarding"
         onPageSubmit={pageSubmitHandler}
         required
       />
