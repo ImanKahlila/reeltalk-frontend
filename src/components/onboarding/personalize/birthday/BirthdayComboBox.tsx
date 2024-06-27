@@ -1,6 +1,9 @@
 import React from 'react';
 
-import { Check, ChevronsUpDown } from 'lucide-react';
+import {
+  Check,
+  ChevronDownIcon,
+} from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -39,24 +42,25 @@ export function BirthdayComboBox({
           variant='first-surface'
           role='combobox'
           aria-expanded={open}
-          className='w-[200px] justify-between'
+          // className='w-[200px] justify-between text-medium-emphasis border border-primary'
+          className={`w-[200px] justify-between border border-primary ${inputValue ? 'text-high-emphasis' : 'text-medium-emphasis'}`}
         >
           {inputValue
             ? keys.find(key => key.label.toLowerCase() === inputValue)?.label
             : placeholder}
-          <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+          <ChevronDownIcon className='ml-2 h-4 w-4 shrink-0 opacity-50'/>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className='w-[200px] border-[#2d2d2d] bg-transparent p-0 shadow-2xl'>
+      <PopoverContent className='w-[200px] border-primary bg-transparent p-0 shadow-2xl'>
         <Command className='bg-[#2D2D2D]'>
-          <CommandInput
-            className='text-high-emphasis placeholder:text-gray'
-            inputMode={inputMode}
-            placeholder={`Search ${placeholder.toLowerCase()}... `}
-          />
-          <CommandEmpty className='py-6 text-center text-sm text-high-emphasis'>
-            No results.
-          </CommandEmpty>
+          {/*<CommandInput*/}
+          {/*  className='text-high-emphasis placeholder:text-gray'*/}
+          {/*  inputMode={inputMode}*/}
+          {/*  placeholder={`Search ${placeholder.toLowerCase()}... `}*/}
+          {/*/>*/}
+          {/*<CommandEmpty className='py-6 text-center text-sm text-high-emphasis'>*/}
+          {/*  No results.*/}
+          {/*</CommandEmpty>*/}
           <CommandGroup className='p-0'>
             <ScrollArea className='h-52 bg-transparent'>
               {keys.map(key => (
