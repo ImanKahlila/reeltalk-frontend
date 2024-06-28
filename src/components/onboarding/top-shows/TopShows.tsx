@@ -76,7 +76,8 @@ const TopShows = ({ user }: ITopShowsProps) => {
       {/* Header */}
       <Header
         titleType={'tvSeries'} // Determines what type of media will be queried, 'movies' | 'tvSeries'
-        addSelectionHandler={addSelectionHandler}
+        addSelectionHandler={addSelectionHandler}removeSelectionHandler={removeSelectionHandler}
+        floaterSelection={floaterSelection}
         selectedLength={floaterSelection.length}
       />
 

@@ -6,6 +6,7 @@ import SearchIcon from '@/components/layout/SearchIcon';
 
 import { ScrollArea } from '@/components/ui/scroll-area';
 import SearchOption from './SearchOption';
+import { FloaterSelection } from '@/hooks/useMediaSelection';
 
 interface HeaderProps {
   addSelectionHandler: (
@@ -16,10 +17,12 @@ interface HeaderProps {
     newVal?: boolean,
   ) => void;
   selectedLength: number;
+  removeSelectionHandler: (id: string, newVal: boolean, isApi: boolean) => void;
+  floaterSelection:FloaterSelection;
   titleType: 'movie' | 'tvSeries' | null; // passing null will return movies and tvSeries
 }
 
-const Header = ({ addSelectionHandler, selectedLength, titleType }: HeaderProps) => {
+const Header = ({ addSelectionHandler, removeSelectionHandler,floaterSelection,selectedLength, titleType }: HeaderProps) => {
   // Controls open state of popover
   const [inputFocus, setInputFocus] = useState(false);
 
@@ -88,6 +91,8 @@ const Header = ({ addSelectionHandler, selectedLength, titleType }: HeaderProps)
                     director={media.directorName}
                     creator={media.creatorName}
                     addSelectionHandler={addSelectionHandler}
+                    removeSelectionHandler={removeSelectionHandler}
+                    floaterSelection={floaterSelection}
                     selectedLength={selectedLength}
                     maxSelection={5}
                   />

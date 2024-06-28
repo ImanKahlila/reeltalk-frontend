@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { Skeleton } from '../../ui/skeleton';
 import toast from 'react-hot-toast';
+import { FloaterSelection } from '@/hooks/useMediaSelection';
 
 interface ComponentProps {
   title: string;
@@ -17,22 +18,31 @@ interface ComponentProps {
     isApi: boolean,
     newVal?: boolean,
   ) => void;
+  removeSelectionHandler: (id: string, newVal: boolean, isApi: boolean) => void;
+  floaterSelection: FloaterSelection;
   selectedLength: number; //Number of medias selected so far
   maxSelection: number; // Maximum title selections allowed
 }
 
 const SearchOption = ({
-  id,
-  posterUrl,
-  title,
-  year,
-  director,
-  creator,
-  addSelectionHandler,
-  selectedLength,
-  maxSelection,
-}: ComponentProps) => {
+                        id,
+                        posterUrl,
+                        title,
+                        year,
+                        director,
+                        creator,
+                        addSelectionHandler,
+                        removeSelectionHandler,
+                        floaterSelection,
+                        selectedLength,
+                        maxSelection,
+                      }: ComponentProps) => {
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [isSelected, setIsSelected] = useState(false);
+
+  useEffect(() => {
+    setIsSelected(floaterSelection?.some(e => e.id === id));
+  }, [floaterSelection, id]);
 
   const handleImageLoad = () => {
     // When the image is loaded, set the state to indicate that the image is ready
@@ -40,11 +50,21 @@ const SearchOption = ({
   };
 
   const selectMovieHandler = () => {
-    if (selectedLength < maxSelection) {
+    if (selectedLength < maxSelection && !isSelected) {
       addSelectionHandler(id, title, posterUrl, true);
+      setIsSelected(true);
       toast.success(
         <div>
-          <span className='font-bold'>{title}</span> added
+          <span className="font-bold">{title}</span> added
+        </div>,
+        { position: 'bottom-center' },
+      );
+    } else if (isSelected) {
+      removeSelectionHandler!(id, false, true);
+      setIsSelected(false);
+      toast.success(
+        <div>
+          <span className="font-bold">{title}</span> removed
         </div>,
         { position: 'bottom-center' },
       );
@@ -72,7 +92,14 @@ const SearchOption = ({
         <h2 className='text-base tracking-[0.08px] text-secondary'>
           {title} ({year})
         </h2>
-        <p className='tracking-[0.08px] text-gray'>{director || creator}</p>
+        <p className="tracking-[0.08px] text-gray">{director || creator}</p>
+      </div>
+      <div className="mt-4 flex items-center justify-end">
+        {isSelected ? (
+          <span className="text-3xl text-red-500 place-content-end">&#8854;</span>
+        ) : (
+          <span className="text-second-surface text-3xl place-content-end">&#8853;</span>
+        )}
       </div>
     </div>
   );

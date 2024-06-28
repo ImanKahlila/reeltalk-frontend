@@ -5,15 +5,20 @@ import Spinner from '../../shared/Spinner';
 import SearchIcon from '../../layout/SearchIcon';
 import { ScrollArea } from '../../ui/scroll-area';
 import SearchOption from '../../onboarding/shared/SearchOption';
+import { FloaterSelection } from '@/hooks/useMediaSelection';
 
 interface IRelatedMediaSearchInputProps {
   addSelectionHandler: (id: string | number, title: string, poster: string, isApi: boolean) => void;
   selectedLength: number;
+  removeSelectionHandler: (id: string, newVal: boolean, isApi: boolean) => void;
+  floaterSelection: FloaterSelection
 }
 
 function RelatedMediaSearchInput({
   addSelectionHandler,
+  removeSelectionHandler,
   selectedLength,
+  floaterSelection
 }: IRelatedMediaSearchInputProps) {
   // Controls open state of dropdown
   const [inputFocus, setInputFocus] = useState(false);
@@ -74,7 +79,7 @@ function RelatedMediaSearchInput({
                   addSelectionHandler={addSelectionHandler}
                   selectedLength={selectedLength}
                   maxSelection={4}
-                />
+                 removeSelectionHandler={removeSelectionHandler} floaterSelection={floaterSelection}/>
               ))}
             </ScrollArea>
           )}
