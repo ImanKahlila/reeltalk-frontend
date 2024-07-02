@@ -123,6 +123,8 @@ const CreateCommunity = ({ user }: { user: User }) => {
             <RelatedMediaSearchInput
               addSelectionHandler={addSelectionHandler}
               selectedLength={relatedTitlesSelection?.length}
+              removeSelectionHandler={removeSelectionHandler}
+              floaterSelection={relatedTitlesSelection}
             />
 
             <RelatedMediaSelection

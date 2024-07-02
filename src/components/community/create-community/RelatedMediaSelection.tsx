@@ -6,9 +6,9 @@ import { PlusIcon } from 'lucide-react';
 
 interface IRelatedMediaSelectionProps {
   relatedTitlesSelection: IRelatedTitlesSelection['relatedTitles'];
-  removeSelectionHandler: (id: number | string) => void;
+  removeSelectionHandler: (id: string) => void;
   selectionPlaceholder: {
-    id: number;
+    id: string;
     title: string;
     poster: string;
   }[];
@@ -41,9 +41,9 @@ const RelatedMediaSelection = ({
 export default RelatedMediaSelection;
 
 interface IMediaProps {
-  id: number | string;
+  id: string;
   poster: string;
-  removeSelectionHandler: (id: number | string) => void;
+  removeSelectionHandler: (id: string) => void;
 }
 
 function Media({ id, poster, removeSelectionHandler }: IMediaProps) {

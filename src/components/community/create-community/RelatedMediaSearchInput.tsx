@@ -8,7 +8,7 @@ import SearchOption from '../../onboarding/shared/SearchOption';
 import { FloaterSelection } from '@/hooks/useMediaSelection';
 
 interface IRelatedMediaSearchInputProps {
-  addSelectionHandler: (id: string | number, title: string, poster: string, isApi: boolean) => void;
+  addSelectionHandler: (id: string, title: string, poster: string, isApi: boolean) => void;
   selectedLength: number;
   removeSelectionHandler: (id: string, newVal: boolean, isApi: boolean) => void;
   floaterSelection: FloaterSelection

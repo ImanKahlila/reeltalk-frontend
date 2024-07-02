@@ -94,7 +94,7 @@ const SearchOption = ({
         </h2>
         <p className="tracking-[0.08px] text-gray">{director || creator}</p>
       </div>
-      <div className="mt-4 flex items-center justify-end">
+      <div className="mt-4 flex items-center justify-end ml-auto">
         {isSelected ? (
           <span className="text-3xl text-red-500 place-content-end">&#8854;</span>
         ) : (
