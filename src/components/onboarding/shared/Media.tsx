@@ -21,23 +21,35 @@ interface MediaProps {
 }
 
 const Media = ({
-  id,
-  title,
-  year,
-  posterUrl,
-  addSelectionHandler,
-  removeSelectionHandler,
-  selectedLength,
-  selected,
-}: MediaProps) => {
+                 id,
+                 title,
+                 year,
+                 posterUrl,
+                 addSelectionHandler,
+                 removeSelectionHandler,
+                 selectedLength,
+                 selected,
+               }: MediaProps) => {
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
+  const isPlaceholder = !posterUrl || posterUrl === '/Onboarding/placeholder-image-on-error.png'; // Assuming this is how you determine placeholder images
 
   const handleImageLoad = () => {
     // When the image is loaded, set the state to indicate that the image is ready
     setImageLoaded(true);
   };
 
-  function toggleMedia() {
+  const handleImageError = () => {
+    setImageError(true);
+    setImageLoaded(true);
+  };
+
+  const toggleMedia = () => {
+    if (isPlaceholder) {
+      // Disable onClick for placeholder images
+      return;
+    }
+
     if (selectedLength < 5 && !selected) {
       addSelectionHandler(id, title, posterUrl, false, true);
     } else if (selected) {
@@ -45,27 +57,52 @@ const Media = ({
     } else {
       toast.error('Oops! select only 5 options');
     }
-  }
+  };
+
   return (
-    <button className='relative flex w-min flex-col gap-1'>
+    <button
+      className='relative flex w-min flex-col gap-1'
+      onClick={toggleMedia}
+      disabled={isPlaceholder} // Disable the button click for placeholder images
+    >
       <picture
-        onClick={toggleMedia}
         className={`relative block h-[142.127px] w-24 cursor-pointer overflow-hidden rounded transition-all duration-75 ${
           selected ? 'outline outline-[3px] outline-primary' : ''
         }`}
       >
-        <Image
-          src={posterUrl}
-          fill
-          sizes='(max-width: 767px) 100vw, 96px'
-          alt=''
-          onLoad={handleImageLoad}
-          onError={handleImageLoad}
-          className={`${!imageLoaded ? 'invisible' : 'visible'}`}
-        ></Image>
         {!imageLoaded && <Skeleton className='h-[142.127px] w-24 rounded' />}
+        {imageError ? (
+          <img
+            src='/Onboarding/placeholder-image-on-error.png'
+            alt='Placeholder'
+            className='h-[142.127px] w-24 rounded'
+          />
+        ) : (
+          <Image
+            src={posterUrl}
+            fill
+            sizes='(max-width: 767px) 100vw, 96px'
+            alt=''
+            onLoad={handleImageLoad}
+            onError={handleImageError}
+            className={`${!imageLoaded ? 'invisible' : 'visible'}`}
+          />
+        )}
       </picture>
-      <p className='mx-auto text-center text-xs leading-normal tracking-[0.06px] text-high-emphasis'>{`${title} (${year})`}</p>
+      <div
+        className={`mx-auto text-center mt-1 text-xs leading-normal tracking-[0.06px] text-high-emphasis ${
+          !title ? 'h-[8px] w-12 bg-first-surface rounded' : ''
+        }`}
+      >
+        {/*{title ? `${title} (${year})` : ''}*/}
+      </div>
+      <div
+        className={`mx-auto text-center text-xs leading-normal tracking-[0.06px] text-high-emphasis ${
+          !year ? 'h-[8px] w-full bg-first-surface rounded' : ''
+        }`}
+      >
+        {title && year ? `${title} (${year})` : ''}
+      </div>
       <svg
         xmlns='http://www.w3.org/2000/svg'
         width='37'
