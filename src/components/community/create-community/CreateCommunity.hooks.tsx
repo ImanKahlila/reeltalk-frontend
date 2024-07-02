@@ -57,7 +57,7 @@ import toast from 'react-hot-toast';
 
 export interface IRelatedTitlesSelection {
   relatedTitles: {
-    id: string | number;
+    id: string;
     title: string;
     poster: string;
     isApi: boolean;
@@ -166,13 +166,13 @@ export const useRelatedMedia = () => {
   >([]);
 
   // Placeholder tracker, tracks how many placeholders needed for relatedTitlesSelections
-  const selectionPlaceholder: { id: number; title: string; poster: string }[] = [];
+  const selectionPlaceholder: { id: string; title: string; poster: string }[] = [];
   for (let i = 0; i < 4 - relatedTitlesSelection?.length; i++) {
-    selectionPlaceholder.push({ id: i, title: '', poster: '' });
+    selectionPlaceholder.push({ id: String(i), title: '', poster: '' });
   }
 
   // Function to add media selection
-  function addSelectionHandler(id: string | number, title: string, poster: string, isApi: boolean) {
+  function addSelectionHandler(id: string, title: string, poster: string, isApi: boolean) {
     const selected = { id, title, poster, isApi };
     setRelatedTitlesSelection(prev => {
       let newState = [...prev];
@@ -184,7 +184,7 @@ export const useRelatedMedia = () => {
   }
 
   // Function to remove media selection
-  function removeSelectionHandler(id: number | string) {
+  function removeSelectionHandler(id: string) {
     setRelatedTitlesSelection(prev => {
       let newState = [...prev];
       let output = newState.filter(element => element.id !== id);
