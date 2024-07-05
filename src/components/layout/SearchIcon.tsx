@@ -1,12 +1,12 @@
 import React from 'react';
 
-const SearchIcon = () => {
+const SearchIcon = ({strokeWidth = 1.5}) => {
   return (
     <svg
       xmlns='http://www.w3.org/2000/svg'
       fill='transparent'
       viewBox='0 0 24 24'
-      strokeWidth={1.5}
+      strokeWidth={strokeWidth}
       stroke='#6D6D6D'
       className='h-[20px] min-w-[20px]'
     >

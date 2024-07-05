@@ -96,9 +96,24 @@ const SearchOption = ({
       </div>
       <div className="mt-4 flex items-center justify-end ml-auto">
         {isSelected ? (
-          <span className="text-3xl text-red-500 place-content-end">&#8854;</span>
+          <span
+            className="flex items-center justify-center w-10 h-10 bg-red-500 rounded-full">
+      <svg className="text-white w-5 h-5" fill="none" viewBox="0 0 24 24"
+           stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+              d="M6 12h12" />
+      </svg>
+    </span>
         ) : (
-          <span className="text-second-surface text-3xl place-content-end">&#8853;</span>
+          <span
+            className="flex items-center justify-center w-10 h-10 rounded-full border border-second-surface">
+  <svg className="text-second-surface w-5 h-5" fill="none" viewBox="0 0 24 24"
+       stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+          d="M12 6v12m-6-6h12" />
+  </svg>
+</span>
+
         )}
       </div>
     </div>

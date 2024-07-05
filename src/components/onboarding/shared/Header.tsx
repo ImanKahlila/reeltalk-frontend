@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { debounce } from 'lodash';
+import { useState, useEffect } from 'react';
 import useMediaSearch from '@/hooks/useMediaSearch';
 import Spinner from '@/components/shared/Spinner';
 import SearchIcon from '@/components/layout/SearchIcon';
@@ -18,21 +17,30 @@ interface HeaderProps {
   ) => void;
   selectedLength: number;
   removeSelectionHandler: (id: string, newVal: boolean, isApi: boolean) => void;
-  floaterSelection:FloaterSelection;
+  floaterSelection: FloaterSelection;
   titleType: 'movie' | 'tvSeries' | null; // passing null will return movies and tvSeries
 }
 
-const Header = ({ addSelectionHandler, removeSelectionHandler,floaterSelection,selectedLength, titleType }: HeaderProps) => {
+const Header = ({ addSelectionHandler, selectedLength, titleType, floaterSelection, removeSelectionHandler }: HeaderProps) => {
   // Controls open state of popover
   const [inputFocus, setInputFocus] = useState(false);
-
+  const [queryParam, setQueryParam] = useState('');
   // Custom hook for searching Media from API
   const { queryMedia, searchMedia, fetching } = useMediaSearch(titleType);
 
-  const searchInputChangeHandler = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
-    const queryParam = e.target.value.trim();
-    searchMedia(queryParam);
-  }, 1000);
+  useEffect(() => {
+    // Initialize or fetch popular media data when component mounts
+    if (!queryParam) {
+      searchMedia('');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const searchInputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.trim();
+    setQueryParam(value);
+    searchMedia(value);
+  };
 
   return (
     <header className='mx-auto mt-14 max-w-[600px] px-4 text-center'>
@@ -55,6 +63,7 @@ const Header = ({ addSelectionHandler, removeSelectionHandler,floaterSelection,s
             className='w-full border-none bg-transparent py-[11px] tracking-eight text-pure-white outline-none focus:text-secondary'
             type='text'
             placeholder='Search'
+            value={queryParam}
             onChange={searchInputChangeHandler}
             onFocus={() => setInputFocus(true)}
             onBlur={() => {
@@ -77,11 +86,42 @@ const Header = ({ addSelectionHandler, removeSelectionHandler,floaterSelection,s
             } outline-none`}
           >
             {/* Only Children allow to have padding else it will become visible */}
-            {queryMedia.length === 0 ? (
-              <div className='mr-auto p-4'>No results...</div>
-            ) : (
-              <ScrollArea className='h-[288px]'>
-                {queryMedia.map(media => (
+            {queryParam ? (
+              (queryMedia.length === 0 && !fetching) ? (
+                <div
+                  className="p-4 h-[288px] flex flex-col items-center justify-center">
+                  <span
+                    className="w-9 h-9 rounded-full border-4 border-gray flex items-center justify-center">
+                    <SearchIcon strokeWidth={4} />
+                  </span>
+                  <p className="mt-2 text-center w-[210px] text-gray">
+                    We couldn&apos;t find any matches for your search
+                  </p>
+                </div>
+              ) : (
+                <ScrollArea className="h-[288px]">
+                  {queryMedia.map((media) => (
+                    <SearchOption
+                      key={media.id}
+                      id={media.id}
+                      title={media.originalTitleText.text}
+                      posterUrl={media.primaryImage?.url}
+                      year={media.releaseYear?.year}
+                      director={media.directorName}
+                      creator={media.creatorName}
+                      addSelectionHandler={addSelectionHandler}
+                      removeSelectionHandler={removeSelectionHandler}
+                      floaterSelection={floaterSelection}
+                      selectedLength={selectedLength}
+                      maxSelection={5}
+                    />
+                  ))}
+                </ScrollArea>
+              )
+            ) : <div className="p-4"><p className="text-left ml-2">Popular
+              searches: </p>
+              <ScrollArea className="h-[288px]">
+                {queryMedia.map((media:any) => (
                   <SearchOption
                     key={media.id}
                     id={media.id}
@@ -98,7 +138,7 @@ const Header = ({ addSelectionHandler, removeSelectionHandler,floaterSelection,s
                   />
                 ))}
               </ScrollArea>
-            )}
+            </div>}
           </div>
         </div>
       </div>
