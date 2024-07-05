@@ -1,6 +1,7 @@
-import { useState } from 'react';
-import axios from 'axios';
+import { useState, useRef } from 'react';
+import axios, { AxiosResponse, CancelTokenSource } from 'axios';
 import toast from 'react-hot-toast';
+import { useUserContext } from '@/lib/context';
 
 const backend_URL = 'https://us-central1-reeltalk-app.cloudfunctions.net/backend';
 // const backend_URL = 'http://localhost:8080';
@@ -8,33 +9,73 @@ const backend_URL = 'https://us-central1-reeltalk-app.cloudfunctions.net/backend
 const useMediaSearch = (titleType: 'movie' | 'tvSeries' | null) => {
   const [queryMedia, setQueryMedia] = useState<any[]>([]);
   const [fetching, setFetching] = useState(false);
+  const { idToken } = useUserContext();
+  const cancelTokenSource = useRef<CancelTokenSource | null>(null);
 
-  const searchMedia = (queryParam: string) => {
+  const retrievePopularMedia = async () => {
+    try {
+      // TO-DO: Replace this endpoint with popular media
+      const response = await axios.get(`${backend_URL}/api/movies/getPossibleFilms`, {
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.data.data && response.data.data.movies) {
+        return  response.data.data.movies.map((movie: any) => ({
+          id: movie.id,
+          selected: false,
+          originalTitleText: { text: movie.titleText.text },
+          releaseYear: { year: movie.releaseYear.year },
+          primaryImage: { url: movie.primaryImage.url },
+          directorName: '',
+          creatorName: '',
+        }));
+      } else {
+        console.warn('Unexpected response structure:', response.data);
+        return [];
+      }
+    } catch (error) {
+      toast.error('Error retrieving popular media');
+      return [];
+    }
+  };
+
+  const searchMedia = async (queryParam: string) => {
+    if (cancelTokenSource.current) {
+      cancelTokenSource.current.cancel('Operation canceled due to new request.');
+    }
+
     if (!queryParam) {
-      setQueryMedia([]);
+      const data = await retrievePopularMedia();
+      setQueryMedia(data);
       return;
     }
 
+    cancelTokenSource.current = axios.CancelToken.source();
     // Create an array to store the promises for the two Axios requests
-    const promises = [
+    const promises: [Promise<AxiosResponse<any>>, Promise<AxiosResponse<any>>] = [
       axios.post(`${backend_URL}/movies/search`, {
         input: queryParam,
         titleType: titleType,
         info: 'base_info',
-      }),
+      },
+        { cancelToken: cancelTokenSource.current.token }),
       axios.post(`${backend_URL}/movies/search`, {
         input: queryParam,
         titleType: titleType,
         info: 'creators_directors_writers',
-      }),
+      },
+        { cancelToken: cancelTokenSource.current.token }),
     ];
 
     setFetching(true);
-
-    Promise.all(promises)
-      .then(([moviesResponse, creditsResponse]) => {
-        const moviesData = moviesResponse.data;
-        const creditsData = creditsResponse.data;
+    try {
+      const [moviesResponse, creditsResponse] = await Promise.all(promises);
+      const moviesData = moviesResponse.data;
+      const creditsData = creditsResponse.data;
 
         // Create a new array to store the mapped values
         const mappedArray = [];
@@ -64,15 +105,19 @@ const useMediaSearch = (titleType: 'movie' | 'tvSeries' | null) => {
 
           setQueryMedia(filteredAndSortedArray);
         }
-      })
-      .catch((error: any) => {
+    } catch (error: any) {
+      if (axios.isCancel(error)) {
+        console.log('Request canceled:', error.message);
+      } else {
         if (error.message == 'Request failed with status code 500') {
           toast.error('Server error, please try again later');
         } else {
           toast.error(error.message);
         }
-      })
-      .finally(() => setFetching(false));
+      }
+    } finally {
+      setFetching(false);
+    }
   };
 
   return { queryMedia, fetching, searchMedia };

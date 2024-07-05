@@ -72,7 +72,7 @@ const Media = ({
       >
         {!imageLoaded && <Skeleton className='h-[142.127px] w-24 rounded' />}
         {imageError ? (
-          <img
+          <Image
             src='/Onboarding/placeholder-image-on-error.png'
             alt='Placeholder'
             className='h-[142.127px] w-24 rounded'
@@ -102,6 +102,9 @@ const Media = ({
         }`}
       >
         {title && year ? `${title} (${year})` : ''}
+        {/*/!*<div onClick={toggleMedia} className="mx-auto text-center mt-1 text-xs leading-normal tracking-[0.06px] text-high-emphasis">*!/*/}
+        {/*  <p className='mx-auto text-center text-xs leading-normal tracking-[0.06px] text-high-emphasis'>{`${title} (${year})`}</p>*/}
+        {/*/!*</div>*!/*/}
       </div>
       <svg
         xmlns='http://www.w3.org/2000/svg'
