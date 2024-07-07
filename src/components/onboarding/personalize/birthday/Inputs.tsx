@@ -1,12 +1,12 @@
 import React from 'react';
 
-import { BirthdayComboBox } from '@/components/onboarding/birthday/BirthdayComboBox';
+import { BirthdayComboBox } from '@/components/onboarding/personalize/birthday/BirthdayComboBox';
 import { daysOfMonth, monthsOfYear } from '@/lib/inputsData';
 
 // Values for Birthday Inputs
 export type Keys = { value: string; label: string }[];
 const years: Keys = [];
-for (let year = 2023; year >= 1923; year--) {
+for (let year = 2024; year >= 1923; year--) {
   years.push({ value: year.toString(), label: year.toString() });
 }
 

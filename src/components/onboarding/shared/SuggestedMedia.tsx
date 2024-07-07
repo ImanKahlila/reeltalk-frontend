@@ -18,6 +18,8 @@ interface ISuggestedMediaProps {
   errorFetching: boolean;
 }
 
+const placeholderUrl = '/Onboarding/placeholder-image-on-error.png'; // Update this path with your actual placeholder image path
+
 const SuggestedMedia = (props: ISuggestedMediaProps) => {
   const {
     media,
@@ -28,13 +30,8 @@ const SuggestedMedia = (props: ISuggestedMediaProps) => {
     errorFetching,
   } = props;
 
-  if (errorFetching) {
-    return (
-      <div className='mx-auto mt-14 w-fit py-10 text-medium-emphasis'>
-        Error Fetching media.. Try refreshing the page
-      </div>
-    );
-  }
+  const placeholderMediaToShow = 6;
+  const displayMedia = errorFetching ? Array(placeholderMediaToShow).fill(null) : media.slice(0, mediaToShow);
 
   return (
     <div className='mx-auto mt-14 max-w-[343px] md:max-w-none '>
@@ -43,15 +40,15 @@ const SuggestedMedia = (props: ISuggestedMediaProps) => {
       </h2>
 
       <div className='mt-4 grid w-full grid-cols-3-auto justify-items-center gap-x-[27.5px] gap-y-4 md:grid-cols-6 md:gap-6'>
-        {media.slice(0, mediaToShow).map(media => (
+        {displayMedia.map((media, index) => (
           <Media
-            key={media.id}
-            id={media.id}
-            title={media.title}
-            year={media.releaseYear}
-            posterUrl={media.poster}
+            key={media ? media.id : ` `}
+            id={media ? media.id : `placeholder-${index}`}
+            title={media ? media.title : ''}
+            year={media ? media.releaseYear : ''}
+            posterUrl={media ? media.poster : placeholderUrl}
             addSelectionHandler={addSelectionHandler}
-            selected={media.selected}
+            selected={media ? media.selected : false}
             selectedLength={floaterSelection.length}
             removeSelectionHandler={removeSelectionHandler}
           />

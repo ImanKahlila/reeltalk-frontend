@@ -8,14 +8,15 @@ import { useValidateBirthday } from './Birthday.hooks';
 
 // Components
 import Buttons from '@/components/onboarding/shared/Buttons';
-import Carousel from '@/components/onboarding/birthday/Carousel';
-import Header from './Header';
+import Carousel from '@/components/onboarding/personalize/birthday/Carousel';
+import Header from '../Header';
 import Inputs from './Inputs';
 
 // Firebase
 import { getFirestore, setDoc, Timestamp, doc } from 'firebase/firestore';
 import { User } from 'firebase/auth';
 import app from '@/firebase/firebase-config';
+import { getFirstName } from '@/lib/utils';
 const db = getFirestore(app);
 
 // Memoize Carousel to prevent uneccessary re-renders when input change handler causes page to rerender
@@ -23,10 +24,11 @@ const MemoizedCarousel = React.memo(Carousel);
 
 interface IBirthdayProps {
   user: User;
+  personalize: string;
 }
 
 const Birthday = (props: IBirthdayProps) => {
-  const { user } = props;
+  const { user,personalize } = props;
   const { push } = useRouter();
 
   const { birthdayValid, inputChangeHandler, yearValue, monthValue, dayValue } =
@@ -47,7 +49,7 @@ const Birthday = (props: IBirthdayProps) => {
         { merge: true },
       )
         .then(() => {
-          push('/onboarding/top-genres');
+          push('/onboarding/location');
         })
         .catch(error => console.log(error));
     }
@@ -65,9 +67,11 @@ const Birthday = (props: IBirthdayProps) => {
         ></Image>
       </picture>
 
-      <div className='mx-auto mt-14 max-w-[343px] md:max-w-[536px]'>
-        <Header user={user} />
-
+      <div className="mx-auto mt-14 max-w-[343px] md:max-w-[536px]">
+        <Header user={user} personalize="birthday"/>
+        <input
+          className='min-w-full mt-4 h-9 p-2 flex gap-2 bg-second-surface justify-between text-medium-emphasis border border-primary rounded'
+          disabled placeholder={getFirstName(user.displayName)}/>
         <Inputs inputChangeHandler={inputChangeHandler} />
 
         <MemoizedCarousel />
@@ -75,7 +79,7 @@ const Birthday = (props: IBirthdayProps) => {
 
       <Buttons
         valid={birthdayValid}
-        prevPage='/onboarding'
+        prevPage="/onboarding"
         onPageSubmit={pageSubmitHandler}
         required
       />

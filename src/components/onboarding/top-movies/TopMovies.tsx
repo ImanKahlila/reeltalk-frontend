@@ -77,6 +77,8 @@ const TopMovies = ({ user }: ITopMovies) => {
       <Header
         titleType={'movie'}
         addSelectionHandler={addSelectionHandler}
+        removeSelectionHandler={removeSelectionHandler}
+        floaterSelection={floaterSelection}
         selectedLength={floaterSelection.length}
       />
 
