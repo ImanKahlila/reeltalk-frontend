@@ -37,14 +37,15 @@ const TopGenres = (props: ITopGenres) => {
 
   function pageSubmitHandler() {
     if (user) {
-      const top5Genres = genres.filter(genre => genre.selected === true).map(genre => genre.name);
+      const top3Genres = genres.filter(genre => genre.selected === true).map(({ name, id, emoji }) => ({ name, id, emoji }));
+
       const docRef = doc(db, 'users', user!.uid);
-      logEvent(analytics, 'genre_selected', { fav_genres: top5Genres }); // Google Analytics
+      logEvent(analytics, 'genre_selected', { fav_genres: top3Genres }); // Google Analytics
       logEvent(analytics, 'profile_created'); // Google Analytics
       setDoc(
         docRef,
         {
-          favoriteGenres: top5Genres,
+          favoriteGenres: top3Genres,
         },
         { merge: true },
       )
