@@ -39,6 +39,7 @@ const SearchOption = ({
                       }: ComponentProps) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [isSelected, setIsSelected] = useState(false);
+  const placeholderUrl = '/Onboarding/placeholder-image-on-error.png';
 
   useEffect(() => {
     setIsSelected(floaterSelection?.some(e => e.id === id));
@@ -80,7 +81,7 @@ const SearchOption = ({
     >
       <picture className='relative block h-[84px] min-w-[56px]'>
         <Image
-          src={posterUrl}
+          src={posterUrl?posterUrl:placeholderUrl}
           onLoad={handleImageLoad}
           onError={handleImageLoad}
           fill

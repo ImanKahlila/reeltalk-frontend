@@ -18,7 +18,7 @@ interface ISuggestedMediaProps {
   errorFetching: boolean;
 }
 
-const placeholderUrl = '/Onboarding/placeholder-image-on-error.png'; // Update this path with your actual placeholder image path
+const placeholderUrl = '/Onboarding/placeholder-image-on-error.png';
 
 const SuggestedMedia = (props: ISuggestedMediaProps) => {
   const {
