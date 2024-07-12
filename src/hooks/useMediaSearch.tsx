@@ -3,8 +3,8 @@ import axios, { AxiosResponse, CancelTokenSource } from 'axios';
 import toast from 'react-hot-toast';
 import { useUserContext } from '@/lib/context';
 
-// const backend_URL = 'https://us-central1-reeltalk-app.cloudfunctions.net/backend';
-const backend_URL = 'http://localhost:8080';
+const backend_URL = 'https://us-central1-reeltalk-app.cloudfunctions.net/backend';
+// const backend_URL = 'http://localhost:8080';
 
 const useMediaSearch = (titleType: 'movie' | 'tvSeries' | null) => {
   const [queryMedia, setQueryMedia] = useState<any[]>([]);
