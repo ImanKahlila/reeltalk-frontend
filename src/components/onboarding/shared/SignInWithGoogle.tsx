@@ -24,18 +24,20 @@ export const SignInWithGoogle = () => {
         try {
             const userCredential = await signInWithPopup(auth, googleProvider);
             const additionalUserInfo = getAdditionalUserInfo(userCredential);
-            console.log(userCredential, "additionalUserInfo", additionalUserInfo);
 
             const colRef = collection(db, 'users');
             const userId = userCredential.user.uid;
             const userDocRef = doc(colRef, userId);
 
-            const userInfo = {
+            let userInfo = {
                 email: userCredential.user.email,
                 displayName: userCredential.user.displayName,
-                ...additionalUserInfo.profile
+
             };
 
+            if (additionalUserInfo?.profile) {
+                userInfo = { ...additionalUserInfo.profile, ...userInfo }
+            }
             if (additionalUserInfo?.isNewUser) {
                 await handleNewUser(userCredential, userDocRef, push, 'google');
                 await setDoc(userDocRef, userInfo);
