@@ -91,7 +91,8 @@ const SearchOption = ({
       </picture>
       <div className='flex flex-col items-start justify-center gap-3 text-left'>
         <h2 className='text-base tracking-[0.08px] text-secondary'>
-          {title} ({year})
+          {title} {year ? `${title} (${year})` : ''}
+
         </h2>
         <p className="tracking-[0.08px] text-gray">{director || creator}</p>
       </div>

@@ -42,7 +42,7 @@ const SuggestedMedia = (props: ISuggestedMediaProps) => {
       <div className='mt-4 grid w-full grid-cols-3-auto justify-items-center gap-x-[27.5px] gap-y-4 md:grid-cols-6 md:gap-6'>
         {displayMedia.map((media, index) => (
           <Media
-            key={media ? media.id : ` `}
+            key={media ? media.id : index}
             id={media ? media.id : `placeholder-${index}`}
             title={media ? media.title : ''}
             year={media ? media.releaseYear : ''}

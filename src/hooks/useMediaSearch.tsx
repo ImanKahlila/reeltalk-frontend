@@ -23,9 +23,8 @@ const useMediaSearch = (titleType: 'movie' | 'tvSeries' | null) => {
         },
       });
 
-      if (response.data && response.data.data) {
-        console.log(response.data.data);
-        return  response.data.data.map((media: any) => ({
+      if (response.data ) {
+        return  response.data.map((media: any) => ({
           id: media.id,
           selected: false,
           originalTitleText: { text: media.originalTitleText?.text },
