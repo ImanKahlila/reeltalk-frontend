@@ -13,9 +13,9 @@ const useMediaSearch = (titleType: 'movie' | 'tvSeries' | null) => {
   const cancelTokenSource = useRef<CancelTokenSource | null>(null);
 
   const retrievePopularMedia = async () => {
+    const mediaEndPoint = titleType==="movie"?"popular-movies":"popular-shows";
     try {
-      // TO-DO: Replace this endpoint with popular media
-      const response = await axios.get(`${backend_URL}/api/movies/getPossibleFilms`, {
+      const response = await axios.get(`${backend_URL}/movies/${mediaEndPoint}`, {
         withCredentials: true,
         headers: {
           Authorization: `Bearer ${idToken}`,
@@ -23,13 +23,13 @@ const useMediaSearch = (titleType: 'movie' | 'tvSeries' | null) => {
         },
       });
 
-      if (response.data.data && response.data.data.movies) {
-        return  response.data.data.movies.map((movie: any) => ({
-          id: movie.id,
+      if (response.data ) {
+        return  response.data.map((media: any) => ({
+          id: media.id,
           selected: false,
-          originalTitleText: { text: movie.titleText.text },
-          releaseYear: { year: movie.releaseYear.year },
-          primaryImage: { url: movie.primaryImage.url },
+          originalTitleText: { text: media.originalTitleText?.text },
+          releaseYear: { year: media.releaseYear?.year },
+          primaryImage: { url: media.primaryImage?.url },
           directorName: '',
           creatorName: '',
         }));
