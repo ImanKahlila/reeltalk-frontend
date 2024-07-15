@@ -84,7 +84,7 @@ const SearchOption = ({
           src={posterUrl?posterUrl:placeholderUrl}
           onLoad={handleImageLoad}
           onError={handleImageLoad}
-          fill
+          fill sizes="100%"
           alt=''
         ></Image>
         {!imageLoaded && <Skeleton className='h-[84px] rounded-none' />}
