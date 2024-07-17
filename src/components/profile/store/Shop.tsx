@@ -1,18 +1,12 @@
-import React, { useEffect } from 'react';
-import usePlanSelection from '@/hooks/UsePlanSelection';
+import React from 'react';
+import { usePlanSelectionContext } from '@/lib/planSelectionContext';
 
 type ShopProps = {
   onAmountChange?: (amount: number) => void;
 };
 
-const Shop: React.FC<ShopProps> = ({ onAmountChange }) => {
-  const { handlePlanSelect, isSelected, amountToPay } = usePlanSelection();
-
-  useEffect(() => {
-    if (onAmountChange) {
-      onAmountChange(amountToPay);
-    }
-  }, [amountToPay, onAmountChange]);
+const Shop: React.FC<ShopProps> = () => {
+  const { handlePlanSelect, isSelected } = usePlanSelectionContext();
 
   const memberBenefits = [
     '100 💎 Free Gems/month',

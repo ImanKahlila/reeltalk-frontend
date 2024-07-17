@@ -4,6 +4,7 @@ import Head from 'next/head';
 import type { AppProps } from 'next/app';
 import { UserContextProvider } from '@/lib/context';
 import { Toaster } from 'react-hot-toast';
+import { PlanSelectionProvider } from '@/lib/planSelectionContext';
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -34,10 +35,13 @@ export default function App({ Component, pageProps }: AppProps) {
       </Head>
 
       <UserContextProvider>
+        <PlanSelectionProvider>
+
         <Layout>
           <Component {...pageProps} />
           <Toaster />
         </Layout>
+        </PlanSelectionProvider>
       </UserContextProvider>
     </>
   );

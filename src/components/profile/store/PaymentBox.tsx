@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useDropdown, useField } from '@/hooks/Input';
+import { usePlanSelectionContext } from '@/lib/planSelectionContext';
 
-export const PaymentBox=({amount}:any)=>{
+export const PaymentBox=()=>{
+  const { amountToPay } = usePlanSelectionContext();
+
   const  firstName = useField('text', '', { required: true });
   const lastName  = useField('text', '', { required: true });
   // cardNumber value consists of 13 to 19 digits.
@@ -218,7 +221,7 @@ export const PaymentBox=({amount}:any)=>{
           className={`w-full px-3 py-2 rounded-md text-white ${isFormValid ? 'bg-primary' : 'bg-gray cursor-not-allowed'}`}
           disabled={!isFormValid}
         >
-          Pay ${amount}
+          Pay ${amountToPay}
         </button>
       </form>
     </div>
