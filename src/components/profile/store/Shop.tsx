@@ -1,7 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
+import usePlanSelection from '@/hooks/UsePlanSelection';
 
-const Shop = () => {
-  const [planChosen, setPlanChosen] = useState(null);
+type ShopProps = {
+  onAmountChange?: (amount: number) => void;
+};
+
+const Shop: React.FC<ShopProps> = ({ onAmountChange }) => {
+  const { handlePlanSelect, isSelected, amountToPay } = usePlanSelection();
+
+  useEffect(() => {
+    if (onAmountChange) {
+      onAmountChange(amountToPay);
+    }
+  }, [amountToPay, onAmountChange]);
 
   const memberBenefits = [
     '100 💎 Free Gems/month',
@@ -56,14 +67,6 @@ const Shop = () => {
     </span>
   );
 
-  const handlePlanSelect = (selectedPlan:any) => {
-    if (planChosen && JSON.stringify(planChosen) === JSON.stringify(selectedPlan)) {
-      setPlanChosen(null);
-    } else {
-      setPlanChosen(selectedPlan);
-    }
-  };
-
   return (
     <div className="flex flex-row space-x-6">
       <div className="flex flex-col space-y-2 text-pure-white mt-2 w-[320px]">
@@ -89,7 +92,7 @@ const Shop = () => {
             {subscriptionTiers.map((tier) => (
               <div
                 key={tier.name}
-                className={`flex flex-col w-1/2 items-center justify-center border-2 rounded-xl mt-2 p-2 text-center ${planChosen && JSON.stringify(planChosen) === JSON.stringify(tier) ? 'border-primary bg-primary bg-opacity-25' : 'border-transparent bg-second-surface'}`}
+                className={`flex flex-col w-1/2 items-center justify-center border-2 rounded-xl mt-2 p-2 text-center ${isSelected(tier) ? 'border-primary bg-primary bg-opacity-25' : 'border-transparent bg-second-surface'}`}
                 onClick={() => handlePlanSelect(tier)}
               >
                 <p className="text-lg">{tier.name}</p>
@@ -127,7 +130,7 @@ const Shop = () => {
             {gemBundles.map((bundle, index) => (
               <div
                 key={bundle.gems}
-                className={`flex flex-col items-center justify-center border-2 rounded-xl mt-2 w-[120px] text-center relative ${planChosen && JSON.stringify(planChosen) === JSON.stringify(bundle) ? 'border-primary bg-primary bg-opacity-25' : 'border-transparent bg-second-surface'}`}
+                className={`flex flex-col items-center justify-center border-2 rounded-xl mt-2 w-[120px] text-center relative ${isSelected(bundle) ? 'border-primary bg-primary bg-opacity-25' : 'border-transparent bg-second-surface'}`}
                 onClick={() => handlePlanSelect(bundle)}
               >
                 <div className="relative mt-2 flex justify-center items-center">

@@ -1,7 +1,7 @@
 import React from 'react';
 
-interface HistoryProps {
-  history: {
+interface TransactionProps {
+  transaction: {
     date: string;
     gems: number;
     type: string;
@@ -9,7 +9,7 @@ interface HistoryProps {
   };
   index: number;
 }
-export const Transaction = ({ history, index }: HistoryProps) => {
+export const Transaction = ({ transaction, index }: TransactionProps) => {
   const isCredit = (type: string) => {
     return type === 'credit';
   };
@@ -29,17 +29,17 @@ export const Transaction = ({ history, index }: HistoryProps) => {
       }`}
     >
       <div className='w-10'>
-        <p className='flex flex-wrap'>{history.date.toUpperCase()}</p>
+        <p className='flex flex-wrap'>{transaction.date.toUpperCase()}</p>
       </div>
       <div className='flex-grow text-left ml-2'>
-        <p>You {isCredit(history.type) ? 'recharged' : 'spent'} {history.gems}💎</p>
+        <p>You {isCredit(transaction.type) ? 'recharged' : 'spent'} {transaction.gems}💎</p>
         <p
-          className="text-xs flex flex-nowrap">{truncateText(history.reason || '', 30)}</p>
+          className="text-xs flex flex-nowrap">{truncateText(transaction.reason || '', 30)}</p>
       </div>
       <div className='w-15 text-right'>
         <p
-          className={`flex flex-wrap ${isCredit(history.type) ? 'text-dark-green' : 'text-dark-red'}`}>
-          {isCredit(history.type) ? '+' : '-'} {history.gems}💎
+          className={`flex flex-wrap ${isCredit(transaction.type) ? 'text-dark-green' : 'text-dark-red'}`}>
+          {isCredit(transaction.type) ? '+' : '-'} {transaction.gems}💎
         </p>
       </div>
     </div>

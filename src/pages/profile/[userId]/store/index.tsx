@@ -7,7 +7,7 @@ import {
   DisplayName,
   UserImage,
 } from '@/components/profile/shared/UserDetails';
-import { ChevronLeft, ChevronUp, History } from 'lucide-react';
+import { ChevronLeft, ChevronUp } from 'lucide-react';
 import { Transaction } from '@/components/profile/store/Transaction';
 import Link from 'next/link';
 import Shop from '@/components/profile/store/Shop';
@@ -16,6 +16,7 @@ export default function StorePage() {
   const { user, idToken } = useUserContext();
   const [userInfo, setUserInfo] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [amountToPay, setAmountToPay] = useState(0);
   const router = useRouter();
   const userId = router.query.userId;
 
@@ -45,7 +46,9 @@ export default function StorePage() {
     fetchUserDetails();
   }, [idToken, userId]);
 
-
+  const handleAmountChange = (amount:number) => {
+    setAmountToPay(amount);
+  };
 
   const histories = [{
     date: 'feb 22',
@@ -60,12 +63,13 @@ export default function StorePage() {
       reason: 'Your join “The Best Closers of ',
     },
   ];
+
   return (
     <section className="mx-4 my-[1.438rem] flex flex-col justify-center gap-4 lg:flex-row lg:gap-8">
       <div className="flex flex-col space-y-2 gap-4 lg:w-[700px]">
-        <div className="flex text-high-emphasis text-2xl">
+        <Link href={`/profile/${userId}`} className="flex text-high-emphasis text-2xl">
           <ChevronLeft className="mt-1" />Store
-        </div>
+        </Link>
         <div className="flex items-center">
           <UserImage imageUrl={userInfo?.imageUrl} />
           <div className="px-[32px]">
@@ -73,13 +77,13 @@ export default function StorePage() {
             <div className="text-medium-emphasis mt-2">Status: {userInfo?.status}</div>
           </div>
         </div>
-        <Shop></Shop>
+        <Shop onAmountChange={handleAmountChange}></Shop>
         {/* Proceed to pay button */}
-        <div className="flex justify-end mt-4">
-          <button className="bg-primary text-black px-4 py-2 rounded-lg">
+        <Link href={amountToPay > 0 ? `/profile/${userId}/store/subscriptions?amount=${encodeURIComponent(amountToPay)}` : '#'} className="flex justify-end mt-4">
+          <button disabled={amountToPay <= 0} className={`bg-primary text-black px-4 py-2 rounded-lg ${amountToPay <= 0 ? 'opacity-50 cursor-not-allowed' : 'bg-primary'}`}>
             Proceed to pay
           </button>
-        </div>
+        </Link>
       </div>
 
       <div className="flex flex-col mt-8 border-2 w-[320px] h-full text-pure-white bg-second-surface border-transparent rounded-xl bg-opacity-50 p-2 pb-10">
@@ -95,17 +99,16 @@ export default function StorePage() {
             History
             <ChevronUp className="mx-2" />
           </div>
-          <div className="absolute flex flex-row bottom-0 right-0 mr-2 text-dark-red text-sm">
+          <div className="absolute flex-red text-sm">
             Clear all
           </div>
         </div>
         <div>
           {histories.map((history, index) => (
-            <Transaction key={index} history={history} index={index} />
+            <Transaction key={index} transaction={history} index={index} />
           ))}
         </div>
       </div>
-
     </section>
   );
 };
