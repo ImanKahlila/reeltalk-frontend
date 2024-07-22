@@ -2,10 +2,10 @@ import React from 'react';
 import { usePlanSelectionContext } from '@/lib/planSelectionContext';
 
 type ShopProps = {
-  onAmountChange?: (amount: number) => void;
+  compactView?: boolean; // Prop to control the view mode
 };
 
-const Shop: React.FC<ShopProps> = () => {
+const Shop: React.FC<ShopProps> = ({ compactView = false }) => {
   const { handlePlanSelect, isSelected } = usePlanSelectionContext();
 
   const memberBenefits = [
@@ -62,7 +62,8 @@ const Shop: React.FC<ShopProps> = () => {
   );
 
   return (
-    <div className="flex flex-row space-x-6">
+    <div className={`flex ${compactView? 'flex-col' +
+      ' space-y-4':'flex-row space-x-6'}`}>
       <div className="flex flex-col space-y-2 text-pure-white mt-2 w-[320px]">
         <div>
           Premium Member benefits
@@ -107,7 +108,7 @@ const Shop: React.FC<ShopProps> = () => {
       <div className="flex flex-col space-y-4 text-pure-white mt-2 w-[350px]">
         <div>
           Why do I need Gems?
-          <ol className="h-[170px] list-decimal border-2 justify-center bg-second-surface border-transparent rounded-xl mt-2 px-4 list-inside mb-2">
+          <ol className={`${compactView?'h-fit pb-2':'h-[170px]'} list-decimal border-2 justify-center bg-second-surface border-transparent rounded-xl mt-2 px-4 list-inside mb-2`}>
             {gemUses.map((benefit, index) => (
               <li
                 key={index}

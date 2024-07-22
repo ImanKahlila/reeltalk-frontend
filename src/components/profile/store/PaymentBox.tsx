@@ -1,25 +1,43 @@
 import React, { useEffect, useState } from 'react';
 import { useDropdown, useField } from '@/hooks/Input';
 import { usePlanSelectionContext } from '@/lib/planSelectionContext';
+import { useRouter } from 'next/router';
+import Modal from '@/components/profile/store/Modal';
 
-export const PaymentBox=()=>{
+
+export const PaymentBox = () => {
   const { amountToPay } = usePlanSelectionContext();
+  const [showModal, setShowModal] = React.useState(false);
+  const router = useRouter();
+  const { userId } = router.query;
 
-  const  firstName = useField('text', '', { required: true });
-  const lastName  = useField('text', '', { required: true });
+  const firstName = useField('text', '', { required: true });
+  const lastName = useField('text', '', { required: true });
   // cardNumber value consists of 13 to 19 digits.
-  const cardNumber = useField('tel', '', { required: true, pattern: '^[0-9]{13,19}$' });
+  const cardNumber = useField('text', '', {
+    required: true,
+    pattern: '^[0-9]{13,19}$',
+  });
   // MM between 01 and 12 and YY last two digits of the year
-  const expirationDate = useField('text', '', { required: true, pattern: '^(0[1-9]|1[0-2])\/?([0-9]{2})$' });
+  const expirationDate = useField('text', '', {
+    required: true,
+    pattern: '^(0[1-9]|1[0-2])\/?([0-9]{2})$',
+  });
   // cvv value consists of 3 or 4 digits
   const cvv = useField('text', '', { required: true, pattern: '^[0-9]{3,4}$' });
   // basic email pattern
-  const email = useField('email', '', { required: true, pattern: '^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$' });
+  const email = useField('email', '', {
+    required: true,
+    pattern: '^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$',
+  });
   const address = useField('text', '', { required: true });
   const city = useField('text', '', { required: true });
   const state = useField('text', '', { required: true });
   // 5-digit or 9-digit with hypen ZIP codes
-  const postalCode = useField('text', '', { required: true, pattern: '^[0-9]{5}(-[0-9]{4})?$' });
+  const postalCode = useField('text', '', {
+    required: true,
+    pattern: '^[0-9]{5}(-[0-9]{4})?$',
+  });
 
   const countryDropdown = useDropdown(['United States', 'Canada']);
 
@@ -36,7 +54,7 @@ export const PaymentBox=()=>{
       city.isValid &&
       state.isValid &&
       postalCode.isValid &&
-      countryDropdown.isValid;
+      countryDropdown.isValid && amountToPay > 0;
     setIsFormValid(isValid);
   }, [
     firstName.isValid,
@@ -49,19 +67,22 @@ export const PaymentBox=()=>{
     city.isValid,
     state.isValid,
     postalCode.isValid,
-    countryDropdown.isValid
+    countryDropdown.isValid,
   ]);
-  const handleSubmit = (event:any) => {
+  const handleSubmit = (event: any) => {
     event.preventDefault();
     if (isFormValid) {
-      // Handle form submission
+      // TODO: process payment gateway integration, once payment is successful,
+      //  change status to premium and reset user selection
+      console.log('Form is valid');
+      setShowModal(true);
     } else {
       console.error('Form is not valid');
     }
   };
 
   return (<div
-      className="flex flex-col w-2/3 bg-second-surface rounded-xl border-transparent p-2 text-high-emphasis">
+      className="mt-2 flex flex-col bg-second-surface rounded-xl border-transparent p-2 text-high-emphasis">
       <form className="space-y-4 p-4" onSubmit={handleSubmit}>
         <p className="text-lg">Payment Information</p>
         <div className="flex flex-row space-x-2">
@@ -100,8 +121,6 @@ export const PaymentBox=()=>{
               id="card-number"
               {...cardNumber}
               className="w-full px-3 py-2 rounded-md border bg-transparent"
-              inputMode="tel"
-              pattern="^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|6(?:011|5[0-9]{2})[0-9]{12}|(?:2131|1800|35\d{3})\d{11})$"
               placeholder="---- ---- ---- ----"
               required
             />
@@ -124,7 +143,10 @@ export const PaymentBox=()=>{
             ))}
           </div>
           <div className="w-1/4">
-            <label htmlFor="cvv" className="block text-sm mb-1">CVV</label>
+            <label htmlFor="cvv" className="block text-sm mb-1">CVV
+              <span
+                className="ml-2 inline-flex items-center justify-center w-4 h-4 rounded-full border">!</span>
+            </label>
             <input
               id="cvv"
               {...cvv}
@@ -223,7 +245,10 @@ export const PaymentBox=()=>{
         >
           Pay ${amountToPay}
         </button>
+        {showModal ? (
+        <Modal/>
+        ) : null}
       </form>
     </div>
-  )
-}
+  );
+};
