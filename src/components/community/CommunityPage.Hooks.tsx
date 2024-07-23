@@ -35,7 +35,7 @@ export const useRetrieveJoinedCommunites = () => {
         const docRef = doc(db, `/users/${user.uid}`);
         const docSnapShot = await getDoc(docRef);
         if (!docSnapShot.exists()) return;
-
+        console.log("docSnapShot.data()",docSnapShot.data())
         setUserData(docSnapShot.data());
       } catch (error: any) {
         console.log(error.message);
@@ -48,7 +48,7 @@ export const useRetrieveJoinedCommunites = () => {
   useEffect(() => {
     async function retrieveJoinedCommunities() {
       if (!userData) return;
-      const joinedCommunities = userData.joinedCommunities;
+      const joinedCommunities = Object.keys(userData.joinedCommunities);
       const joinedDataArray: ICommunityObject[] = [];
       try {
         await Promise.all(
@@ -62,7 +62,7 @@ export const useRetrieveJoinedCommunites = () => {
                 },
               },
             );
-            joinedDataArray.push(response.data.communityData);
+            joinedDataArray.push(response.data);
           }),
         );
       } catch (error: any) {

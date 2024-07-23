@@ -74,11 +74,15 @@ export const SignInWithFacebook = () => {
             let userInfo = {
                 email: userCredential.user.email,
                 displayName: userCredential.user.displayName,
-
+                imageUrl: "",
             };
 
             if (additionalUserInfo?.profile) {
                 userInfo = { ...additionalUserInfo.profile, ...userInfo }
+                if (additionalUserInfo.profile?.picture) {
+                    userInfo.imageUrl = `${additionalUserInfo.profile.picture}`;
+                    delete (userInfo as any).picture;
+                }
             }
 
             if (additionalUserInfo?.isNewUser) {
