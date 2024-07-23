@@ -96,7 +96,7 @@ export const SignInWithFacebook = () => {
                 logEvent(analytics, 'user_logged_in', { method: 'facebook' });
                 router.push('/dashboard');
             }
-        } catch (error) {
+        } catch (error: any) {
             let errorCode = error.code;
             if (errorCode == 'auth/popup-closed-by-user') {
                 toast.error('Popup was closed by user', {
