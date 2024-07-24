@@ -65,7 +65,7 @@ export default function StorePage() {
           <div className="flex flex-col">
             <p className="font-semibold">Balance</p>
             <p className="text-2xl">
-              {userInfo.gems}
+              {userInfo?.gems}
               <span role="img" aria-label="diamond" className="ml-1">💎</span>
             </p>
           </div>
