@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useUserContext } from '@/lib/context';
+import React from 'react';
 import { useRouter } from 'next/router';
 
 import {
@@ -12,40 +10,14 @@ import { Transaction } from '@/components/profile/store/Transaction';
 import Link from 'next/link';
 import Shop from '@/components/profile/store/Shop';
 import { usePlanSelectionContext } from '@/lib/planSelectionContext';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
 export default function StorePage() {
-  const { user, idToken } = useUserContext();
-  const [userInfo, setUserInfo] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const { userInfo } = useSelector((state: RootState) => state.user);
   const { amountToPay } = usePlanSelectionContext();
   const router = useRouter();
   const userId = router.query.userId;
-
-  useEffect(() => {
-    const fetchUserDetails = async () => {
-      try {
-        if (userId) {
-          const response = await axios.get(
-            // `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/profile/${userId}`,
-            `http://localhost:8080/api/user/profile/${userId}`,
-            {
-              headers: {
-                Authorization: `Bearer ${idToken}`,
-              },
-            },
-          );
-          const userData = response.data.data;
-          setUserInfo(userData);
-        }
-      } catch (error) {
-        console.error('Error fetching user:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchUserDetails();
-  }, [idToken, userId]);
 
 
   const histories = [{
@@ -96,12 +68,10 @@ export default function StorePage() {
             History
             <ChevronUp className="mx-2" />
           </div>
-          <div className="absolute flex-red text-sm">
-            Clear all
-          </div>
-        </div>
-        <div>
-          {histories.map((history, index) => (
+          <div className="absolute flex flex-row bottom-0 right-0 mr-2 text-dark-red text-sm">Clear all</div>
+      </div>
+      <div>
+        {histories.map((history, index) => (
             <Transaction key={index} transaction={history} index={index} />
           ))}
         </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import axios from 'axios';
 import { useUserContext } from '@/lib/context';
 import { useRouter } from 'next/router';
@@ -11,23 +11,26 @@ import {
   DisplayName,
   UserImage,
 } from '@/components/profile/shared/UserDetails';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
+import { setError, setLoading, setUserInfo } from '@/redux/userReducer';
 
 export default function ProfilePage() {
-  const { user, idToken } = useUserContext();
-
-  const [userInfo, setUserInfo] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const { idToken } = useUserContext();
+  const dispatch = useDispatch();
+  const { userInfo } = useSelector((state: RootState) => state.user);
 
   const router = useRouter();
   const userId = router.query.userId;
+  // const userId= userInfo?.uid;
 
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
         if (userId) {
           const response = await axios.get(
-            `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/profile/${userId}`,
-            // `http://localhost:8080/api/user/profile/${userId}`,
+            // `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/profile/${userId}`,
+            `http://localhost:8080/api/user/profile/${userId}`,
             {
               headers: {
                 Authorization: `Bearer ${idToken}`,
@@ -35,18 +38,17 @@ export default function ProfilePage() {
             },
           );
           const userData = response.data.data;
-          setUserInfo(userData);
+          dispatch(setUserInfo(userData))
         }
       } catch (error) {
-        console.error('Error fetching user:', error);
+        dispatch(setError(error))
       } finally {
-        setIsLoading(false);
+        dispatch(setLoading(false))
       }
     };
 
     fetchUserDetails();
   }, [idToken, userId]);
-
   const formatFirestoreTimestamp = (timestamp:any) => {
     if (!timestamp || typeof timestamp._seconds !== 'number' || typeof timestamp._nanoseconds !== 'number') {
       return 'Invalid Date';
@@ -93,12 +95,12 @@ export default function ProfilePage() {
                 className="text-medium-emphasis md:text-[16px]">{userInfo?.bio}</p>
             </div>
             <div className="flex space-x-2">
-              <Link href="/profile/edit-profile"
+              <Link href={`/profile/${userId}/edit-profile`}
                 className="min-w-[140px] rounded-lg border-2 bg-high-emphasis p-2 text-center tracking-[0.08px] text-black"
               >
                 <span>Edit Profile</span>
               </Link>
-              <Link href={`/store/${userId}`}
+              <Link href={`/profile/${userId}/store`}
                 className="min-w-[140px] rounded-lg border-2 border-pure-white p-2 text-center tracking-[0.08px] text-pure-white flex items-center"
               >
                 <div className="relative w-5 h-5">
@@ -113,7 +115,7 @@ export default function ProfilePage() {
             </div>
           </div>
         </div>
-        <ProfileTabBar userId={String(userId)} />
+        <ProfileTabBar userId={userId}/>
       </div>
     </section>
   );

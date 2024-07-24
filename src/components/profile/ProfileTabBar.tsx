@@ -14,6 +14,7 @@ export default function ProfileTabBar({ userId }: any) {
 
   const { user, idToken } = useUserContext();
 
+
   // useEffect(() => {
   //   const fetchData = async () => {
   //     try {
@@ -171,7 +172,7 @@ const UserCommunities = ({ userId }: any) => {
       try {
         const response = await axios.get(
           // `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/profile/${userId}`,
-          `http://localhost:8080/api/user/profile/UeCcRUJTOpZ8FzaxZ3XB68gna3k2`,
+          `http://localhost:8080/api/user/profile/${userId}`,
           {
             headers: {
               Authorization: `Bearer ${idToken}`,
