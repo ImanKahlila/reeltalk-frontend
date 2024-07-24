@@ -12,7 +12,7 @@ export default function SubscriptionsPage() {
 
   return (
     <section className="mx-4 my-[1.438rem] flex flex-col justify-center gap-4 lg:flex-row lg:gap-8">
-      <div className="flex flex-col space-y-2 gap-4 pl-20 w-full">
+      <div className="flex flex-col space-y-2 gap-4 pl-20">
         <Link href={`/profile/store`}
               className="flex text-high-emphasis text-2xl">
           <ChevronLeft className="mt-1" />Subscriptions
