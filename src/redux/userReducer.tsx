@@ -23,7 +23,7 @@ const userSlice = createSlice({
     setLoading(state, action: PayloadAction<boolean>) {
       state.isLoading = action.payload;
     },
-    setError(state, action: PayloadAction<any | null>) {
+    setError(state, action: PayloadAction<any>) {
       state.error = action.payload;
       state.userInfo = null;
     },

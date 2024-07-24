@@ -136,7 +136,7 @@ const AccountDropDown = ({ user }: { user: User }) => {
       </PopoverTrigger>
       <PopoverContent className='absolute -left-32 top-1 w-[173px] rounded-none bg-pure-white py-8 pl-[35px] pr-0'>
         <menu className='flex w-[138px] flex-col items-end gap-4 px-8'>
-          <Link className='tracking-[0.08px] text-secondary' href={`/profile/${user.uid}`}>
+          <Link className='tracking-[0.08px] text-secondary' href={`/profile/view`}>
             My profile
           </Link>
           <button

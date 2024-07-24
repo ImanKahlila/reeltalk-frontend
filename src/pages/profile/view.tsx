@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import axios from 'axios';
 import { useUserContext } from '@/lib/context';
-import { useRouter } from 'next/router';
 
 import ProfileTabBar from '@/components/profile/ProfileTabBar';
 
@@ -16,21 +15,19 @@ import { RootState } from '@/redux/store';
 import { setError, setLoading, setUserInfo } from '@/redux/userReducer';
 
 export default function ProfilePage() {
-  const { idToken } = useUserContext();
+  const { user,idToken } = useUserContext();
   const dispatch = useDispatch();
   const { userInfo } = useSelector((state: RootState) => state.user);
 
-  const router = useRouter();
-  const userId = router.query.userId;
-  // const userId= userInfo?.uid;
+  const userId= user?.uid;
 
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
         if (userId) {
           const response = await axios.get(
-            // `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/profile/${userId}`,
-            `http://localhost:8080/api/user/profile/${userId}`,
+            `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/profile/${userId}`,
+            // `http://localhost:8080/api/user/profile/${userId}`,
             {
               headers: {
                 Authorization: `Bearer ${idToken}`,
@@ -61,22 +58,20 @@ export default function ProfilePage() {
     const isDateValid = !isNaN(dateObject.getTime());
 
     // Format the birthday if it's valid
-    const formattedBirthday = isDateValid
+    return isDateValid
       ? dateObject.toLocaleString('en-US', {
         month: 'long',
         day: 'numeric',
         year: 'numeric',
       })
       : 'Invalid Date';
-
-    return formattedBirthday;
   };
 
   return (
-    <section className='mx-4 my-[1.438rem] flex flex-col justify-center gap-4 lg:flex-row lg:gap-8'>
-      <div className='flex flex-col gap-4 lg:w-[900px]'>
-        <div className='flex items-center'>
-            <UserImage imageUrl={userInfo?.imageUrl}/>
+    <section className="mx-4 my-[1.438rem] flex flex-col justify-center gap-4 lg:flex-row lg:gap-8">
+      <div className="flex flex-col gap-4 lg:w-[900px]">
+        <div className="flex items-center">
+          <UserImage imageUrl={userInfo?.imageUrl}/>
           <div className="px-[32px]">
             <DisplayName displayName={userInfo?.displayName}/>
             <div className="flex items-center py-3">
@@ -95,18 +90,19 @@ export default function ProfilePage() {
                 className="text-medium-emphasis md:text-[16px]">{userInfo?.bio}</p>
             </div>
             <div className="flex space-x-2">
-              <Link href={`/profile/${userId}/edit-profile`}
-                className="min-w-[140px] rounded-lg border-2 bg-high-emphasis p-2 text-center tracking-[0.08px] text-black"
+              <Link href="/profile/edit"
+                    className="min-w-[140px] rounded-lg border-2 bg-high-emphasis p-2 text-center tracking-[0.08px] text-black"
               >
                 <span>Edit Profile</span>
               </Link>
-              <Link href={`/profile/${userId}/store`}
-                className="min-w-[140px] rounded-lg border-2 border-pure-white p-2 text-center tracking-[0.08px] text-pure-white flex items-center"
+              <Link href="/profile/store"
+                    className="min-w-[140px] rounded-lg border-2 border-pure-white p-2 text-center tracking-[0.08px] text-pure-white flex items-center"
               >
                 <div className="relative w-5 h-5">
                   <Image
                     src="/Profile/statusIcon.png"
                     layout="fill"
+                    sizes="1005"
                     alt="status"
                   />
                 </div>
@@ -115,7 +111,7 @@ export default function ProfilePage() {
             </div>
           </div>
         </div>
-        <ProfileTabBar userId={userId}/>
+        <ProfileTabBar/>
       </div>
     </section>
   );

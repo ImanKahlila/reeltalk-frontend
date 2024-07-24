@@ -1,15 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useDropdown, useField } from '@/hooks/Input';
 import { usePlanSelectionContext } from '@/lib/planSelectionContext';
-import { useRouter } from 'next/router';
 import Modal from '@/components/profile/store/Modal';
+import Image from 'next/image';
+import { countries } from '@/components/profile/Constants';
 
-
+const cardImages = [
+  '/Profile/payment/cards/visa.png',
+  '/Profile/payment/cards/master.png',
+  '/Profile/payment/cards/discover.png',
+  '/Profile/payment/cards/amex.png',
+  '/Profile/payment/cards/paypal.png',
+];
 export const PaymentBox = () => {
   const { amountToPay } = usePlanSelectionContext();
   const [showModal, setShowModal] = React.useState(false);
-  const router = useRouter();
-  const { userId } = router.query;
 
   const firstName = useField('text', '', { required: true });
   const lastName = useField('text', '', { required: true });
@@ -39,7 +44,7 @@ export const PaymentBox = () => {
     pattern: '^[0-9]{5}(-[0-9]{4})?$',
   });
 
-  const countryDropdown = useDropdown(['United States', 'Canada']);
+  const countryDropdown = useDropdown(countries);
 
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
   useEffect(() => {
@@ -84,9 +89,23 @@ export const PaymentBox = () => {
   return (<div
       className="mt-2 flex flex-col bg-second-surface rounded-xl border-transparent p-2 text-high-emphasis">
       <form className="space-y-4 p-4" onSubmit={handleSubmit}>
-        <p className="text-lg">Payment Information</p>
+        <div className="flex flex-row items-center justify-between">
+          <p className="text-lg">Payment Information</p>
+          <div className="flex flex-row gap-2">
+            {cardImages.map((src, index) => (
+              <div key={index} className="relative w-10 h-6">
+                <Image
+                  src={src}
+                  layout="fill"
+                  objectFit="contain"
+                  alt={`Card ${index}`}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
         <div className="flex flex-row space-x-2">
-          <div className="flex flex-col w-1/2">
+        <div className="flex flex-col w-1/2">
             <label htmlFor="first-name" className="block text-sm mb-1">First
               Name</label>
             <input

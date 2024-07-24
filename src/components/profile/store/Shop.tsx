@@ -135,14 +135,14 @@ const Shop: React.FC<ShopProps> = ({ compactView = false }) => {
                   {index === 1 && (
                     <div className="relative flex items-center">
                       <span role="img" aria-label="diamond" className="text-3xl">💎</span>
-                      <span role="img" aria-label="diamond" className="text-3xl" style={{ marginLeft: -10 }}>💎</span>
+                      <span role="img" aria-label="diamond" className="text-3xl ml-[-22px] mb-[6px]" >💎</span>
                     </div>
                   )}
                   {index === 2 && (
                     <div className="relative flex items-center">
                       <span role="img" aria-label="diamond" className="text-3xl">💎</span>
-                      <span role="img" aria-label="diamond" className="text-3xl" style={{ marginLeft: -10 }}>💎</span>
-                      <span role="img" aria-label="diamond" className="text-3xl" style={{ marginLeft: -10 }}>💎</span>
+                      <span role="img" aria-label="diamond" className="text-3xl ml-[-22px] mb-[6px]" >💎</span>
+                      <span role="img" aria-label="diamond" className="text-3xl ml-[-20px] mb-[1px]" >💎</span>
                     </div>
                   )}
                 </div>

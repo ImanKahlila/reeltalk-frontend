@@ -18,7 +18,7 @@ export const UserImage: React.FC<UserImageProps> = ({ imageUrl }) => {
       width={100}
       height={100}
       alt=""
-      className="h-[100px] w-[100px] rounded-full"
+      className="rounded-full"
     /></div>
   );
 };

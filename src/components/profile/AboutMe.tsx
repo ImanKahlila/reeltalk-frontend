@@ -1,34 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { useUserContext } from '@/lib/context';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import TopUserMovies from '@/components/profile/TopUserMovies';
 import TopUserShows from '@/components/profile/TopUserShows';
 import CheckIconSVG from '@/components/Icons/CheckIcon';
-import axios from 'axios';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
+import { AchievementCriteria } from '@/components/profile/Constants';
 
-export const AboutMe = ({ userId }: any) => {
-  const [userInfo, setUserInfo] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+export const AboutMe = () => {
 
-  const { user, idToken } = useUserContext();
-  const AchievementCriteria = [
-    { level: "Reel Apprentice", icon: "🎒", requirements: ["Select top genres", "Select top 5 movies","Select top 5 shows"] , reward: 0 },
-    { level: "Reel Enthusiast", icon: "🍿", requirements: ["Add a Profile Pic"], reward: 0  },
-    { level: "Reel Buff", icon: "🎞️", requirements: ["Add a Bio"], reward: 10 },
-    { level: "Reel Addict", icon: "🔥", requirements: ["Join a discussion", "Review a movie / TV Show"], reward: 25 },
-    { level: "Reel Fanatic", icon: "❤️‍🔥", requirements: ["Rate 10" +
-      " Movies/Shows"], reward: 40 },
-    { level: "Reel Fiend", icon: "📽️", requirements: ["Review 10 Movies/Shows"], reward: 50 },
-    { level: "Reel Aficionado", icon: "🎥", requirements: ["Join 10 Communities"], reward: 75 },
-    { level: "Reel Cinephile", icon: "🎬", requirements: ["Start 10 Discussions"], reward: 125 },
-    { level: "Reel Connoisseur", icon: "🎖️", requirements: ["Rate 50 Movies/Shows"], reward: 175 },
-    { level: "Reel Virtuoso", icon: "🏅", requirements: ["Review 50 Movies/Shows"], reward: 250 },
-    { level: "Reel Savant", icon: "🏆", requirements: ["Start 20 Discussions", "Amass 100 Ratings"], reward: 1000 },
-  ];
-
+  const { userInfo,isLoading } = useSelector((state: RootState) => state.user);
 
   const ProfileAchievements = () => {
+    const { userInfo } = useSelector((state: RootState) => state.user);
     const [userAchievements, setUserAchievements] = useState<any>([]);
     const [profileStrength, setProfileStrength] = useState("Novice");
     const [nextLevel, setNextLevel] = useState<any>();
@@ -156,29 +141,6 @@ export const AboutMe = ({ userId }: any) => {
       </div>
     );
   };
-  useEffect(() => {
-    const fetchUserDetails = async () => {
-      try {
-        const response = await axios.get(
-          `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/profile/${userId}`,
-          // `http://localhost:8080/api/user/profile/${userId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${idToken}`,
-            },
-          },
-        );
-        const userData = response.data.data;
-        setUserInfo(userData);
-      } catch (error) {
-        console.error('Error fetching user:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchUserDetails();
-  }, [userId, idToken]);
   const isRequirementMet = (requirement: string) => {
     return checkRequirement(userInfo, requirement);
   };

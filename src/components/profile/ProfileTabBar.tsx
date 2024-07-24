@@ -5,7 +5,7 @@ import UserPost from './UserPost';
 import UserCommunity from './UserCommunity';
 import { AboutMe } from '@/components/profile/AboutMe';
 
-export default function ProfileTabBar({ userId }: any) {
+export default function ProfileTabBar() {
   const [active, setActive] = useState<number>(0);
   const [postCount, setPostCount] = useState<number>(0);
   const [communityCount, setCommunityCount] = useState<number>(0);
@@ -73,7 +73,7 @@ export default function ProfileTabBar({ userId }: any) {
   // Define content for each tab
   const tabContents = [
     <div key={0} className='mt-8'>
-      <AboutMe userId={userId} />
+      <AboutMe />
     </div>,
     <div key={1} className='mt-8'>
       {/*<UserPosts userId={userId} />*/}

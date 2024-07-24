@@ -1,11 +1,10 @@
-import React from 'react';
-import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 import {
   DisplayName,
   UserImage,
 } from '@/components/profile/shared/UserDetails';
-import { ChevronLeft, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronLeft, ChevronUp } from 'lucide-react';
 import { Transaction } from '@/components/profile/store/Transaction';
 import Link from 'next/link';
 import Shop from '@/components/profile/store/Shop';
@@ -16,10 +15,16 @@ import { RootState } from '@/redux/store';
 export default function StorePage() {
   const { userInfo } = useSelector((state: RootState) => state.user);
   const { amountToPay } = usePlanSelectionContext();
-  const router = useRouter();
-  const userId = router.query.userId;
+  const [expandHistory, setExpandHistory]=useState(true);
 
+  const handleHistory=()=>{
+    setExpandHistory(prevState => !prevState)
+  }
+  //TODO: Integrate Clear All API
+  const handleClearAll=()=>{
 
+  }
+  //TODO: Integrate transaction API
   const histories = [{
     date: 'feb 22',
     gems: 100,
@@ -37,19 +42,19 @@ export default function StorePage() {
   return (
     <section className="mx-4 my-[1.438rem] flex flex-col justify-center gap-4 lg:flex-row lg:gap-8">
       <div className="flex flex-col space-y-2 gap-4 lg:w-[700px]">
-        <Link href={`/profile/${userId}`} className="flex text-high-emphasis text-2xl">
+        <Link href={`/profile/view`} className="flex text-high-emphasis text-2xl">
           <ChevronLeft className="mt-1" />Store
         </Link>
         <div className="flex items-center">
           <UserImage imageUrl={userInfo?.imageUrl} />
           <div className="px-[32px]">
             <DisplayName displayName={userInfo?.displayName} />
-            <div className="text-medium-emphasis mt-2">Status: {userInfo?.status}</div>
+            <div className="text-medium-emphasis mt-2">Status: {userInfo?.premiumStatus}</div>
           </div>
         </div>
         <Shop/>
         {/* Proceed to pay button */}
-        <Link href={`/profile/${userId}/store/subscriptions`} className="flex justify-end mt-4">
+        <Link href={`/profile/subscriptions`} className="flex justify-end mt-4">
           <button disabled={amountToPay <= 0} className={`bg-primary text-black px-4 py-2 rounded-lg ${amountToPay <= 0 ? 'opacity-50 cursor-not-allowed' : 'bg-primary'}`}>
             Proceed to pay
           </button>
@@ -60,18 +65,22 @@ export default function StorePage() {
           <div className="flex flex-col">
             <p className="font-semibold">Balance</p>
             <p className="text-2xl">
-              {/*{userInfo.gems}*/}
-              <span role="img" aria-label="diamond">💎</span>
+              {userInfo.gems}
+              <span role="img" aria-label="diamond" className="ml-1">💎</span>
             </p>
           </div>
           <div className="absolute flex flex-row top-0 right-0">
             History
-            <ChevronUp className="mx-2" />
+            {expandHistory ?
+              <ChevronUp className="mx-2" onClick={handleHistory} /> :
+              <ChevronDown className="mx-2" onClick={handleHistory} />}
           </div>
-          <div className="absolute flex flex-row bottom-0 right-0 mr-2 text-dark-red text-sm">Clear all</div>
-      </div>
-      <div>
-        {histories.map((history, index) => (
+          {expandHistory && <div
+            className="absolute flex flex-row bottom-0 right-0 mr-2 text-dark-red text-sm" onClick={handleClearAll}>Clear
+            all</div>}
+        </div>
+        <div>
+          {expandHistory && histories.map((history, index) => (
             <Transaction key={index} transaction={history} index={index} />
           ))}
         </div>
