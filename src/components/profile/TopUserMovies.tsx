@@ -10,10 +10,8 @@ const TopUserMovies = ({ poster }: any) => {
            w-[80px] cursor-pointer items-center justify-center 
           border-2 border-gray'
       >
-        <picture>
-          <Image src={poster} fill alt=''></Image>
+          <Image src={poster} fill sizes="100%"  alt=''></Image>
           <PlusIcon />
-        </picture>
       </div>
     </div>
   );

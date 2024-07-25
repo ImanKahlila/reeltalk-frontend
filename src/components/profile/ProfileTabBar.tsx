@@ -5,7 +5,7 @@ import UserPost from './UserPost';
 import UserCommunity from './UserCommunity';
 import { AboutMe } from '@/components/profile/AboutMe';
 
-export default function ProfileTabBar({ userId }: any) {
+export default function ProfileTabBar() {
   const [active, setActive] = useState<number>(0);
   const [postCount, setPostCount] = useState<number>(0);
   const [communityCount, setCommunityCount] = useState<number>(0);
@@ -13,6 +13,7 @@ export default function ProfileTabBar({ userId }: any) {
   const [friendCount, setFriendCount] = useState<number>(0);
 
   const { user, idToken } = useUserContext();
+
 
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -72,7 +73,7 @@ export default function ProfileTabBar({ userId }: any) {
   // Define content for each tab
   const tabContents = [
     <div key={0} className='mt-8'>
-      <AboutMe userId={userId} />
+      <AboutMe />
     </div>,
     <div key={1} className='mt-8'>
       {/*<UserPosts userId={userId} />*/}
@@ -170,8 +171,8 @@ const UserCommunities = ({ userId }: any) => {
     const fetchUserDetails = async () => {
       try {
         const response = await axios.get(
-          `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/profile/${userId}`,
-          // `http://localhost:8080/api/user/profile/${userId}`,
+          // `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/profile/${userId}`,
+          `http://localhost:8080/api/user/profile/${userId}`,
           {
             headers: {
               Authorization: `Bearer ${idToken}`,

@@ -4,6 +4,9 @@ import Head from 'next/head';
 import type { AppProps } from 'next/app';
 import { UserContextProvider } from '@/lib/context';
 import { Toaster } from 'react-hot-toast';
+import { PlanSelectionProvider } from '@/lib/planSelectionContext';
+import { Provider } from 'react-redux';
+import store from '@/redux/store';
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -32,13 +35,17 @@ export default function App({ Component, pageProps }: AppProps) {
         <link rel='icon' type='image/png' sizes='16x16' href='/favicons/favicon-16x16' />
         <link rel='icon' type='image/png' sizes='24x24' href='/favicons/favicon-32x32' />
       </Head>
+      <Provider store={store}>
+        <UserContextProvider>
+          <PlanSelectionProvider>
+            <Layout>
+              <Component {...pageProps} />
+              <Toaster />
+            </Layout>
+          </PlanSelectionProvider>
+        </UserContextProvider>
+      </Provider>
 
-      <UserContextProvider>
-        <Layout>
-          <Component {...pageProps} />
-          <Toaster />
-        </Layout>
-      </UserContextProvider>
     </>
   );
 }
