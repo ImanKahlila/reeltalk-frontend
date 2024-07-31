@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 export const useField = (type, initialValue = '', validation = {}) => {
   const [value, setValue] = useState(initialValue);
   const [errors, setErrors] = useState([]);
-  const [isValid, setIsValid] = useState(false);
+  const [isValidInput, setIsValidInput] = useState(false);
 
   useEffect(() => {
     validate(value);
@@ -18,7 +18,7 @@ export const useField = (type, initialValue = '', validation = {}) => {
       newErrors.push('Invalid value');
     }
     setErrors(newErrors);
-    setIsValid(newErrors.length === 0);
+    setIsValidInput(newErrors.length === 0);
   };
 
   const onChange = (e) => {
@@ -34,12 +34,15 @@ export const useField = (type, initialValue = '', validation = {}) => {
     }
   }, [value]);
 
+  // Return inputProps separately to avoid passing unwanted props to DOM elements
   return {
-    type,
-    value,
-    onChange,
+    inputProps: {
+      type,
+      value,
+      onChange,
+    },
     errors,
-    isValid,
+    isValidInput,
   };
 };
 
@@ -50,7 +53,7 @@ export const useDropdown = (options = []) => {
     setSelectedValue(e.target.value);
   };
 
-  const isValid = selectedValue !== '';
+  const isValidInput = selectedValue !== '';
 
   const Dropdown = () => (
     <select
@@ -66,7 +69,7 @@ export const useDropdown = (options = []) => {
 
   return {
     selectedValue,
-    isValid,
+    isValidInput,
     Dropdown,
   };
 };

@@ -67,26 +67,27 @@ const PaymentBox = () => {
   // Validate form fields
   useEffect(() => {
     const isValid =
-      firstName.isValid &&
-      lastName.isValid &&
-      email.isValid &&
-      address.isValid &&
-      city.isValid &&
-      state.isValid &&
-      postalCode.isValid &&
-      countryDropdown.isValid &&
+      firstName.isValidInput&&
+      lastName.isValidInput &&
+      email.isValidInput &&
+      address.isValidInput &&
+      city.isValidInput &&
+      state.isValidInput &&
+      postalCode.isValidInput &&
+      countryDropdown.isValidInput &&
       amountToPay > 0;
 
     setIsFormValid(isValid);
   }, [
-    firstName.isValid,
-    lastName.isValid,
-    email.isValid,
-    address.isValid,
-    city.isValid,
-    state.isValid,
-    postalCode.isValid,
-    countryDropdown.isValid,
+    firstName.isValidInput,
+    lastName.isValidInput,
+    email.isValidInput,
+    address.isValidInput,
+    city.isValidInput,
+    state.isValidInput,
+    postalCode.isValidInput,
+    countryDropdown.isValidInput,
+    amountToPay,
   ]);
 
   // Handle Stripe Element changes to capture any errors
@@ -105,7 +106,6 @@ const PaymentBox = () => {
       console.error('Form is not valid');
       return;
     }
-    console.log('Form is valid');
 
     if (!stripe || !elements) {
       console.error("Stripe.js has not loaded yet.");
@@ -133,13 +133,13 @@ const PaymentBox = () => {
           amount: amountToPay * 100, // Stripe amount is in cents
           currency: 'usd',
           billing_details: {
-            name: `${firstName.value} ${lastName.value}`,
-            email: email.value,
+            name: `${firstName.inputProps.value} ${lastName.inputProps.value}`,
+            email: email.inputProps.value,
             address: {
-              line1: address.value,
-              city: city.value,
-              state: state.value,
-              postal_code: postalCode.value,
+              line1: address.inputProps.value,
+              city: city.inputProps.value,
+              state: state.inputProps.value,
+              postal_code: postalCode.inputProps.value,
               country: countryDropdown.selectedValue,
             },
           },
@@ -152,13 +152,13 @@ const PaymentBox = () => {
         payment_method: {
           card: cardElement,
           billing_details: {
-            name: `${firstName.value} ${lastName.value}`,
-            email: email.value,
+            name: `${firstName.inputProps.value} ${lastName.inputProps.value}`,
+            email: email.inputProps.value,
             address: {
-              line1: address.value,
-              city: city.value,
-              state: state.value,
-              postal_code: postalCode.value,
+              line1: address.inputProps.value,
+              city: city.inputProps.value,
+              state: state.inputProps.value,
+              postal_code: postalCode.inputProps.value,
               country: countryDropdown.selectedValue,
             },
           },
@@ -248,6 +248,7 @@ const PaymentBox = () => {
         <div className="flex flex-row space-x-2">
           <div className="w-2/4">
             <label htmlFor="card-number" className="block text-sm mb-1">Card Number</label>
+            <div role="group" aria-labelledby="card-number-label">
             <CardNumberElement
               id="card-number"
               className="w-full px-3 py-2 rounded-md border bg-transparent"
@@ -258,11 +259,13 @@ const PaymentBox = () => {
               }}
               onChange={handleCardChange}
             />
+            </div>
             {error && <p className="text-red-500 text-xs">{error}</p>}
           </div>
          <div className="w-1/4">
             <label htmlFor="expiration-date" className="block text-sm mb-1">Expiration Date</label>
-            <CardExpiryElement
+           <div role="group" aria-labelledby="expiration-date-label">
+           <CardExpiryElement
               id="expiration-date"
               className="w-full px-3 py-2 rounded-md border bg-transparent"
               options={{
@@ -271,13 +274,16 @@ const PaymentBox = () => {
               }}
               onChange={handleCardChange}
             />
+           </div>
           </div>
 
           <div className="w-1/4">
             <label htmlFor="cvv" className="block text-sm mb-1">CVV
               <span
                 className="ml-2 inline-flex items-center justify-center w-4 h-4 rounded-full border">!</span>
-            </label> <CardCvcElement
+            </label>
+            <div role="group" aria-labelledby="cvv-label">
+            <CardCvcElement
             id="cvv"
               className="w-full px-3 py-2 rounded-md border bg-transparent"
               options={{
@@ -286,6 +292,7 @@ const PaymentBox = () => {
               }}
               onChange={handleCardChange}
             />
+            </div>
           </div>
         </div>
 
@@ -295,7 +302,7 @@ const PaymentBox = () => {
             id="email"
             {...email}
             className="w-full px-3 py-2 rounded-md border bg-transparent placeholder-disabled"
-            placeholder="Email"
+            placeholder="xxxx@mail.com"
           />
           {email.errors.map((error, idx) => (
             <p key={idx} className="text-red-500 text-xs">{error}</p>
