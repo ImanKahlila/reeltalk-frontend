@@ -4,7 +4,27 @@ import { usePlanSelectionContext } from '@/lib/planSelectionContext';
 import Modal from '@/components/profile/store/Modal';
 import Image from 'next/image';
 import { countries } from '@/components/profile/Constants';
+import { loadStripe } from '@stripe/stripe-js';
+import {
+  Elements,
+  CardNumberElement,
+  CardExpiryElement,
+  CardCvcElement,
+  useStripe,
+  useElements
+} from '@stripe/react-stripe-js';
+import { useUserContext } from '@/lib/context';
 
+// Retrieve your Stripe public key from environment variables
+const stripePublicKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+
+// Check if the Stripe publishable key is missing
+if (!stripePublicKey) {
+  throw new Error('Missing Stripe publishable key');
+}
+
+// Initialize Stripe outside the component
+const stripePromise = loadStripe(stripePublicKey);
 const cardImages = [
   '/Profile/payment/cards/visa.png',
   '/Profile/payment/cards/master.png',
@@ -12,25 +32,21 @@ const cardImages = [
   '/Profile/payment/cards/amex.png',
   '/Profile/payment/cards/paypal.png',
 ];
-export const PaymentBox = () => {
+
+const PaymentBox = () => {
+  // Get Stripe and Elements context
+  const stripe = useStripe();
+  const elements = useElements();
+
   const { amountToPay } = usePlanSelectionContext();
   const [showModal, setShowModal] = React.useState(false);
+  const { user,idToken } = useUserContext();
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const firstName = useField('text', '', { required: true });
   const lastName = useField('text', '', { required: true });
-  // cardNumber value consists of 13 to 19 digits.
-  const cardNumber = useField('text', '', {
-    required: true,
-    pattern: '^[0-9]{13,19}$',
-  });
-  // MM between 01 and 12 and YY last two digits of the year
-  const expirationDate = useField('text', '', {
-    required: true,
-    pattern: '^(0[1-9]|1[0-2])\/?([0-9]{2})$',
-  });
-  // cvv value consists of 3 or 4 digits
-  const cvv = useField('text', '', { required: true, pattern: '^[0-9]{3,4}$' });
-  // basic email pattern
+  // Removed cardNumber, expirationDate, and cvv fields as they are handled by Stripe Elements
   const email = useField('email', '', {
     required: true,
     pattern: '^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$',
@@ -47,26 +63,24 @@ export const PaymentBox = () => {
   const countryDropdown = useDropdown(countries);
 
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
+
+  // Validate form fields
   useEffect(() => {
     const isValid =
       firstName.isValid &&
       lastName.isValid &&
-      cardNumber.isValid &&
-      expirationDate.isValid &&
-      cvv.isValid &&
       email.isValid &&
       address.isValid &&
       city.isValid &&
       state.isValid &&
       postalCode.isValid &&
-      countryDropdown.isValid && amountToPay > 0;
+      countryDropdown.isValid &&
+      amountToPay > 0;
+
     setIsFormValid(isValid);
   }, [
     firstName.isValid,
     lastName.isValid,
-    cardNumber.isValid,
-    expirationDate.isValid,
-    cvv.isValid,
     email.isValid,
     address.isValid,
     city.isValid,
@@ -74,20 +88,119 @@ export const PaymentBox = () => {
     postalCode.isValid,
     countryDropdown.isValid,
   ]);
-  const handleSubmit = (event: any) => {
-    event.preventDefault();
-    if (isFormValid) {
-      // TODO: process payment gateway integration, once payment is successful,
-      //  change status to premium and reset user selection
-      console.log('Form is valid');
-      setShowModal(true);
+
+  // Handle Stripe Element changes to capture any errors
+  const handleCardChange = (event: any) => {
+    if (event.error) {
+      setError(event.error.message);
     } else {
-      console.error('Form is not valid');
+      setError(null);
     }
   };
 
-  return (<div
-      className="mt-2 flex flex-col bg-second-surface rounded-xl border-transparent p-2 text-high-emphasis">
+  // Handle form submission
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!isFormValid) {
+      console.error('Form is not valid');
+      return;
+    }
+    console.log('Form is valid');
+
+    if (!stripe || !elements) {
+      console.error("Stripe.js has not loaded yet.");
+      setLoading(false);
+      return;
+    }
+
+    const cardElement = elements.getElement(CardNumberElement);
+
+    if (!cardElement) {
+      console.error("CardElement is not available");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch('http://localhost:8080/payment/process', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          amount: amountToPay * 100, // Stripe amount is in cents
+          currency: 'usd',
+          billing_details: {
+            name: `${firstName.value} ${lastName.value}`,
+            email: email.value,
+            address: {
+              line1: address.value,
+              city: city.value,
+              state: state.value,
+              postal_code: postalCode.value,
+              country: countryDropdown.selectedValue,
+            },
+          },
+        }),
+      });
+
+      const { clientSecret } = await response.json();
+
+      const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: cardElement,
+          billing_details: {
+            name: `${firstName.value} ${lastName.value}`,
+            email: email.value,
+            address: {
+              line1: address.value,
+              city: city.value,
+              state: state.value,
+              postal_code: postalCode.value,
+              country: countryDropdown.selectedValue,
+            },
+          },
+        },
+      });
+
+      if (error) {
+        // setError(error.message);
+      } else if (paymentIntent?.status === 'succeeded') {
+        setShowModal(true);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError('An unknown error occurred');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Stripe Element styles
+  const elementStyles = {
+    base: {
+      fontSize: '16px',
+      color: '#fff',
+      '::placeholder': {
+        color: '#FFFFFF60',
+      },
+    },
+    invalid: {
+      color: '#FF453A',
+    },
+    complete: {
+      color: '#fff',
+    },
+  };
+
+
+  return (
+    <div className="mt-2 flex flex-col bg-second-surface rounded-xl border-transparent p-2 text-high-emphasis">
       <form className="space-y-4 p-4" onSubmit={handleSubmit}>
         <div className="flex flex-row items-center justify-between">
           <p className="text-lg">Payment Information</p>
@@ -96,22 +209,22 @@ export const PaymentBox = () => {
               <div key={index} className="relative w-10 h-6">
                 <Image
                   src={src}
-                  layout="fill"
-                  objectFit="contain"
+                  sizes="100%"
+                  fill
                   alt={`Card ${index}`}
                 />
               </div>
             ))}
           </div>
         </div>
+
         <div className="flex flex-row space-x-2">
-        <div className="flex flex-col w-1/2">
-            <label htmlFor="first-name" className="block text-sm mb-1">First
-              Name</label>
+          <div className="flex flex-col w-1/2">
+            <label htmlFor="first-name" className="block text-sm mb-1">First Name</label>
             <input
               id="first-name"
               {...firstName}
-              className="px-3 py-2 rounded-md border bg-transparent"
+              className="px-3 py-2 rounded-md border bg-transparent placeholder-disabled"
               placeholder="First Name"
             />
             {firstName.errors.map((error, idx) => (
@@ -119,12 +232,11 @@ export const PaymentBox = () => {
             ))}
           </div>
           <div className="flex flex-col w-1/2">
-            <label htmlFor="last-name" className="block text-sm mb-1">Last
-              Name</label>
+            <label htmlFor="last-name" className="block text-sm mb-1">Last Name</label>
             <input
               id="last-name"
               {...lastName}
-              className="px-3 py-2 rounded-md border bg-transparent"
+              className="px-3 py-2 rounded-md border bg-transparent placeholder-disabled"
               placeholder="Last Name"
             />
             {lastName.errors.map((error, idx) => (
@@ -132,135 +244,137 @@ export const PaymentBox = () => {
             ))}
           </div>
         </div>
+
         <div className="flex flex-row space-x-2">
           <div className="w-2/4">
-            <label htmlFor="card-number" className="block text-sm mb-1">Card
-              Number</label>
-            <input
+            <label htmlFor="card-number" className="block text-sm mb-1">Card Number</label>
+            <CardNumberElement
               id="card-number"
-              {...cardNumber}
               className="w-full px-3 py-2 rounded-md border bg-transparent"
-              placeholder="---- ---- ---- ----"
-              required
+              options={{
+                style: elementStyles,
+                placeholder:"---- ---- ---- ----"
+
+              }}
+              onChange={handleCardChange}
             />
-            {cardNumber.errors.map((error, idx) => (
-              <p key={idx} className="text-red-500 text-xs">{error}</p>
-            ))}
+            {error && <p className="text-red-500 text-xs">{error}</p>}
           </div>
-          <div className="w-1/4">
-            <label htmlFor="expiration-date" className="block text-sm mb-1">Expiration
-              Date</label>
-            <input
+         <div className="w-1/4">
+            <label htmlFor="expiration-date" className="block text-sm mb-1">Expiration Date</label>
+            <CardExpiryElement
               id="expiration-date"
-              {...expirationDate}
               className="w-full px-3 py-2 rounded-md border bg-transparent"
-              placeholder="MM/YY"
-              required
+              options={{
+                style: elementStyles,
+                placeholder:"MM/YY"
+              }}
+              onChange={handleCardChange}
             />
-            {expirationDate.errors.map((error, idx) => (
-              <p key={idx} className="text-red-500 text-xs">{error}</p>
-            ))}
           </div>
+
           <div className="w-1/4">
             <label htmlFor="cvv" className="block text-sm mb-1">CVV
               <span
                 className="ml-2 inline-flex items-center justify-center w-4 h-4 rounded-full border">!</span>
-            </label>
-            <input
-              id="cvv"
-              {...cvv}
+            </label> <CardCvcElement
+            id="cvv"
               className="w-full px-3 py-2 rounded-md border bg-transparent"
-              placeholder="---"
-              required
+              options={{
+                style: elementStyles,
+                placeholder: "---"
+              }}
+              onChange={handleCardChange}
             />
-            {cvv.errors.map((error, idx) => (
-              <p key={idx} className="text-red-500 text-xs">{error}</p>
-            ))}
           </div>
         </div>
-        <p className="text-lg">Billing Address</p>
+
         <div>
-          <label htmlFor="email" className="block text-sm mb-1">Email
-            Address</label>
+          <label htmlFor="email" className="block text-sm mb-1">Email</label>
           <input
             id="email"
             {...email}
-            className="w-full px-3 py-2 rounded-md border bg-transparent"
-            placeholder="xxxx@mail.com"
-            required
+            className="w-full px-3 py-2 rounded-md border bg-transparent placeholder-disabled"
+            placeholder="Email"
           />
           {email.errors.map((error, idx) => (
             <p key={idx} className="text-red-500 text-xs">{error}</p>
           ))}
         </div>
+
+        <div>
+          <label htmlFor="address" className="block text-sm mb-1">Address</label>
+          <input
+            id="address"
+            {...address}
+            className="w-full px-3 py-2 rounded-md border bg-transparent placeholder-disabled"
+            placeholder="Address"
+          />
+          {address.errors.map((error, idx) => (
+            <p key={idx} className="text-red-500 text-xs">{error}</p>
+          ))}
+        </div>
+
         <div className="flex flex-row space-x-2">
-          <div className="w-2/3">
-            <label htmlFor="address"
-                   className="block text-sm mb-1">Address</label>
-            <input
-              id="address"
-              {...address}
-              className="w-full px-3 py-2 rounded-md border bg-transparent"
-              placeholder="Address"
-              required
-            />
-            {address.errors.map((error, idx) => (
-              <p key={idx} className="text-red-500 text-xs">{error}</p>
-            ))}
-          </div>
           <div className="w-1/3">
             <label htmlFor="city" className="block text-sm mb-1">City</label>
             <input
               id="city"
               {...city}
-              className="w-full px-3 py-2 rounded-md border bg-transparent"
+              className="w-full px-3 py-2 rounded-md border bg-transparent placeholder-disabled"
               placeholder="City"
-              required
             />
             {city.errors.map((error, idx) => (
               <p key={idx} className="text-red-500 text-xs">{error}</p>
             ))}
           </div>
-        </div>
-        <div className="flex flex-row space-x-2">
+
           <div className="w-1/3">
-            <label htmlFor="country"
-                   className="block text-sm mb-1">Country</label>
-            <countryDropdown.Dropdown />
-          </div>
-          <div className="w-1/3">
-            <label htmlFor="state"
-                   className="block text-sm mb-1">State/Province</label>
+            <label htmlFor="state" className="block text-sm mb-1">State</label>
             <input
               id="state"
               {...state}
-              className="w-full px-3 py-2 rounded-md border bg-transparent"
+              className="w-full px-3 py-2 rounded-md border bg-transparent placeholder-disabled"
               placeholder="State"
-              required
             />
             {state.errors.map((error, idx) => (
               <p key={idx} className="text-red-500 text-xs">{error}</p>
             ))}
           </div>
+
           <div className="w-1/3">
-            <label htmlFor="postal-code" className="block text-sm mb-1">Postal
-              Code</label>
+            <label htmlFor="postal-code" className="block text-sm mb-1">Postal Code</label>
             <input
               id="postal-code"
               {...postalCode}
-              className="w-full px-3 py-2 rounded-md border bg-transparent"
+              className="w-full px-3 py-2 rounded-md border bg-transparent placeholder-disabled"
               placeholder="Postal Code"
-              required
             />
             {postalCode.errors.map((error, idx) => (
               <p key={idx} className="text-red-500 text-xs">{error}</p>
             ))}
           </div>
         </div>
+
+        <div>
+          <label htmlFor="country" className="block text-sm mb-1">Country</label>
+          <select
+            id="country"
+            {...countryDropdown}
+            className="w-full px-3 py-2 rounded-md border bg-transparent placeholder-disabled"
+          >
+            {countries.map((country) => (
+              <option key={country} value={country}>
+                {country}
+              </option>
+            ))}
+          </select>
+        </div>
+
         <button
           type="submit"
-          className={`w-full px-3 py-2 rounded-md text-white ${isFormValid ? 'bg-primary' : 'bg-gray cursor-not-allowed'}`}
-          disabled={!isFormValid}
+          disabled={!isFormValid || loading}
+          className="mt-4 w-full px-4 py-2 bg-primary hover:bg-primary-hover text-white font-semibold rounded-md"
         >
           Pay ${amountToPay}
         </button>
@@ -271,3 +385,14 @@ export const PaymentBox = () => {
     </div>
   );
 };
+
+// Wrap the PaymentBox component in Stripe's Elements provider
+const WrappedPaymentBox = () => {
+  return (
+    <Elements stripe={stripePromise}>
+      <PaymentBox />
+    </Elements>
+  );
+};
+
+export default WrappedPaymentBox;
