@@ -28,12 +28,15 @@ const Shop: React.FC<ShopProps> = ({ compactView = false }) => {
       billing: 'Monthly',
       total: 4.99,
       monthly: '',
+      description: 'Subscribing to Premiere'
     },
     {
       name: 'Platinum',
       billing: 'Annual',
       total: 49.99,
       monthly: 4.16,
+      description: 'Subscribing to Platinum'
+
     },
   ];
 
@@ -42,16 +45,19 @@ const Shop: React.FC<ShopProps> = ({ compactView = false }) => {
       gems: 100,
       price: 4.99,
       discount: 'Basic',
+      description: 'Gem bundle purchase'
     },
     {
       gems: 500,
       price: 19.99,
       discount: '(20%+ Cheaper)',
+      description: 'Gem bundle purchase'
     },
     {
       gems: 1000,
       price: 39.99,
       discount: '(20%+ Cheaper)',
+      description: 'Gem bundle purchase'
     },
   ];
 

@@ -34,20 +34,18 @@ export const useField = (type, initialValue = '', validation = {}) => {
     }
   }, [value]);
 
-  // Return inputProps separately to avoid passing unwanted props to DOM elements
   return {
-    inputProps: {
-      type,
-      value,
-      onChange,
-    },
+    type,
+    value,
+    onChange,
     errors,
     isValidInput,
   };
 };
 
+
 export const useDropdown = (options = []) => {
-  const [selectedValue, setSelectedValue] = useState('');
+  const [selectedValue, setSelectedValue] = useState(options[0]?options[0]:'');
 
   const handleChange = (e) => {
     setSelectedValue(e.target.value);
@@ -62,7 +60,7 @@ export const useDropdown = (options = []) => {
       className="w-full px-3 py-2 rounded-md border bg-transparent"
     >
       {options.map((option, idx) => (
-        <option key={idx} value={option}>{option}</option>
+        <option key={idx} value={option.value}>{option.name}</option>
       ))}
     </select>
   );

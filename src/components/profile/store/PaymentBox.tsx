@@ -15,15 +15,12 @@ import {
 } from '@stripe/react-stripe-js';
 import { useUserContext } from '@/lib/context';
 
-// Retrieve your Stripe public key from environment variables
 const stripePublicKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 
-// Check if the Stripe publishable key is missing
 if (!stripePublicKey) {
   throw new Error('Missing Stripe publishable key');
 }
 
-// Initialize Stripe outside the component
 const stripePromise = loadStripe(stripePublicKey);
 const cardImages = [
   '/Profile/payment/cards/visa.png',
@@ -38,7 +35,7 @@ const PaymentBox = () => {
   const stripe = useStripe();
   const elements = useElements();
 
-  const { amountToPay } = usePlanSelectionContext();
+  const { amountToPay,resetSelectedPlan, planChosen} = usePlanSelectionContext();
   const [showModal, setShowModal] = React.useState(false);
   const { user,idToken } = useUserContext();
   const [error, setError] = useState<string | null>(null);
@@ -63,6 +60,7 @@ const PaymentBox = () => {
   const countryDropdown = useDropdown(countries);
 
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
+  const [cardError, setCardError] = useState<string | null>(null);
 
   // Validate form fields
   useEffect(() => {
@@ -86,18 +84,17 @@ const PaymentBox = () => {
     city.isValidInput,
     state.isValidInput,
     postalCode.isValidInput,
-    countryDropdown.isValidInput,
-    amountToPay,
+    countryDropdown.isValidInput,amountToPay
   ]);
-
   // Handle Stripe Element changes to capture any errors
   const handleCardChange = (event: any) => {
     if (event.error) {
-      setError(event.error.message);
+      setCardError(event.error.message);
     } else {
-      setError(null);
+      setCardError(null);
     }
   };
+
 
   // Handle form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -123,51 +120,57 @@ const PaymentBox = () => {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:8080/payment/process', {
+      const response = await fetch(
+        `https://us-central1-reeltalk-app.cloudfunctions.net/backend/payment/create`,
+        // 'http://localhost:8080/payment/create',
+        {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${idToken}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          amount: amountToPay * 100, // Stripe amount is in cents
+          description:planChosen.description,
+          amount: Math.round(amountToPay * 100), // Stripe amount is in cents
           currency: 'usd',
           billing_details: {
-            name: `${firstName.inputProps.value} ${lastName.inputProps.value}`,
-            email: email.inputProps.value,
+            name: `${firstName.value} ${lastName.value}`,
+            email: email.value,
             address: {
-              line1: address.inputProps.value,
-              city: city.inputProps.value,
-              state: state.inputProps.value,
-              postal_code: postalCode.inputProps.value,
+              line1: address.value,
+              city: city.value,
+              state: state.value,
+              postal_code: postalCode.value,
               country: countryDropdown.selectedValue,
             },
           },
         }),
       });
-
+      console.log(amountToPay );
       const { clientSecret } = await response.json();
 
       const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
           card: cardElement,
           billing_details: {
-            name: `${firstName.inputProps.value} ${lastName.inputProps.value}`,
-            email: email.inputProps.value,
+            name: `${firstName.value} ${lastName.value}`,
+            email: email.value,
             address: {
-              line1: address.inputProps.value,
-              city: city.inputProps.value,
-              state: state.inputProps.value,
-              postal_code: postalCode.inputProps.value,
+              line1: address.value,
+              city: city.value,
+              state: state.value,
+              postal_code: postalCode.value,
               country: countryDropdown.selectedValue,
             },
           },
         },
       });
-
+      console.log("paymentIntent",paymentIntent);
       if (error) {
-        // setError(error.message);
+        setError(error.message||"There is error in processing the payment");
+        setIsFormValid(false);
       } else if (paymentIntent?.status === 'succeeded') {
+        resetSelectedPlan();
         setShowModal(true);
       }
     } catch (error) {
@@ -220,7 +223,8 @@ const PaymentBox = () => {
 
         <div className="flex flex-row space-x-2">
           <div className="flex flex-col w-1/2">
-            <label htmlFor="first-name" className="block text-sm mb-1">First Name</label>
+            <label htmlFor="first-name" className="block text-sm mb-1">First
+              Name</label>
             <input
               id="first-name"
               {...firstName}
@@ -232,7 +236,8 @@ const PaymentBox = () => {
             ))}
           </div>
           <div className="flex flex-col w-1/2">
-            <label htmlFor="last-name" className="block text-sm mb-1">Last Name</label>
+            <label htmlFor="last-name" className="block text-sm mb-1">Last
+              Name</label>
             <input
               id="last-name"
               {...lastName}
@@ -247,34 +252,36 @@ const PaymentBox = () => {
 
         <div className="flex flex-row space-x-2">
           <div className="w-2/4">
-            <label htmlFor="card-number" className="block text-sm mb-1">Card Number</label>
+            <label htmlFor="card-number" className="block text-sm mb-1">Card
+              Number</label>
             <div role="group" aria-labelledby="card-number-label">
-            <CardNumberElement
-              id="card-number"
-              className="w-full px-3 py-2 rounded-md border bg-transparent"
-              options={{
-                style: elementStyles,
-                placeholder:"---- ---- ---- ----"
+              <CardNumberElement
+                id="card-number"
+                className="w-full px-3 py-2 rounded-md border bg-transparent"
+                options={{
+                  style: elementStyles,
+                  placeholder: '---- ---- ---- ----',
 
-              }}
-              onChange={handleCardChange}
-            />
+                }}
+                onChange={handleCardChange}
+              />
             </div>
             {error && <p className="text-red-500 text-xs">{error}</p>}
           </div>
-         <div className="w-1/4">
-            <label htmlFor="expiration-date" className="block text-sm mb-1">Expiration Date</label>
-           <div role="group" aria-labelledby="expiration-date-label">
-           <CardExpiryElement
-              id="expiration-date"
-              className="w-full px-3 py-2 rounded-md border bg-transparent"
-              options={{
-                style: elementStyles,
-                placeholder:"MM/YY"
-              }}
-              onChange={handleCardChange}
-            />
-           </div>
+          <div className="w-1/4">
+            <label htmlFor="expiration-date" className="block text-sm mb-1">Expiration
+              Date</label>
+            <div role="group" aria-labelledby="expiration-date-label">
+              <CardExpiryElement
+                id="expiration-date"
+                className="w-full px-3 py-2 rounded-md border bg-transparent"
+                options={{
+                  style: elementStyles,
+                  placeholder: 'MM/YY',
+                }}
+                onChange={handleCardChange}
+              />
+            </div>
           </div>
 
           <div className="w-1/4">
@@ -283,15 +290,15 @@ const PaymentBox = () => {
                 className="ml-2 inline-flex items-center justify-center w-4 h-4 rounded-full border">!</span>
             </label>
             <div role="group" aria-labelledby="cvv-label">
-            <CardCvcElement
-            id="cvv"
-              className="w-full px-3 py-2 rounded-md border bg-transparent"
-              options={{
-                style: elementStyles,
-                placeholder: "---"
-              }}
-              onChange={handleCardChange}
-            />
+              <CardCvcElement
+                id="cvv"
+                className="w-full px-3 py-2 rounded-md border bg-transparent"
+                options={{
+                  style: elementStyles,
+                  placeholder: '---',
+                }}
+                onChange={handleCardChange}
+              />
             </div>
           </div>
         </div>
@@ -310,7 +317,8 @@ const PaymentBox = () => {
         </div>
 
         <div>
-          <label htmlFor="address" className="block text-sm mb-1">Address</label>
+          <label htmlFor="address"
+                 className="block text-sm mb-1">Address</label>
           <input
             id="address"
             {...address}
@@ -350,7 +358,8 @@ const PaymentBox = () => {
           </div>
 
           <div className="w-1/3">
-            <label htmlFor="postal-code" className="block text-sm mb-1">Postal Code</label>
+            <label htmlFor="postal-code" className="block text-sm mb-1">Postal
+              Code</label>
             <input
               id="postal-code"
               {...postalCode}
@@ -363,30 +372,21 @@ const PaymentBox = () => {
           </div>
         </div>
 
-        <div>
-          <label htmlFor="country" className="block text-sm mb-1">Country</label>
-          <select
-            id="country"
-            {...countryDropdown}
-            className="w-full px-3 py-2 rounded-md border bg-transparent placeholder-disabled"
-          >
-            {countries.map((country) => (
-              <option key={country} value={country}>
-                {country}
-              </option>
-            ))}
-          </select>
+        <div className="w-1/3">
+          <label htmlFor="country"
+                 className="block text-sm mb-1">Country</label>
+          <countryDropdown.Dropdown />
         </div>
 
         <button
           type="submit"
-          disabled={!isFormValid || loading}
-          className="mt-4 w-full px-4 py-2 bg-primary hover:bg-primary-hover text-white font-semibold rounded-md"
+          className={`w-full px-3 py-2 rounded-md text-white ${isFormValid ? 'bg-primary' : 'bg-gray cursor-not-allowed'}`}
+          disabled={!isFormValid}
         >
           Pay ${amountToPay}
         </button>
         {showModal ? (
-        <Modal/>
+          <Modal />
         ) : null}
       </form>
     </div>
