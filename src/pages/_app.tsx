@@ -6,7 +6,8 @@ import { UserContextProvider } from '@/lib/context';
 import { Toaster } from 'react-hot-toast';
 import { PlanSelectionProvider } from '@/lib/planSelectionContext';
 import { Provider } from 'react-redux';
-import store from '@/redux/store';
+import store, { persistor } from '@/redux/store';
+import { PersistGate } from 'redux-persist/integration/react';
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -36,6 +37,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <link rel='icon' type='image/png' sizes='24x24' href='/favicons/favicon-32x32' />
       </Head>
       <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
         <UserContextProvider>
           <PlanSelectionProvider>
             <Layout>
@@ -44,6 +46,7 @@ export default function App({ Component, pageProps }: AppProps) {
             </Layout>
           </PlanSelectionProvider>
         </UserContextProvider>
+        </PersistGate>
       </Provider>
 
     </>

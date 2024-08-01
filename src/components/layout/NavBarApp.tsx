@@ -12,6 +12,9 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { useUserContext } from '@/lib/context';
 import ChevronIcon from './ChevronIcon';
 import SearchIcon from './SearchIcon';
+import { persistor } from '@/redux/store';
+import { logout } from '@/redux/userReducer';
+import { useDispatch } from 'react-redux';
 
 // Variables
 const auth = getAuth(app);
@@ -112,7 +115,19 @@ const NavigationLinks = () => {
 const AccountDropDown = ({ user }: { user: User }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const router = useRouter();
+  const dispatch = useDispatch();
 
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      dispatch(logout());
+      await persistor.purge();
+      router.push('/onboarding');
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Handle error, maybe set an error state
+    }
+  };
   return (
     // onOpenChange prop API Root Reference https://www.radix-ui.com/primitives/docs/components/popover#api-reference
     <Popover onOpenChange={open => setDropdownOpen(open)}>
@@ -140,10 +155,7 @@ const AccountDropDown = ({ user }: { user: User }) => {
             My profile
           </Link>
           <button
-            onClick={async () => {
-              await signOut(auth);
-              router.push('/onboarding');
-            }}
+            onClick={async () => {handleLogout()}}
             className='text-base tracking-[0.08px] text-[#e70000] '
           >
             Log out

@@ -27,9 +27,14 @@ const userSlice = createSlice({
       state.error = action.payload;
       state.userInfo = null;
     },
+    logout(state) {
+      state.userInfo = null;
+      state.isLoading = false;
+      state.error = null;
+    },
   },
 });
 
-export const { setUserInfo, setLoading, setError } = userSlice.actions;
+export const { setUserInfo, setLoading, setError,logout } = userSlice.actions;
 
 export default userSlice.reducer;
