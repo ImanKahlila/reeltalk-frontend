@@ -22,7 +22,12 @@ const usePlanSelection = () => {
     return planChosen;
   };
 
-  return { planChosen, handlePlanSelect, isSelected, getSelectedPlan, amountToPay };
+  const resetSelectedPlan = () => {
+    setPlanChosen(null);
+    setAmountToPay(0);
+  };
+
+  return { planChosen, handlePlanSelect, isSelected, getSelectedPlan, amountToPay ,resetSelectedPlan};
 };
 
 export default usePlanSelection;

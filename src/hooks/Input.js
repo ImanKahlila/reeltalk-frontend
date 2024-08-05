@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 export const useField = (type, initialValue = '', validation = {}) => {
   const [value, setValue] = useState(initialValue);
   const [errors, setErrors] = useState([]);
-  const [isValid, setIsValid] = useState(false);
+  const [isValidInput, setIsValidInput] = useState(false);
 
   useEffect(() => {
     validate(value);
@@ -18,7 +18,7 @@ export const useField = (type, initialValue = '', validation = {}) => {
       newErrors.push('Invalid value');
     }
     setErrors(newErrors);
-    setIsValid(newErrors.length === 0);
+    setIsValidInput(newErrors.length === 0);
   };
 
   const onChange = (e) => {
@@ -39,18 +39,19 @@ export const useField = (type, initialValue = '', validation = {}) => {
     value,
     onChange,
     errors,
-    isValid,
+    isValidInput,
   };
 };
 
+
 export const useDropdown = (options = []) => {
-  const [selectedValue, setSelectedValue] = useState('');
+  const [selectedValue, setSelectedValue] = useState(options[0]?options[0]:'');
 
   const handleChange = (e) => {
     setSelectedValue(e.target.value);
   };
 
-  const isValid = selectedValue !== '';
+  const isValidInput = selectedValue !== '';
 
   const Dropdown = () => (
     <select
@@ -59,14 +60,14 @@ export const useDropdown = (options = []) => {
       className="w-full px-3 py-2 rounded-md border bg-transparent"
     >
       {options.map((option, idx) => (
-        <option key={idx} value={option}>{option}</option>
+        <option key={idx} value={option.value}>{option.name}</option>
       ))}
     </select>
   );
 
   return {
     selectedValue,
-    isValid,
+    isValidInput,
     Dropdown,
   };
 };

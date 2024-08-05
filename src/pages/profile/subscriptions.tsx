@@ -2,10 +2,10 @@ import React from 'react';
 import { DisplayName, UserImage } from '@/components/profile/shared/UserDetails';
 import { ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
-import { PaymentBox } from '@/components/profile/store/PaymentBox';
 import Shop from '@/components/profile/store/Shop';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
+import PaymentBoxWithElements from '@/components/profile/store/PaymentBox';
 
 export default function SubscriptionsPage() {
   const { userInfo } = useSelector((state: RootState) => state.user);
@@ -31,7 +31,7 @@ export default function SubscriptionsPage() {
                   className="text-medium-emphasis mt-2">Status: {userInfo?.premiumStatus}</div>
               </div>
             </div>
-              <PaymentBox />
+              <PaymentBoxWithElements />
           </div>
           <div className="">
             <Shop compactView={true} />
