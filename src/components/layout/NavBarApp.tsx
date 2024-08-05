@@ -118,15 +118,10 @@ const AccountDropDown = ({ user }: { user: User }) => {
   const dispatch = useDispatch();
 
   const handleLogout = async () => {
-    try {
       await signOut(auth);
       dispatch(logout());
       await persistor.purge();
       router.push('/onboarding');
-    } catch (error) {
-      console.error('Logout error:', error);
-      // Handle error, maybe set an error state
-    }
   };
   return (
     // onOpenChange prop API Root Reference https://www.radix-ui.com/primitives/docs/components/popover#api-reference
