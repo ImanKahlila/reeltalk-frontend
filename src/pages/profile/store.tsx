@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 
 import {
-  DisplayName,
-  UserImage,
+  Name, Status,
+  ProfileImage,
 } from '@/components/profile/shared/UserDetails';
 import { ChevronDown, ChevronLeft, ChevronUp } from 'lucide-react';
 import { Transaction } from '@/components/profile/store/Transaction';
@@ -46,10 +46,10 @@ export default function StorePage() {
           <ChevronLeft className="mt-1" />Store
         </Link>
         <div className="flex items-center">
-          <UserImage imageUrl={userInfo?.imageUrl} />
+          <ProfileImage/>
           <div className="px-[32px]">
-            <DisplayName displayName={userInfo?.displayName} />
-            <div className="text-medium-emphasis mt-2">Status: {userInfo?.premiumStatus}</div>
+            <Name/>
+            <div className="text-medium-emphasis mt-2"><Status/></div>
           </div>
         </div>
         <Shop/>
