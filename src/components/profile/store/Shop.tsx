@@ -1,5 +1,9 @@
 import React from 'react';
 import { usePlanSelectionContext } from '@/lib/planSelectionContext';
+import {
+  GEM_BUNDLES,
+  SUBSCRIPTION_TIERS,
+} from '@/components/profile/Constants';
 
 type ShopProps = {
   compactView?: boolean; // Prop to control the view mode
@@ -20,45 +24,6 @@ const Shop: React.FC<ShopProps> = ({ compactView = false }) => {
     'Join special communities 💬',
     'Award to lists 🎥',
     'Awards to users 🎖️ ',
-  ];
-
-  const subscriptionTiers = [
-    {
-      name: 'Premiere',
-      billing: 'Monthly',
-      total: 4.99,
-      monthly: '',
-      description: 'Subscribing to Premiere'
-    },
-    {
-      name: 'Platinum',
-      billing: 'Annual',
-      total: 49.99,
-      monthly: 4.16,
-      description: 'Subscribing to Platinum'
-
-    },
-  ];
-
-  const gemBundles = [
-    {
-      gems: 100,
-      price: 4.99,
-      discount: 'Basic',
-      description: 'Gem bundle purchase'
-    },
-    {
-      gems: 500,
-      price: 19.99,
-      discount: '(20%+ Cheaper)',
-      description: 'Gem bundle purchase'
-    },
-    {
-      gems: 1000,
-      price: 39.99,
-      discount: '(20%+ Cheaper)',
-      description: 'Gem bundle purchase'
-    },
   ];
 
   const CircleIcon = () => (
@@ -90,7 +55,7 @@ const Shop: React.FC<ShopProps> = ({ compactView = false }) => {
         <div>
           Subscription Tiers
           <div className="flex flex-row space-x-4">
-            {subscriptionTiers.map((tier) => (
+            {SUBSCRIPTION_TIERS.map((tier) => (
               <div
                 key={tier.name}
                 className={`flex flex-col w-1/2 items-center justify-center border-2 rounded-xl mt-2 p-2 text-center ${isSelected(tier) ? 'border-primary bg-primary bg-opacity-25' : 'border-transparent bg-second-surface'}`}
@@ -128,7 +93,7 @@ const Shop: React.FC<ShopProps> = ({ compactView = false }) => {
         <div>
           <h2>Gem Bundles</h2>
           <div className="flex flex-row space-x-4">
-            {gemBundles.map((bundle, index) => (
+            {GEM_BUNDLES.map((bundle, index) => (
               <div
                 key={bundle.gems}
                 className={`flex flex-col items-center justify-center border-2 rounded-xl mt-2 w-[120px] text-center relative ${isSelected(bundle) ? 'border-primary bg-primary bg-opacity-25' : 'border-transparent bg-second-surface'}`}

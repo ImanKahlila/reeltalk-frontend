@@ -6,7 +6,7 @@ import TopUserShows from '@/components/profile/TopUserShows';
 import CheckIconSVG from '@/components/Icons/CheckIcon';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
-import { AchievementCriteria } from '@/components/profile/Constants';
+import { ACHIEVEMENT_CRITERIA } from '@/components/profile/Constants';
 
 export const AboutMe = () => {
 
@@ -28,15 +28,15 @@ export const AboutMe = () => {
       let percentage = 0;
       let nextReqIndex = 0;
 
-      for (let i = 0; i < AchievementCriteria.length; i++) {
-        const criteria = AchievementCriteria[i];
+      for (let i = 0; i < ACHIEVEMENT_CRITERIA.length; i++) {
+        const criteria = ACHIEVEMENT_CRITERIA[i];
         if (userInfo.profileLevel === criteria.level) {
           for (let j = 0; j <= i; j++) {
-            achieved.push(AchievementCriteria[j]);
+            achieved.push(ACHIEVEMENT_CRITERIA[j]);
           }
           strength = criteria.level;
-          percentage = ((i + 1) / AchievementCriteria.length) * 100;
-          nextReqIndex = achieved.length === AchievementCriteria.length?i: i + 1;
+          percentage = ((i + 1) / ACHIEVEMENT_CRITERIA.length) * 100;
+          nextReqIndex = achieved.length === ACHIEVEMENT_CRITERIA.length?i: i + 1;
           break;
         }
       }
@@ -45,24 +45,24 @@ export const AboutMe = () => {
       setStrengthPercentage(percentage);
       setCurrentRequirementIndex(nextReqIndex);
 
-      if (nextReqIndex < AchievementCriteria.length) {
-        setNextLevel(AchievementCriteria[nextReqIndex]);
+      if (nextReqIndex < ACHIEVEMENT_CRITERIA.length) {
+        setNextLevel(ACHIEVEMENT_CRITERIA[nextReqIndex]);
       }
-      setIsAllRequirementMet(AchievementCriteria.every(criteria =>
+      setIsAllRequirementMet(ACHIEVEMENT_CRITERIA.every(criteria =>
         criteria.requirements.every(requirement => checkRequirement(userInfo, requirement))));
     }, [userInfo]);
 
     const nextRequirement = () => {
-      if (currentRequirementIndex < AchievementCriteria.length-1 ) {
+      if (currentRequirementIndex < ACHIEVEMENT_CRITERIA.length-1 ) {
         setCurrentRequirementIndex(currentRequirementIndex + 1);
-        setNextLevel(AchievementCriteria[currentRequirementIndex + 1]);
+        setNextLevel(ACHIEVEMENT_CRITERIA[currentRequirementIndex + 1]);
       }
     };
 
     const prevRequirement = () => {
       if (currentRequirementIndex > 0) {
         setCurrentRequirementIndex(currentRequirementIndex - 1);
-        setNextLevel(AchievementCriteria[currentRequirementIndex - 1]);
+        setNextLevel(ACHIEVEMENT_CRITERIA[currentRequirementIndex - 1]);
       }
     };
 
@@ -70,12 +70,12 @@ export const AboutMe = () => {
       <div className="mx-10 p-4 flex flex-col h-full">
         <div className="flex-grow">
           <h2 className="mt-2 text-xl text-high-emphasis">
-            My Achievements ({userAchievements.length}/{AchievementCriteria.length})
+            My Achievements ({userAchievements.length}/{ACHIEVEMENT_CRITERIA.length})
           </h2>
           <div className="mt-2 flex tracking-eight text-sm">
             <div className="text-neutral-400 mr-2 text-disabled">Profile Strength:</div>
             <div className="text-pure-white">
-              {profileStrength} <span className="ml-1"> {AchievementCriteria.find(ac => ac.level === profileStrength)?.icon}</span>
+              {profileStrength} <span className="ml-1"> {ACHIEVEMENT_CRITERIA.find(ac => ac.level === profileStrength)?.icon}</span>
             </div>
           </div>
           {nextLevel && (
@@ -83,15 +83,15 @@ export const AboutMe = () => {
               <div className="next-level text-medium-emphasis">
                 <div className="mt-2 mb-2 profile-strength-bar">
                   <div className="profile-strength-fill" style={{ width: `${strengthPercentage}%` }}></div>
-                  {AchievementCriteria.map((criteria, index) => (
+                  {ACHIEVEMENT_CRITERIA.map((criteria, index) => (
                     <div key={index} className={`profile-strength-divider ${index < userAchievements.length ? 'filled' : ''}`}></div>
                   ))}
                 </div>
                 <div className="profile-strength-diamonds">
-                  {userAchievements.length==AchievementCriteria.length ? (
+                  {userAchievements.length==ACHIEVEMENT_CRITERIA.length ? (
                     <div className="relative">🎉</div>
                   ) : (
-                    AchievementCriteria.map((criteria, index) => (
+                    ACHIEVEMENT_CRITERIA.map((criteria, index) => (
                       <p key={index} className={`diamond justify-items-end ${criteria.reward > 0 && index >= userAchievements.length ? 'show' : 'hidden'}`}>
                         {criteria.reward > 0 && index >= userAchievements.length && (
                           <>
@@ -132,10 +132,10 @@ export const AboutMe = () => {
           <ChevronLeft className={`cursor-pointer ${currentRequirementIndex === 0 ? 'text-disabled' : ''}`} />
         </span>
           <span className="mx-2">
-          {currentRequirementIndex+1}/{AchievementCriteria.length}
+          {currentRequirementIndex+1}/{ACHIEVEMENT_CRITERIA.length}
         </span>
           <span onClick={nextRequirement}>
-          <ChevronRight className={`cursor-pointer ${currentRequirementIndex === AchievementCriteria.length - 1 ? 'text-disabled' : ''}`} />
+          <ChevronRight className={`cursor-pointer ${currentRequirementIndex === ACHIEVEMENT_CRITERIA.length - 1 ? 'text-disabled' : ''}`} />
         </span>
         </div>
       </div>

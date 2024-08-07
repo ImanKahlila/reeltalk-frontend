@@ -3,7 +3,7 @@ import { useDropdown, useField } from '@/hooks/Input';
 import { usePlanSelectionContext } from '@/lib/planSelectionContext';
 import Modal from '@/components/profile/store/Modal';
 import Image from 'next/image';
-import { countries } from '@/components/profile/Constants';
+import { COUNTRIES } from '@/components/profile/Constants';
 import { loadStripe } from '@stripe/stripe-js';
 import {
   Elements,
@@ -15,6 +15,8 @@ import {
 } from '@stripe/react-stripe-js';
 import { useUserContext } from '@/lib/context';
 import toast from 'react-hot-toast';
+import { chain } from 'lodash';
+import { handleSuccessfulTransaction } from '@/services/transactionHandle';
 
 const stripePublicKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 
@@ -57,7 +59,7 @@ const PaymentBox = () => {
     pattern: '^[0-9]{5}(-[0-9]{4})?$',
   });
 
-  const countryDropdown = useDropdown(countries);
+  const countryDropdown = useDropdown(COUNTRIES);
 
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
   const [cardError, setCardError] = useState<string | null>(null);
@@ -136,8 +138,8 @@ const PaymentBox = () => {
 
     try {
       const response = await fetch(
-        `https://us-central1-reeltalk-app.cloudfunctions.net/backend/payment/create`,
-        // 'http://localhost:8080/payment/create',
+        // `https://us-central1-reeltalk-app.cloudfunctions.net/backend/payment/create`,
+        'http://localhost:8080/payment/create',
         {
         method: 'POST',
         headers: {
@@ -183,9 +185,11 @@ const PaymentBox = () => {
         toast.error(error.message||"There is error in processing the payment");
         setIsFormValid(false);
       } else if (paymentIntent?.status === 'succeeded') {
+        //TODO: Test this method after backend implementation
+        // await handleSuccessfulTransaction(planChosen)
+        //TODO: handle if the subscription/gem update fails
         resetSelectedPlan();
         resetFormValues();
-        //TODO: update transaction for gem purchase/ subscription status
         setShowModal(true);
       }
     } catch (error) {
