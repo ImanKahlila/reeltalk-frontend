@@ -16,9 +16,17 @@ export default function StorePage() {
   return (
     <section className="mx-4 my-[1.438rem] flex flex-col justify-center gap-4 lg:flex-row lg:gap-8">
       <div className="flex flex-col space-y-2 gap-4 lg:w-[700px]">
+        <div className="flex flex-row justify-between">
         <Link href={`/profile/view`} className="flex text-high-emphasis text-2xl">
           <ChevronLeft className="mt-1" />Store
         </Link>
+        {/* Proceed to pay button */}
+        <Link href={`/profile/subscriptions`} className="flex justify-end mt-4">
+          <button disabled={amountToPay <= 0} className={`mr-2 bg-primary text-black px-4 py-2 rounded-lg  ${amountToPay <= 0 ? 'opacity-50 cursor-not-allowed' : 'bg-primary'}`}>
+            Proceed to Payment
+          </button>
+        </Link>
+        </div>
         <div className="flex items-center">
           <ProfileImage/>
           <div className="px-[32px]">
@@ -27,12 +35,6 @@ export default function StorePage() {
           </div>
         </div>
         <Shop/>
-        {/* Proceed to pay button */}
-        <Link href={`/profile/subscriptions`} className="flex justify-end mt-4">
-          <button disabled={amountToPay <= 0} className={`bg-primary text-black px-4 py-2 rounded-lg ${amountToPay <= 0 ? 'opacity-50 cursor-not-allowed' : 'bg-primary'}`}>
-            Proceed to pay
-          </button>
-        </Link>
       </div>
       <TransactionHistory/>
     </section>
