@@ -48,3 +48,8 @@ export const Status = () => {
 
   return <>Status: {premiumStatus}</>;
 };
+
+export const Gems = () => {
+  const userInfo = useSelector(selectUser);
+  return (<>{userInfo?.gems}</>)
+}

@@ -7,8 +7,8 @@ import ProfileTabBar from '@/components/profile/ProfileTabBar';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
-  DisplayName,
-  UserImage,
+  Name, Status,
+  ProfileImage,
 } from '@/components/profile/shared/UserDetails';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
@@ -71,9 +71,9 @@ export default function ProfilePage() {
     <section className="mx-4 my-[1.438rem] flex flex-col justify-center gap-4 lg:flex-row lg:gap-8">
       <div className="flex flex-col gap-4 lg:w-[900px]">
         <div className="flex items-center">
-          <UserImage imageUrl={userInfo?.imageUrl}/>
+          <ProfileImage/>
           <div className="px-[32px]">
-            <DisplayName displayName={userInfo?.displayName}/>
+            <Name/>
             <div className="flex items-center py-3">
               <p
                 className="text-medium-emphasis md:text-[16px]">📍 {userInfo?.location}</p>
@@ -106,7 +106,7 @@ export default function ProfilePage() {
                     alt="status"
                   />
                 </div>
-                <span className="ml-2">Status: Basic</span>
+                <span className="ml-2"><Status/></span>
               </Link>
             </div>
           </div>

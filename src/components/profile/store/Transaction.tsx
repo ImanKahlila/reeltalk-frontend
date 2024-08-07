@@ -2,16 +2,26 @@ import React from 'react';
 
 interface TransactionProps {
   transaction: {
-    date: string;
-    gems: number;
-    type: string;
-    reason?: string;
+    id:string,
+    createdAt: string,
+    amount: number,
+    type: string,
+    description?: string
   };
   index: number;
 }
 export const Transaction = ({ transaction, index }: TransactionProps) => {
   const isCredit = (type: string) => {
-    return type === 'credit';
+    return type === 'reward' || 'recharge';
+  };
+
+  const getMonthAndDay = (dateString:any) => {
+    const date = new Date(dateString);
+
+    // Options to format date as "MMM dd"
+    const options: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' };
+
+    return date.toLocaleDateString('en-US', options);
   };
 
   const truncateText = (text: string, maxLength: number) => {
@@ -28,18 +38,18 @@ export const Transaction = ({ transaction, index }: TransactionProps) => {
         index !== 0 ? 'text-medium-emphasis' : ''
       }`}
     >
-      <div className='w-10'>
-        <p className='flex flex-wrap'>{transaction.date.toUpperCase()}</p>
+      <div className='w-8'>
+        <p className='flex flex-wrap'>{getMonthAndDay(transaction.createdAt).toUpperCase()}</p>
       </div>
       <div className='flex-grow text-left ml-2'>
-        <p>You {isCredit(transaction.type) ? 'recharged' : 'spent'} {transaction.gems}💎</p>
+        <p>You {transaction.type === 'reward' ? 'are rewarded' : transaction.type} {transaction.amount}💎</p>
         <p
-          className="text-xs flex flex-nowrap">{truncateText(transaction.reason || '', 30)}</p>
+          className="text-xs flex flex-nowrap">{truncateText(transaction.description || '', 30)}</p>
       </div>
       <div className='w-15 text-right'>
         <p
           className={`flex flex-wrap ${isCredit(transaction.type) ? 'text-dark-green' : 'text-dark-red'}`}>
-          {isCredit(transaction.type) ? '+' : '-'} {transaction.gems}💎
+          {isCredit(transaction.type) ? '+' : '-'} {transaction.amount} 💎
         </p>
       </div>
     </div>

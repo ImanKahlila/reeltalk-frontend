@@ -1,43 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import {
   Name, Status,
   ProfileImage,
 } from '@/components/profile/shared/UserDetails';
-import { ChevronDown, ChevronLeft, ChevronUp } from 'lucide-react';
-import { Transaction } from '@/components/profile/store/Transaction';
+import { ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
 import Shop from '@/components/profile/store/Shop';
 import { usePlanSelectionContext } from '@/lib/planSelectionContext';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/redux/store';
+import TransactionHistory from '@/components/profile/store/TransactionHistory';
 
 export default function StorePage() {
-  const { userInfo } = useSelector((state: RootState) => state.user);
   const { amountToPay } = usePlanSelectionContext();
-  const [expandHistory, setExpandHistory]=useState(true);
-
-  const handleHistory=()=>{
-    setExpandHistory(prevState => !prevState)
-  }
-  //TODO: Integrate Clear All API
-  const handleClearAll=()=>{
-
-  }
-  //TODO: Integrate transaction API
-  const histories = [{
-    date: 'feb 22',
-    gems: 100,
-    type: 'credit',
-    reason: 'Your join “The Best Closers of ',
-  }
-    , {
-      date: 'feb 14',
-      gems: 100,
-      type: 'debit',
-      reason: 'Your join “The Best Closers of ',
-    },
-  ];
 
   return (
     <section className="mx-4 my-[1.438rem] flex flex-col justify-center gap-4 lg:flex-row lg:gap-8">
@@ -60,31 +34,7 @@ export default function StorePage() {
           </button>
         </Link>
       </div>
-      <div className="flex flex-col mt-8 border-2 w-[320px] h-full text-pure-white bg-second-surface border-transparent rounded-xl bg-opacity-50 p-2 pb-10">
-        <div className="flex flex-row relative mx-4">
-          <div className="flex flex-col">
-            <p className="font-semibold">Balance</p>
-            <p className="text-2xl">
-              {userInfo?.gems}
-              <span role="img" aria-label="diamond" className="ml-1">💎</span>
-            </p>
-          </div>
-          <div className="absolute flex flex-row top-0 right-0">
-            History
-            {expandHistory ?
-              <ChevronUp className="mx-2" onClick={handleHistory} /> :
-              <ChevronDown className="mx-2" onClick={handleHistory} />}
-          </div>
-          {expandHistory && <div
-            className="absolute flex flex-row bottom-0 right-0 mr-2 text-dark-red text-sm" onClick={handleClearAll}>Clear
-            all</div>}
-        </div>
-        <div>
-          {expandHistory && histories.map((history, index) => (
-            <Transaction key={index} transaction={history} index={index} />
-          ))}
-        </div>
-      </div>
+      <TransactionHistory/>
     </section>
   );
 };
