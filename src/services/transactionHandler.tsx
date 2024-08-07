@@ -77,10 +77,10 @@ const handleGemPurchase = async (planChosen: PlanChosen, idToken: string) => {
   );
 };
 
-export const handleSuccessfulTransaction = async (planChosen: PlanChosen): Promise<void> => {
-  try {
-    const { idToken } = useUserContext();
+export const HandleSuccessfulTransaction = async (planChosen: PlanChosen): Promise<void> => {
+  const { idToken } = useUserContext();
 
+  try {
     await updateUserProfile(planChosen, idToken);
   } catch (error) {
     console.error('Error handling successful transaction:', error);

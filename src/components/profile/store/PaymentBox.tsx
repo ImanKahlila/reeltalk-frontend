@@ -16,7 +16,7 @@ import {
 import { useUserContext } from '@/lib/context';
 import toast from 'react-hot-toast';
 import { chain } from 'lodash';
-import { handleSuccessfulTransaction } from '@/services/transactionHandle';
+import { HandleSuccessfulTransaction } from '@/services/transactionHandler';
 
 const stripePublicKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 
