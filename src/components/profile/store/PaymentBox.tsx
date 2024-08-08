@@ -3,7 +3,7 @@ import { useDropdown, useField } from '@/hooks/Input';
 import { usePlanSelectionContext } from '@/lib/planSelectionContext';
 import Modal from '@/components/profile/store/Modal';
 import Image from 'next/image';
-import { countries } from '@/components/profile/Constants';
+import { COUNTRIES } from '@/components/profile/Constants';
 import { loadStripe } from '@stripe/stripe-js';
 import {
   Elements,
@@ -14,6 +14,12 @@ import {
   useElements
 } from '@stripe/react-stripe-js';
 import { useUserContext } from '@/lib/context';
+import toast from 'react-hot-toast';
+import {
+  handleSuccessfulTransaction } from '@/services/transactionHandler';
+import { fetchUserProfile } from '@/redux/userActions';
+import { AppDispatch } from '@/redux/store';
+import { useDispatch } from 'react-redux';
 
 const stripePublicKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 
@@ -37,8 +43,9 @@ const PaymentBox = () => {
 
   const { amountToPay,resetSelectedPlan, planChosen} = usePlanSelectionContext();
   const [showModal, setShowModal] = React.useState(false);
-  const { user,idToken } = useUserContext();
-  const [error, setError] = useState<string | null>(null);
+  const { user, idToken } = useUserContext();
+  const dispatch: AppDispatch = useDispatch();
+
   const [loading, setLoading] = useState<boolean>(false);
 
   const firstName = useField('text', '', { required: true });
@@ -57,7 +64,7 @@ const PaymentBox = () => {
     pattern: '^[0-9]{5}(-[0-9]{4})?$',
   });
 
-  const countryDropdown = useDropdown(countries);
+  const countryDropdown = useDropdown(COUNTRIES);
 
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
   const [cardError, setCardError] = useState<string | null>(null);
@@ -86,6 +93,7 @@ const PaymentBox = () => {
     postalCode.isValidInput,
     countryDropdown.isValidInput,amountToPay
   ]);
+
   // Handle Stripe Element changes to capture any errors
   const handleCardChange = (event: any) => {
     if (event.error) {
@@ -112,6 +120,20 @@ const PaymentBox = () => {
 
     const cardElement = elements.getElement(CardNumberElement);
 
+    const resetFormValues = () =>{
+      firstName.reset();
+      lastName.reset();
+      email.reset();
+      address.reset();
+      city.reset();
+      state.reset();
+      postalCode.reset();
+      countryDropdown.reset();
+      cardElement?.clear();
+      elements.getElement(CardExpiryElement)?.clear();
+      elements.getElement(CardCvcElement)?.clear();
+    }
+
     if (!cardElement) {
       console.error("CardElement is not available");
       return;
@@ -121,8 +143,8 @@ const PaymentBox = () => {
 
     try {
       const response = await fetch(
-        `https://us-central1-reeltalk-app.cloudfunctions.net/backend/payment/create`,
-        // 'http://localhost:8080/payment/create',
+        // `https://us-central1-reeltalk-app.cloudfunctions.net/backend/payment/create`,
+        'http://localhost:8080/payment/create',
         {
         method: 'POST',
         headers: {
@@ -165,18 +187,22 @@ const PaymentBox = () => {
         },
       });
       if (error) {
-        setError(error.message||"There is error in processing the payment");
+        toast.error(error.message||"There is error in processing the payment");
         setIsFormValid(false);
       } else if (paymentIntent?.status === 'succeeded') {
-        resetSelectedPlan();
-        //TODO: update transaction for gem purchase/ subscription status
-        setShowModal(true);
+         //TODO: handle if the subscription/gem update fails
+          await handleSuccessfulTransaction(planChosen, idToken);
+          if(user?.uid)
+            dispatch(fetchUserProfile(user?.uid,idToken));
+          resetSelectedPlan();
+          resetFormValues();
+          setShowModal(true);
       }
     } catch (error) {
       if (error instanceof Error) {
-        setError(error.message);
+        toast.error(error.message);
       } else {
-        setError('An unknown error occurred');
+        toast.error('An unknown error occurred');
       }
     } finally {
       setLoading(false);
@@ -226,7 +252,8 @@ const PaymentBox = () => {
               Name</label>
             <input
               id="first-name"
-              {...firstName}
+              value={firstName.value}
+              onChange={firstName.onChange}
               className="px-3 py-2 rounded-md border bg-transparent placeholder-disabled"
               placeholder="First Name"
             />
@@ -239,7 +266,8 @@ const PaymentBox = () => {
               Name</label>
             <input
               id="last-name"
-              {...lastName}
+              value={lastName.value}
+              onChange={lastName.onChange}
               className="px-3 py-2 rounded-md border bg-transparent placeholder-disabled"
               placeholder="Last Name"
             />
@@ -265,7 +293,7 @@ const PaymentBox = () => {
                 onChange={handleCardChange}
               />
             </div>
-            {error && <p className="text-red-500 text-xs">{error}</p>}
+            {cardError && <p className="text-red-500 text-xs">{cardError}</p>}
           </div>
           <div className="w-1/4">
             <label htmlFor="expiration-date" className="block text-sm mb-1">Expiration
@@ -306,7 +334,8 @@ const PaymentBox = () => {
           <label htmlFor="email" className="block text-sm mb-1">Email</label>
           <input
             id="email"
-            {...email}
+            value={email.value}
+            onChange={email.onChange}
             className="w-full px-3 py-2 rounded-md border bg-transparent placeholder-disabled"
             placeholder="xxxx@mail.com"
           />
@@ -320,7 +349,8 @@ const PaymentBox = () => {
                  className="block text-sm mb-1">Address</label>
           <input
             id="address"
-            {...address}
+            value={address.value}
+            onChange={address.onChange}
             className="w-full px-3 py-2 rounded-md border bg-transparent placeholder-disabled"
             placeholder="Address"
           />
@@ -334,7 +364,8 @@ const PaymentBox = () => {
             <label htmlFor="city" className="block text-sm mb-1">City</label>
             <input
               id="city"
-              {...city}
+              value={city.value}
+              onChange={city.onChange}
               className="w-full px-3 py-2 rounded-md border bg-transparent placeholder-disabled"
               placeholder="City"
             />
@@ -347,7 +378,8 @@ const PaymentBox = () => {
             <label htmlFor="state" className="block text-sm mb-1">State</label>
             <input
               id="state"
-              {...state}
+              value={state.value}
+              onChange={state.onChange}
               className="w-full px-3 py-2 rounded-md border bg-transparent placeholder-disabled"
               placeholder="State"
             />
@@ -361,7 +393,8 @@ const PaymentBox = () => {
               Code</label>
             <input
               id="postal-code"
-              {...postalCode}
+              value={postalCode.value}
+              onChange={postalCode.onChange}
               className="w-full px-3 py-2 rounded-md border bg-transparent placeholder-disabled"
               placeholder="Postal Code"
             />
@@ -380,12 +413,21 @@ const PaymentBox = () => {
         <button
           type="submit"
           className={`w-full px-3 py-2 rounded-md text-white ${isFormValid ? 'bg-primary' : 'bg-gray cursor-not-allowed'}`}
-          disabled={!isFormValid}
+          disabled={!isFormValid || loading}
         >
-          Pay ${amountToPay}
+          {loading ? (
+            <>
+              <svg className="animate-spin h-2 w-2 mr-3" viewBox="0 0 24 24">
+              </svg>
+              Processing...
+            </>
+          ) : (
+            `Pay $${amountToPay}`
+          )}
         </button>
+
         {showModal ? (
-          <Modal />
+          <Modal showModal={showModal} setShowModal={setShowModal} />
         ) : null}
       </form>
     </div>

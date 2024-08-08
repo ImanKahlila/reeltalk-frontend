@@ -1,13 +1,14 @@
-import { useState } from 'react';
-import Link from 'next/link';
+import React from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/router';
+import Link from 'next/link';
 
-export default function Modal() {
-  const [showModal, setShowModal] = useState(true);
-  const [currentPage, setCurrentPage] = useState('page-1');
-  const router = useRouter();
-  const { userId } = router.query;
+interface ModalProps {
+  showModal: boolean;
+  setShowModal: (value: boolean) => void;
+}
+
+const Modal: React.FC<ModalProps> = ({ showModal, setShowModal }) => {
+  const [currentPage, setCurrentPage] = React.useState('page-1');
   const renderContent = () => {
     switch (currentPage) {
       case 'page-1':
@@ -18,7 +19,8 @@ export default function Modal() {
               <div className="relative w-20 h-20 mt-4">
                 <Image
                   src="/Profile/payment/confetti.png"
-                  layout="fill"
+                  fill
+                  sizes="100%"
                   alt="status"
                 />
               </div>
@@ -36,8 +38,10 @@ export default function Modal() {
             </div>
             <div
               className="flex flex-col items-center justify-end p-2 rounded-lg">
-              <Link href={`/profile/${userId}/edit-profile`}
-                    className="min-w-[140px] rounded-lg bg-primary p-2 text-center tracking-[0.08px] text-black">
+              <Link
+                href={`/profile/edit`}
+                className="min-w-[140px] rounded-lg bg-primary p-2 text-center tracking-[0.08px] text-black"
+              >
                 <span>Continue</span>
               </Link>
               <button
@@ -109,3 +113,4 @@ export default function Modal() {
     </>
   );
 }
+export default Modal

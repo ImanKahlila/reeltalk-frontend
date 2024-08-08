@@ -9,6 +9,9 @@ export const useField = (type, initialValue = '', validation = {}) => {
     validate(value);
   }, [value]);
 
+  const reset = () => {
+    setValue(initialValue)
+  }
   const validate = (value) => {
     const newErrors = [];
     if (validation.required && !value) {
@@ -40,16 +43,22 @@ export const useField = (type, initialValue = '', validation = {}) => {
     onChange,
     errors,
     isValidInput,
+    reset
   };
 };
 
 
 export const useDropdown = (options = []) => {
-  const [selectedValue, setSelectedValue] = useState(options[0]?options[0]:'');
+  const initialValue= options[0]?options[0]:''
+  const [selectedValue, setSelectedValue] = useState(initialValue);
 
   const handleChange = (e) => {
     setSelectedValue(e.target.value);
   };
+
+  const reset = () =>{
+    setSelectedValue(initialValue);
+  }
 
   const isValidInput = selectedValue !== '';
 
@@ -69,5 +78,6 @@ export const useDropdown = (options = []) => {
     selectedValue,
     isValidInput,
     Dropdown,
+    reset
   };
 };

@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import axios from 'axios';
 import { useUserContext } from '@/lib/context';
 
 import ProfileTabBar from '@/components/profile/ProfileTabBar';
@@ -7,45 +6,25 @@ import ProfileTabBar from '@/components/profile/ProfileTabBar';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
-  DisplayName,
-  UserImage,
+  Name, Status,
+  ProfileImage,
 } from '@/components/profile/shared/UserDetails';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/redux/store';
-import { setError, setLoading, setUserInfo } from '@/redux/userReducer';
+import { AppDispatch, RootState } from '@/redux/store';
+import { fetchUserProfile } from '@/redux/userActions';
 
 export default function ProfilePage() {
   const { user,idToken } = useUserContext();
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
   const { userInfo } = useSelector((state: RootState) => state.user);
 
   const userId= user?.uid;
 
   useEffect(() => {
-    const fetchUserDetails = async () => {
-      try {
-        if (userId) {
-          const response = await axios.get(
-            `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/profile/${userId}`,
-            // `http://localhost:8080/api/user/profile/${userId}`,
-            {
-              headers: {
-                Authorization: `Bearer ${idToken}`,
-              },
-            },
-          );
-          const userData = response.data.data;
-          dispatch(setUserInfo(userData))
-        }
-      } catch (error) {
-        dispatch(setError(error))
-      } finally {
-        dispatch(setLoading(false))
-      }
-    };
-
-    fetchUserDetails();
-  }, [idToken, userId]);
+    if (userId && idToken) {
+      dispatch(fetchUserProfile(userId,idToken));
+    }
+    }, [idToken, userId,dispatch]);
   const formatFirestoreTimestamp = (timestamp:any) => {
     if (!timestamp || typeof timestamp._seconds !== 'number' || typeof timestamp._nanoseconds !== 'number') {
       return 'Invalid Date';
@@ -71,9 +50,9 @@ export default function ProfilePage() {
     <section className="mx-4 my-[1.438rem] flex flex-col justify-center gap-4 lg:flex-row lg:gap-8">
       <div className="flex flex-col gap-4 lg:w-[900px]">
         <div className="flex items-center">
-          <UserImage imageUrl={userInfo?.imageUrl}/>
+          <ProfileImage/>
           <div className="px-[32px]">
-            <DisplayName displayName={userInfo?.displayName}/>
+            <Name/>
             <div className="flex items-center py-3">
               <p
                 className="text-medium-emphasis md:text-[16px]">📍 {userInfo?.location}</p>
@@ -106,7 +85,7 @@ export default function ProfilePage() {
                     alt="status"
                   />
                 </div>
-                <span className="ml-2">Status: Basic</span>
+                <span className="ml-2"><Status/></span>
               </Link>
             </div>
           </div>

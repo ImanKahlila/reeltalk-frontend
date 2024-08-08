@@ -1,5 +1,9 @@
 import React from 'react';
-import { DisplayName, UserImage } from '@/components/profile/shared/UserDetails';
+import {
+  Name,
+  Status,
+  ProfileImage,
+} from '@/components/profile/shared/UserDetails';
 import { ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
 import Shop from '@/components/profile/store/Shop';
@@ -20,15 +24,15 @@ export default function SubscriptionsPage() {
         <div className="flex flex-row space-x-8">
           <div className="flex flex-col w-2.5/5">
             <div className="flex items-center">
-              <UserImage imageUrl={userInfo?.imageUrl} />
+              <ProfileImage />
               <div className="px-[32px]">
                 <div className="flex flex-row justify-between items-center text-high-emphasis">
-                  <DisplayName displayName={userInfo?.displayName} />
+                  <Name/>
                   <p
                     className="text-sm ml-2 bg-second-surface">💎{userInfo?.gems}</p>
                 </div>
                 <div
-                  className="text-medium-emphasis mt-2">Status: {userInfo?.premiumStatus}</div>
+                  className="text-medium-emphasis mt-2"><Status/></div>
               </div>
             </div>
               <PaymentBoxWithElements />

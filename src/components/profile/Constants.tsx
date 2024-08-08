@@ -1,4 +1,4 @@
-const AchievementCriteria = [
+const ACHIEVEMENT_CRITERIA = [
   { level: "Reel Apprentice", icon: "🎒", requirements: ["Select top genres", "Select top 5 movies","Select top 5 shows"] , reward: 0 },
   { level: "Reel Enthusiast", icon: "🍿", requirements: ["Add a Profile Pic"], reward: 0  },
   { level: "Reel Buff", icon: "🎞️", requirements: ["Add a Bio"], reward: 10 },
@@ -13,7 +13,7 @@ const AchievementCriteria = [
   { level: "Reel Savant", icon: "🏆", requirements: ["Start 20 Discussions", "Amass 100 Ratings"], reward: 1000 },
 ];
 
-const countries = [
+const COUNTRIES = [
   { name: 'Afghanistan', value: 'AF' },
   { name: 'Albania', value: 'AL' },
   { name: 'Algeria', value: 'DZ' },
@@ -211,4 +211,65 @@ const countries = [
   { name: 'Zimbabwe', value: 'ZW' }
 ];
 
-export {countries,AchievementCriteria}
+interface SubscriptionTier {
+  type: 'Subscription';
+  name: string;
+  billing: 'Monthly' | 'Annual';
+  total: number;
+  monthly?: number;
+  description: string;
+}
+
+interface GemBundle {
+  type: 'Gem';
+  gems: number;
+  price: number;
+  discount: string;
+  description: string;
+}
+
+const SUBSCRIPTION_TIERS: SubscriptionTier[] = [
+  {
+    type: 'Subscription',
+    name: 'Premiere',
+    billing: 'Monthly',
+    total: 4.99,
+    monthly: 4.99,
+    description: 'Subscribing to Premiere'
+  },
+  {
+    type: 'Subscription',
+    name: 'Platinum',
+    billing: 'Annual',
+    total: 49.99,
+    monthly: 4.16,
+    description: 'Subscribing to Platinum'
+  },
+];
+
+const GEM_BUNDLES: GemBundle[] = [
+  {
+    type: 'Gem',
+    gems: 100,
+    price: 4.99,
+    discount: 'Basic',
+    description: 'Gem bundle purchase'
+  },
+  {
+    type: 'Gem',
+    gems: 500,
+    price: 19.99,
+    discount: '(20%+ Cheaper)',
+    description: 'Gem bundle purchase'
+  },
+  {
+    type: 'Gem',
+    gems: 1000,
+    price: 39.99,
+    discount: '(20%+ Cheaper)',
+    description: 'Gem bundle purchase'
+  },
+];
+
+
+export {COUNTRIES,ACHIEVEMENT_CRITERIA,SUBSCRIPTION_TIERS,GEM_BUNDLES}
