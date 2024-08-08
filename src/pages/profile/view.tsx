@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import axios from 'axios';
 import { useUserContext } from '@/lib/context';
 
 import ProfileTabBar from '@/components/profile/ProfileTabBar';
@@ -11,41 +10,21 @@ import {
   ProfileImage,
 } from '@/components/profile/shared/UserDetails';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/redux/store';
-import { setError, setLoading, setUserInfo } from '@/redux/userReducer';
+import { AppDispatch, RootState } from '@/redux/store';
+import { fetchUserProfile } from '@/redux/userActions';
 
 export default function ProfilePage() {
   const { user,idToken } = useUserContext();
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
   const { userInfo } = useSelector((state: RootState) => state.user);
 
   const userId= user?.uid;
 
   useEffect(() => {
-    const fetchUserDetails = async () => {
-      try {
-        if (userId) {
-          const response = await axios.get(
-            `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/profile/${userId}`,
-            // `http://localhost:8080/api/user/profile/${userId}`,
-            {
-              headers: {
-                Authorization: `Bearer ${idToken}`,
-              },
-            },
-          );
-          const userData = response.data.data;
-          dispatch(setUserInfo(userData))
-        }
-      } catch (error) {
-        dispatch(setError(error))
-      } finally {
-        dispatch(setLoading(false))
-      }
-    };
-
-    fetchUserDetails();
-  }, [idToken, userId]);
+    if (userId && idToken) {
+      dispatch(fetchUserProfile(userId,idToken));
+    }
+    }, [idToken, userId,dispatch]);
   const formatFirestoreTimestamp = (timestamp:any) => {
     if (!timestamp || typeof timestamp._seconds !== 'number' || typeof timestamp._nanoseconds !== 'number') {
       return 'Invalid Date';

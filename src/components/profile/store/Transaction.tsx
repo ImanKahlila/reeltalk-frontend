@@ -6,14 +6,12 @@ interface TransactionProps {
     createdAt: string,
     amount: number,
     type: string,
+    transaction_type: string,
     description?: string
   };
   index: number;
 }
 export const Transaction = ({ transaction, index }: TransactionProps) => {
-  const isCredit = (type: string) => {
-    return type === 'reward' || 'recharge';
-  };
 
   const getMonthAndDay = (dateString:any) => {
     const date = new Date(dateString);
@@ -42,14 +40,14 @@ export const Transaction = ({ transaction, index }: TransactionProps) => {
         <p className='flex flex-wrap'>{getMonthAndDay(transaction.createdAt).toUpperCase()}</p>
       </div>
       <div className='flex-grow text-left ml-2'>
-        <p>You {transaction.type === 'reward' ? 'are rewarded' : transaction.type} {transaction.amount}💎</p>
+        <p>You {transaction.transaction_type === 'reward' ? 'are rewarded' : transaction.transaction_type} {transaction.amount}💎</p>
         <p
           className="text-xs flex flex-nowrap">{truncateText(transaction.description || '', 30)}</p>
       </div>
       <div className='w-15 text-right'>
         <p
-          className={`flex flex-wrap ${isCredit(transaction.type) ? 'text-dark-green' : 'text-dark-red'}`}>
-          {isCredit(transaction.type) ? '+' : '-'} {transaction.amount} 💎
+          className={`flex flex-wrap ${transaction.type === 'credit' ? 'text-dark-green' : 'text-dark-red'}`}>
+          {transaction.type === 'credit' ? '+' : '-'} {transaction.amount} 💎
         </p>
       </div>
     </div>

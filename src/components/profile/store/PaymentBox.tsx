@@ -15,8 +15,11 @@ import {
 } from '@stripe/react-stripe-js';
 import { useUserContext } from '@/lib/context';
 import toast from 'react-hot-toast';
-import { chain } from 'lodash';
-import { HandleSuccessfulTransaction } from '@/services/transactionHandler';
+import {
+  handleSuccessfulTransaction } from '@/services/transactionHandler';
+import { fetchUserProfile } from '@/redux/userActions';
+import { AppDispatch } from '@/redux/store';
+import { useDispatch } from 'react-redux';
 
 const stripePublicKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 
@@ -40,7 +43,9 @@ const PaymentBox = () => {
 
   const { amountToPay,resetSelectedPlan, planChosen} = usePlanSelectionContext();
   const [showModal, setShowModal] = React.useState(false);
-  const {idToken } = useUserContext();
+  const { user, idToken } = useUserContext();
+  const dispatch: AppDispatch = useDispatch();
+
   const [loading, setLoading] = useState<boolean>(false);
 
   const firstName = useField('text', '', { required: true });
@@ -185,12 +190,13 @@ const PaymentBox = () => {
         toast.error(error.message||"There is error in processing the payment");
         setIsFormValid(false);
       } else if (paymentIntent?.status === 'succeeded') {
-        //TODO: Test this method after backend implementation
-        // await handleSuccessfulTransaction(planChosen)
-        //TODO: handle if the subscription/gem update fails
-        resetSelectedPlan();
-        resetFormValues();
-        setShowModal(true);
+         //TODO: handle if the subscription/gem update fails
+          await handleSuccessfulTransaction(planChosen, idToken);
+          if(user?.uid)
+            dispatch(fetchUserProfile(user?.uid,idToken));
+          resetSelectedPlan();
+          resetFormValues();
+          setShowModal(true);
       }
     } catch (error) {
       if (error instanceof Error) {

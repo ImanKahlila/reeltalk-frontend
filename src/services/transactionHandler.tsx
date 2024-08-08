@@ -1,8 +1,7 @@
 import axios from 'axios';
-import { useUserContext } from '@/lib/context';
 
 interface PlanChosen {
-  type: 'subscription' | 'gems';
+  type: 'Subscription' | 'Gem';
   name?: 'Premiere' | 'Platinum' | 'Basic';
   billing?: 'Monthly' | 'Annual';
   total?: number;
@@ -13,22 +12,15 @@ interface PlanChosen {
   discount?: string;
 }
 
-interface CurrentSubscription {
-  name: 'Premiere' | 'Platinum' | 'Basic';
-  billing: 'Monthly' | 'Annual';
-  startDate: Date;
-  renewalDate?: Date;
-}
+export const handleSuccessfulTransaction = async (planChosen: PlanChosen, idToken: string): Promise<void> => {
 
-const updateUserProfile = async (planChosen: PlanChosen, idToken: string): Promise<void> => {
-  const response = await (planChosen.type === 'subscription'
+  const response = await (planChosen.type === 'Subscription'
     ? handleSubscription(planChosen, idToken)
     : handleGemPurchase(planChosen, idToken));
 
-  if (response.status !== 200) {
+  if (response.status !== 200 && response.status !== 201) {
     throw new Error('Failed to update user profile');
   }
-
   console.log('Update successful:', response.data);
 };
 
@@ -39,50 +31,38 @@ const handleSubscription = async (planChosen: PlanChosen, idToken: string) => {
     throw new Error('Invalid subscription details');
   }
 
-  const currentSubscription: CurrentSubscription = {
-    name,
-    billing,
-    startDate: new Date(),
-  };
-
   // Update user profile with the new subscription
   return axios.post(
-    // `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/setProfile`,
-    `http://localhost:8080/api/user/setProfile`,
-    currentSubscription,
+    `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/setProfile`,
+    // `http://localhost:8080/api/user/setProfile`,
     {
+      'premiumStatus': planChosen.name,
+    }, {
       headers: { Authorization: `Bearer ${idToken}` },
     },
   );
 };
 
 const handleGemPurchase = async (planChosen: PlanChosen, idToken: string) => {
-  const { gems } = planChosen;
-
+  const { gems, description } = planChosen;
   if (gems === undefined) {
     throw new Error('Invalid gem details');
   }
 
   // Update user profile with the new gem balance
   return axios.post(
-    // `https://us-central1-reeltalk-app.cloudfunctions.net/backend/gems/reward-user`,
-    `http://localhost:8080/gems/reward-user`,
+    `https://us-central1-reeltalk-app.cloudfunctions.net/backend/gems/create-transaction`,
+    // `http://localhost:8080/gems/create-transaction`,
     {
       amount: gems,
-      type: 'recharge',
+      description: description,
+      transaction_type: 'recharge',
+      transactionData: {}
+      //TODO: Integrate with invoice Stripe API to retrieve invoiceId and
+      // populate transactionData
     },
     {
       headers: { Authorization: `Bearer ${idToken}` },
     },
   );
-};
-
-export const HandleSuccessfulTransaction = async (planChosen: PlanChosen): Promise<void> => {
-  const { idToken } = useUserContext();
-
-  try {
-    await updateUserProfile(planChosen, idToken);
-  } catch (error) {
-    console.error('Error handling successful transaction:', error);
-  }
 };
