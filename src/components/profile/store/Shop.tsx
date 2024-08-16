@@ -1,7 +1,8 @@
 import React from 'react';
 import { usePlanSelectionContext } from '@/lib/planSelectionContext';
 import {
-  GEM_BUNDLES,
+  GEM,
+  GEM_BUNDLES, SUBSCRIPTION,
   SUBSCRIPTION_TIERS,
 } from '@/components/profile/Constants';
 
@@ -10,7 +11,7 @@ type ShopProps = {
 };
 
 const Shop: React.FC<ShopProps> = ({ compactView = false }) => {
-  const { handlePlanSelect, isSelected } = usePlanSelectionContext();
+  const { handlePlanSelect, isSelected,planChosen } = usePlanSelectionContext();
 
   const memberBenefits = [
     '100 💎 Free Gems/month',
@@ -39,7 +40,7 @@ const Shop: React.FC<ShopProps> = ({ compactView = false }) => {
         <div>
           Premium Member benefits
           <div>
-            <ul className="h-[170px] list-disc border-2 justify-center bg-second-surface border-primary rounded-xl mt-2 mb-4 px-2">
+            <ul className={`h-[170px] list-disc border-2 justify-center bg-second-surface ${planChosen?.type===SUBSCRIPTION? 'border-primary': 'border-transparent'} rounded-xl mt-2 mb-4 px-2`}>
               {memberBenefits.map((benefit, index) => (
                 <li
                   key={index}
@@ -58,7 +59,7 @@ const Shop: React.FC<ShopProps> = ({ compactView = false }) => {
             {SUBSCRIPTION_TIERS.map((tier) => (
               <div
                 key={tier.name}
-                className={`flex flex-col w-1/2 items-center justify-center border-2 rounded-xl mt-2 p-2 text-center ${isSelected(tier) ? 'border-primary bg-primary bg-opacity-25' : 'border-transparent bg-second-surface'}`}
+                className={`flex flex-col w-1/2 items-center justify-center cursor-pointer border-2 rounded-xl mt-2 p-2 text-center ${isSelected(tier) ? 'border-primary bg-primary bg-opacity-25' : 'border-transparent bg-second-surface'}`}
                 onClick={() => handlePlanSelect(tier)}
               >
                 <p className="text-lg">{tier.name}</p>
@@ -79,7 +80,7 @@ const Shop: React.FC<ShopProps> = ({ compactView = false }) => {
       <div className="flex flex-col space-y-4 text-pure-white mt-2 w-[350px]">
         <div>
           Why do I need Gems?
-          <ol className={`${compactView?'h-fit pb-2':'h-[170px]'} list-decimal border-2 justify-center bg-second-surface border-transparent rounded-xl mt-2 px-4 list-inside mb-2`}>
+          <ol className={`${compactView?'h-fit pb-2':'h-[170px]'} list-decimal ${planChosen?.type===GEM ? 'border-primary': 'border-transparent'} border-2 justify-center bg-second-surface rounded-xl mt-2 px-4 list-inside mb-2`}>
             {gemUses.map((benefit, index) => (
               <li
                 key={index}
@@ -96,7 +97,7 @@ const Shop: React.FC<ShopProps> = ({ compactView = false }) => {
             {GEM_BUNDLES.map((bundle, index) => (
               <div
                 key={bundle.gems}
-                className={`flex flex-col items-center justify-center border-2 rounded-xl mt-2 w-[120px] text-center relative ${isSelected(bundle) ? 'border-primary bg-primary bg-opacity-25' : 'border-transparent bg-second-surface'}`}
+                className={`flex flex-col items-center justify-center cursor-pointer border-2 rounded-xl mt-2 w-[120px] text-center relative ${isSelected(bundle) ? 'border-primary bg-primary bg-opacity-25' : 'border-transparent bg-second-surface'}`}
                 onClick={() => handlePlanSelect(bundle)}
               >
                 <div className="relative mt-2 flex justify-center items-center">
