@@ -47,7 +47,7 @@ const Modal: React.FC<ModalProps> = ({ showModal, setShowModal }) => {
   const handleSave=async () => {
     // Update user profile with the selected badge
     const response = await axios.post(
-      `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/setProfile`,
+      `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/set-badge`,
       // `http://localhost:8080/api/user/set-badge`,
       {
         'badge': selectedBadge,
