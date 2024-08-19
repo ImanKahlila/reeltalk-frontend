@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
@@ -25,57 +25,30 @@ const Modal: React.FC<ModalProps> = ({ showModal, setShowModal }) => {
   const dispatch: AppDispatch = useDispatch();
   const imageUrl = userInfo?.imageUrl;
   const badge:BadgeProps['badge'] = userInfo?.badge;
-  const premiumStatus = userInfo?.premiumStatus;
+  const userStatus = userInfo?.premiumStatus;
+  const [badges ,setBadges]= useState<BadgeProps['badge'][]>([])
   const [selectedBadge,setSelectedBadge]=useState<BadgeProps['badge']>(badge);
-  const badges:BadgeProps['badge'][] = [
-    {
-      "badgeId": "BD001",
-      "emoji": "🐱",
-      "name": "gold-star",
-      "color": "#E59076",
-      "position": "bottom-right"
-    },
-    {
-      "badgeId": "BD002",
-      "emoji": "🐱",
-      "name": "platinum-star",
-      "color": "#D4D4D4",
-      "position": "bottom-right"
-    },
-    {
-      "badgeId": "BD003",
-      "emoji": "🐱",
-      "name": "titanium-star",
-      "color": "#FFA91A",
-      "position": "bottom-right"
-    },
-    {
-      "badgeId": "BD004",
-      "emoji": "👑",
-      "name": "gold-crown",
-      "color": "#F7CB43",
-      "position": "top"
-    },
-    {
-      "badgeId": "BD005",
-      "emoji": "🎀",
-      "name": "diamond-ribbon",
-      "color": "#EE8AB3",
-      "position": "top"
-    },
-    {
-      "badgeId": "BD006",
-      "emoji": "🐱",
-      "name": "gold-star-medal",
-      "color": "#FFC91D",
-      "position": "bottom-right"
+
+  useEffect(() => {
+    const fetchBadges = async () => {
+      const response = await axios.get(
+        `https://us-central1-reeltalk-app.cloudfunctions.net/backend/config/badges`,
+        // `http://localhost:8080/config/badges`,
+        {
+          headers: { Authorization: `Bearer ${idToken}` },
+        },
+      );
+      return response.data;
     }
-  ]
+    fetchBadges().then(badges => setBadges(badges));
+    }, []);
+
+
   const handleSave=async () => {
     // Update user profile with the selected badge
     const response = await axios.post(
-      // `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/setProfile`,
-      `http://localhost:8080/api/user/set-badge`,
+      `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/setProfile`,
+      // `http://localhost:8080/api/user/set-badge`,
       {
         'badge': selectedBadge,
       }, {
@@ -139,18 +112,18 @@ const Modal: React.FC<ModalProps> = ({ showModal, setShowModal }) => {
             <div
               className="flex flex-col items-center justify-center pt-5  mt-4 rounded">
               <h3 className="text-xl">
-                You are now {premiumStatus} status
+                You are now {userStatus} status
               </h3>
             </div>
-            <div className="relative p-4">
+            <div className="relative p-4 ">
               <p
-                className="ml-8 mr-8 text-center justify-center text-medium-emphasis text-sm">
+                className="ml-10 mr-8 text-center justify-center text-medium-emphasis text-sm">
                 Want to start using a custom profile background now?
               </p>
             </div>
             <div className="grid grid-cols-3 gap-2 mx-10 justify-items-center">
               {
-                badges.map((badge)=>(
+                 badges.map((badge:BadgeProps['badge'])=>(
                   <div className="relative w-14 h-14 mb-6 cursor-pointer" key={badge.badgeId} onClick={()=>setSelectedBadge(badge)}>
                     <ProfileImage imageUrl={imageUrl} badge={badge} />
                     <Badge badge={badge} />
@@ -193,7 +166,6 @@ const Modal: React.FC<ModalProps> = ({ showModal, setShowModal }) => {
         return null;
     }
   };
-  console.log(selectedBadge);
   return (
     <>
       {showModal && (

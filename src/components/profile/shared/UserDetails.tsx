@@ -52,11 +52,11 @@ export const Badge: React.FC<BadgeProps> = ({ badge }) => {
     <span
       className={`absolute w-4 h-4 ${
         badge.position === 'top'
-          ? '-top-2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'
+          ? '-top-1 left-1/2 transform -translate-x-1/2 -translate-y-1/2'
           : 'bottom-2 right-1 transform translate-x-1/2 translate-y-1/2'
       }`}
     >
-      {badge.emoji}
+      <img src={badge.emoji} alt="badge"/>
     </span>
   );
 };

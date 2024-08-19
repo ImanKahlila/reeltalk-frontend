@@ -9,8 +9,8 @@ export const fetchUserProfile = (userId: string, idToken: string) => async (
 
   try {
     const response = await axios.get(
-      `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/profile/${userId}`,
-      // `http://localhost:8080/api/user/profile/${userId}`,
+      // `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/profile/${userId}`,
+      `http://localhost:8080/api/user/profile/${userId}`,
       {
         headers: {
           Authorization: `Bearer ${idToken}`,

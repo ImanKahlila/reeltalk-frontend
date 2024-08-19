@@ -52,8 +52,8 @@ const handleGemPurchase = async (planChosen: PlanChosen, idToken: string) => {
 
   // Update user profile with the new gem balance
   return axios.post(
-    `https://us-central1-reeltalk-app.cloudfunctions.net/backend/gems/create-transaction`,
-    // `http://localhost:8080/gems/create-transaction`,
+    // `https://us-central1-reeltalk-app.cloudfunctions.net/backend/gems/create-transaction`,
+    `http://localhost:8080/gems/create-transaction`,
     {
       amount: gems,
       description: description,
