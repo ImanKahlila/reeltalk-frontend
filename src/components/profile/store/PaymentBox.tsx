@@ -143,7 +143,7 @@ const PaymentBox = () => {
 
     try {
       const response = await fetch(
-        `https://us-central1-reeltalk1-app.cloudfunctions.net/backend/payment/create`,
+        `https://us-central1-reeltalk-app.cloudfunctions.net/backend/payment/create`,
         // 'http://localhost:8080/payment/create',
         {
         method: 'POST',
