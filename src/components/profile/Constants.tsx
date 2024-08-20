@@ -210,9 +210,11 @@ const COUNTRIES = [
   { name: 'Zambia', value: 'ZM' },
   { name: 'Zimbabwe', value: 'ZW' }
 ];
+const  SUBSCRIPTION = "Subscription";
+const  GEM = "Gem";
 
 interface SubscriptionTier {
-  type: 'Subscription';
+  type: typeof SUBSCRIPTION;
   name: string;
   billing: 'Monthly' | 'Annual';
   total: number;
@@ -221,7 +223,7 @@ interface SubscriptionTier {
 }
 
 interface GemBundle {
-  type: 'Gem';
+  type: typeof GEM;
   gems: number;
   price: number;
   discount: string;
@@ -230,7 +232,7 @@ interface GemBundle {
 
 const SUBSCRIPTION_TIERS: SubscriptionTier[] = [
   {
-    type: 'Subscription',
+    type: SUBSCRIPTION,
     name: 'Premiere',
     billing: 'Monthly',
     total: 4.99,
@@ -238,7 +240,7 @@ const SUBSCRIPTION_TIERS: SubscriptionTier[] = [
     description: 'Subscribing to Premiere'
   },
   {
-    type: 'Subscription',
+    type: SUBSCRIPTION,
     name: 'Platinum',
     billing: 'Annual',
     total: 49.99,
@@ -249,21 +251,21 @@ const SUBSCRIPTION_TIERS: SubscriptionTier[] = [
 
 const GEM_BUNDLES: GemBundle[] = [
   {
-    type: 'Gem',
+    type: GEM,
     gems: 100,
     price: 4.99,
     discount: 'Basic',
     description: 'Gem bundle purchase'
   },
   {
-    type: 'Gem',
+    type: GEM,
     gems: 500,
     price: 19.99,
     discount: '(20%+ Cheaper)',
     description: 'Gem bundle purchase'
   },
   {
-    type: 'Gem',
+    type: GEM,
     gems: 1000,
     price: 39.99,
     discount: '(20%+ Cheaper)',
@@ -272,4 +274,4 @@ const GEM_BUNDLES: GemBundle[] = [
 ];
 
 
-export {COUNTRIES,ACHIEVEMENT_CRITERIA,SUBSCRIPTION_TIERS,GEM_BUNDLES}
+export {COUNTRIES,ACHIEVEMENT_CRITERIA,SUBSCRIPTION_TIERS,GEM_BUNDLES,SUBSCRIPTION, GEM}

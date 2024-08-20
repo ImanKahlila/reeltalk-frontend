@@ -4,23 +4,62 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { selectUser } from '@/redux/selectors';
 
-export const ProfileImage = () => {
+export interface BadgeProps {
+  badge: {
+    badgeId: string;
+    emoji: string;
+    name: string;
+    color: string;
+    position: 'top' | 'bottom-right';
+  };
+}
+
+export const UserImageWithBadge = () => {
   const userInfo = useSelector(selectUser);
   const imageUrl = userInfo?.imageUrl;
+  const badge = userInfo?.badge;
 
   return (
-    <div className='flex h-[100px] w-[100px] items-center'>
-      <Image
-        src={imageUrl && imageUrl !== '' ? imageUrl : UserImg}
-        width={100}
-        height={100}
-        alt=""
-        className="rounded-full"
-      />
+    <div className="relative h-[100px] w-[100px]">
+      <ProfileImage imageUrl={imageUrl} badge={badge} />
+      <Badge badge={badge} />
     </div>
   );
 };
 
+interface ProfileImageProps {
+  imageUrl: string;
+  badge?: BadgeProps['badge'];
+}
+
+export const ProfileImage: React.FC<ProfileImageProps> = ({ imageUrl, badge }) => {
+  return (
+    <Image
+      src={imageUrl && imageUrl !== '' ? imageUrl : UserImg}
+      width={100}
+      height={100}
+      alt="profile-pic"
+      className="rounded-full ring-4"
+      style={{ boxShadow: `0 0 0 4px ${badge?.color}` }}
+    />
+  );
+};
+
+export const Badge: React.FC<BadgeProps> = ({ badge }) => {
+  if (!badge) return null;
+
+  return (
+    <span
+      className={`absolute w-4 h-4 ${
+        badge.position === 'top'
+          ? '-top-1 left-1/2 transform -translate-x-1/2 -translate-y-1/2'
+          : 'bottom-2 right-1 transform translate-x-1/2 translate-y-1/2'
+      }`}
+    >
+      <img src={badge.emoji} alt="badge"/>
+    </span>
+  );
+};
 export const Name = () => {
   const userInfo = useSelector(selectUser);
   const displayName = userInfo?.displayName;
@@ -37,7 +76,7 @@ export const Name = () => {
 
   return (
     <div>
-      <h1 className="text-high-emphasis md:text-3xl">{formattedName}</h1>
+    <h1 className="text-high-emphasis md:text-3xl">{formattedName}</h1>
     </div>
   );
 };

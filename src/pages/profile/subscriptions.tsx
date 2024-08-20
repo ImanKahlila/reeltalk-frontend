@@ -2,7 +2,7 @@ import React from 'react';
 import {
   Name,
   Status,
-  ProfileImage,
+  UserImageWithBadge,
 } from '@/components/profile/shared/UserDetails';
 import { ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
@@ -24,7 +24,7 @@ export default function SubscriptionsPage() {
         <div className="flex flex-row space-x-8">
           <div className="flex flex-col w-2.5/5">
             <div className="flex items-center">
-              <ProfileImage />
+              <UserImageWithBadge />
               <div className="px-[32px]">
                 <div className="flex flex-row justify-between items-center text-high-emphasis">
                   <Name/>

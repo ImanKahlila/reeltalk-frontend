@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useUserContext } from '@/lib/context';
 
 import ProfileTabBar from '@/components/profile/ProfileTabBar';
@@ -7,24 +7,34 @@ import Image from 'next/image';
 import Link from 'next/link';
 import {
   Name, Status,
-  ProfileImage,
+  UserImageWithBadge,
 } from '@/components/profile/shared/UserDetails';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
 import { fetchUserProfile } from '@/redux/userActions';
+import { useRouter } from 'next/router';
+import Modal from '@/components/profile/store/Modal';
 
 export default function ProfilePage() {
   const { user,idToken } = useUserContext();
   const dispatch: AppDispatch = useDispatch();
   const { userInfo } = useSelector((state: RootState) => state.user);
+  const router = useRouter();
 
   const userId= user?.uid;
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     if (userId && idToken) {
       dispatch(fetchUserProfile(userId,idToken));
     }
     }, [idToken, userId,dispatch]);
+
+  useEffect(() => {
+    if (router.query.redirectedFrom === 'specificPage') {
+      setShowModal(true);
+    }
+  }, [router.query]);
   const formatFirestoreTimestamp = (timestamp:any) => {
     if (!timestamp || typeof timestamp._seconds !== 'number' || typeof timestamp._nanoseconds !== 'number') {
       return 'Invalid Date';
@@ -50,7 +60,7 @@ export default function ProfilePage() {
     <section className="mx-4 my-[1.438rem] flex flex-col justify-center gap-4 lg:flex-row lg:gap-8">
       <div className="flex flex-col gap-4 lg:w-[900px]">
         <div className="flex items-center">
-          <ProfileImage/>
+          <UserImageWithBadge/>
           <div className="px-[32px]">
             <Name/>
             <div className="flex items-center py-3">
@@ -92,6 +102,9 @@ export default function ProfilePage() {
         </div>
         <ProfileTabBar/>
       </div>
+      {showModal ? (
+        <Modal showModal={showModal} setShowModal={setShowModal} />
+      ) : null}
     </section>
   );
 }

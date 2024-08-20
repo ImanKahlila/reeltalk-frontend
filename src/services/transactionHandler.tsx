@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { GEM, SUBSCRIPTION } from '@/components/profile/Constants';
 
 interface PlanChosen {
-  type: 'Subscription' | 'Gem';
+  type: typeof SUBSCRIPTION| typeof GEM;
   name?: 'Premiere' | 'Platinum' | 'Basic';
   billing?: 'Monthly' | 'Annual';
   total?: number;
@@ -14,7 +15,7 @@ interface PlanChosen {
 
 export const handleSuccessfulTransaction = async (planChosen: PlanChosen, idToken: string): Promise<void> => {
 
-  const response = await (planChosen.type === 'Subscription'
+  const response = await (planChosen.type === SUBSCRIPTION
     ? handleSubscription(planChosen, idToken)
     : handleGemPurchase(planChosen, idToken));
 
@@ -51,8 +52,8 @@ const handleGemPurchase = async (planChosen: PlanChosen, idToken: string) => {
 
   // Update user profile with the new gem balance
   return axios.post(
-    `https://us-central1-reeltalk-app.cloudfunctions.net/backend/gems/create-transaction`,
-    // `http://localhost:8080/gems/create-transaction`,
+    // `https://us-central1-reeltalk-app.cloudfunctions.net/backend/gems/create-transaction`,
+    `http://localhost:8080/gems/create-transaction`,
     {
       amount: gems,
       description: description,
