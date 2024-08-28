@@ -35,6 +35,7 @@ interface ProfileImageProps {
 }
 
 export const ProfileImage: React.FC<ProfileImageProps> = ({ imageUrl, badge,size }) => {
+  const userInfo = useSelector(selectUser);
   const imageSize = size?size:100;
   const shadowColor = badge?.color || 'transparent';
 
@@ -45,13 +46,13 @@ export const ProfileImage: React.FC<ProfileImageProps> = ({ imageUrl, badge,size
       height={imageSize}
       alt="profile-pic"
       className="rounded-full"
-      style={{ boxShadow: `0 0 0 4px ${shadowColor}` }}
+      style={{ boxShadow: `0 0 0 ${(userInfo?.premiumStatus === 'Premium' || userInfo?.premiumStatus === 'Platinum') ? '4px' : '0'} ${shadowColor}` }}
     />
   );
 };
 
 export const Badge: React.FC<BadgeProps> = ({ badge,size }) => {
-  if (!badge) return null;
+  if (!badge || !isPremiumOrPlatinumUser()) return null;
   const badgeSize = size?size:4;
   return (
     <span
@@ -61,7 +62,7 @@ export const Badge: React.FC<BadgeProps> = ({ badge,size }) => {
           : 'bottom-2 right-2 transform translate-x-1/2 translate-y-1/2'
       }`}
     >
-  <img src={badge.emoji} alt="badge"/>
+  <img src={badge.emoji} alt="badge" />
 
     </span>
   );
@@ -119,3 +120,8 @@ export const formattedBirthday = (timestamp:any) => {
     })
     : 'Invalid Date';
 };
+
+export const isPremiumOrPlatinumUser=()=>{
+  const userInfo = useSelector(selectUser);
+  return( userInfo?.premiumStatus==='Premium' || userInfo?.premiumStatus==='Platinum')
+}

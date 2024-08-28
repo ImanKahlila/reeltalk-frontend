@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectUser } from '@/redux/selectors';
 import {
-  BadgeProps,
+  BadgeProps, isPremiumOrPlatinumUser,
   ProfileImage,
 } from '@/components/profile/shared/UserDetails';
 import { Pencil } from 'lucide-react';
@@ -116,11 +116,13 @@ const EditProfile: React.FC<EditProfileProps> = ({ showModal, setShowModal }) =>
               </div>
             </div>
             <div className="relative p-4 flex-auto mx-10">
+              {isPremiumOrPlatinumUser() &&
               <div className="justify-start text-pure-white">Background
                 <CustomBackground badgeSelection={handleBadgeSelection}
                                   selectedBadge={selectedBadge}
                                   layout="single-line" />
               </div>
+              }
               <div className="flex flex-row space-x-20">
                 <div className="flex flex-col">
                   <label className="block text-sm mb-1 text-pure-white">Display
