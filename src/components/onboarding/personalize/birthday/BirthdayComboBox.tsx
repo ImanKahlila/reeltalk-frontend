@@ -9,9 +9,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
   Command,
-  CommandEmpty,
   CommandGroup,
-  CommandInput,
   CommandItem,
 } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -20,30 +18,37 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Keys } from './Inputs';
 
 export function BirthdayComboBox({
-  keys,
-  placeholder,
-  inputMode,
-  inputChangeHandler,
-  inputType,
+                                   keys,
+                                   placeholder,
+                                   inputMode,
+                                   inputChangeHandler,
+                                   inputType,
+                                   value,
+                                   isOnboardingPage,
 }: {
   keys: Keys;
   placeholder: string;
   inputMode: 'numeric' | 'text';
   inputType: 'day' | 'month' | 'year';
+  value?: string;
   inputChangeHandler: (inputType: string, value: string) => void;
+  isOnboardingPage?:boolean;
 }) {
   const [open, setOpen] = React.useState(false);
-  const [inputValue, setInputValue] = React.useState('');
-
+  const [inputValue, setInputValue] = React.useState(value?value.toLowerCase():'');
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <div className="flex flex-col">
+      {!isOnboardingPage && <label className="text-medium-emphasis">{inputType.charAt(0).toUpperCase()+ inputType.slice(1)}</label>}
+      <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant='first-surface'
           role='combobox'
           aria-expanded={open}
           // className='w-[200px] justify-between text-medium-emphasis border border-primary'
-          className={`w-[200px] justify-between border border-primary ${inputValue ? 'text-high-emphasis' : 'text-medium-emphasis'}`}
+          className={` justify-between border ${isOnboardingPage?'w-[200px]' +
+            ' border-primary':'border-none'} ${inputValue
+           ? 'text-high-emphasis' : 'text-medium-emphasis'}`}
         >
           {inputValue
             ? keys.find(key => key.label.toLowerCase() === inputValue)?.label
@@ -51,7 +56,8 @@ export function BirthdayComboBox({
           <ChevronDownIcon className='ml-2 h-4 w-4 shrink-0 opacity-50'/>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className='w-[200px] border-primary bg-transparent p-0 shadow-2xl'>
+      <PopoverContent className={`${isOnboardingPage?'w-[200px]' +
+        ' border-primary':'border-none'} bg-transparent p-0 shadow-2xl`}>
         <Command className='bg-[#2D2D2D]'>
           {/*<CommandInput*/}
           {/*  className='text-high-emphasis placeholder:text-gray'*/}
@@ -88,5 +94,6 @@ export function BirthdayComboBox({
         </Command>
       </PopoverContent>
     </Popover>
+    </div>
   );
 }

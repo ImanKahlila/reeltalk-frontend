@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 
@@ -11,9 +11,7 @@ import { getFirestore, setDoc, doc } from 'firebase/firestore';
 import { User } from 'firebase/auth';
 import app from '@/firebase/firebase-config';
 
-// Location Selection Hook
-import useLocationSelection from '@/components/onboarding/personalize/location/UseLocationSelection';
-import { Text } from 'lucide-react';
+import useLocationHandler from '@/hooks/useLocationHandler';
 
 const db = getFirestore(app);
 
@@ -24,23 +22,8 @@ interface ILocationProps {
 const Location = (props: ILocationProps) => {
   const { user } = props;
   const { push } = useRouter();
-  const [searchKey, setSearchKey] = useState('');
-  const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
-  const { locations, errorFetching, clearSuggestions } = useLocationSelection(searchKey);
 
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    setSearchKey(value);
-    setSelectedLocation(null); // Reset selected location when input changes
-  };
-
-  const handleLocationSelect = (location: string) => {
-    setSearchKey(location); // Set search key to selected location
-    setSelectedLocation(location); // Set selected location state
-    clearSuggestions();
-  };
-
+  const {selectedLocation,handleLocationSelect,searchKey,locations,handleInputChange} = useLocationHandler();
   const handlePageSubmit = () => {
     if (user) {
       const docRef = doc(db, 'users', user.uid);

@@ -12,6 +12,7 @@ export interface BadgeProps {
     color: string;
     position: 'top' | 'bottom-right';
   };
+  size?: number
 }
 
 export const UserImageWithBadge = () => {
@@ -22,7 +23,7 @@ export const UserImageWithBadge = () => {
   return (
     <div className="relative h-[100px] w-[100px]">
       <ProfileImage imageUrl={imageUrl} badge={badge} />
-      <Badge badge={badge} />
+      <Badge badge={badge} size={5}/>
     </div>
   );
 };
@@ -30,33 +31,38 @@ export const UserImageWithBadge = () => {
 interface ProfileImageProps {
   imageUrl: string;
   badge?: BadgeProps['badge'];
+  size?:number;
 }
 
-export const ProfileImage: React.FC<ProfileImageProps> = ({ imageUrl, badge }) => {
+export const ProfileImage: React.FC<ProfileImageProps> = ({ imageUrl, badge,size }) => {
+  const imageSize = size?size:100;
+  const shadowColor = badge?.color || 'transparent';
+
   return (
     <Image
       src={imageUrl && imageUrl !== '' ? imageUrl : UserImg}
-      width={100}
-      height={100}
+      width={imageSize}
+      height={imageSize}
       alt="profile-pic"
-      className="rounded-full ring-4"
-      style={{ boxShadow: `0 0 0 4px ${badge?.color}` }}
+      className="rounded-full"
+      style={{ boxShadow: `0 0 0 4px ${shadowColor}` }}
     />
   );
 };
 
-export const Badge: React.FC<BadgeProps> = ({ badge }) => {
+export const Badge: React.FC<BadgeProps> = ({ badge,size }) => {
   if (!badge) return null;
-
+  const badgeSize = size?size:4;
   return (
     <span
-      className={`absolute w-4 h-4 ${
+      className={`absolute w-${badgeSize} h-${badgeSize}  ${
         badge.position === 'top'
           ? '-top-1 left-1/2 transform -translate-x-1/2 -translate-y-1/2'
-          : 'bottom-2 right-1 transform translate-x-1/2 translate-y-1/2'
+          : 'bottom-2 right-2 transform translate-x-1/2 translate-y-1/2'
       }`}
     >
-      <img src={badge.emoji} alt="badge"/>
+  <img src={badge.emoji} alt="badge"/>
+
     </span>
   );
 };
@@ -92,3 +98,24 @@ export const Gems = () => {
   const userInfo = useSelector(selectUser);
   return (<>{userInfo?.gems}</>)
 }
+
+export const formattedBirthday = (timestamp:any) => {
+  if (!timestamp || typeof timestamp._seconds !== 'number' || typeof timestamp._nanoseconds !== 'number') {
+    return 'Invalid Date';
+  }
+
+  // Convert Firestore timestamp to a JavaScript Date object
+  const dateObject = new Date(timestamp._seconds * 1000 + timestamp._nanoseconds / 1000000);
+
+  // Check if the date is valid
+  const isDateValid = !isNaN(dateObject.getTime());
+
+  // Format the birthday if it's valid
+  return isDateValid
+    ? dateObject.toLocaleString('en-US', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+    })
+    : 'Invalid Date';
+};

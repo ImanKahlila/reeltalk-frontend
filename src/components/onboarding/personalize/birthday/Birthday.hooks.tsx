@@ -15,6 +15,7 @@ import {
   signInWithEmailLink,
   getAdditionalUserInfo,
 } from 'firebase/auth';
+import { formattedBirthday } from '@/components/profile/shared/UserDetails';
 
 const db = getFirestore(app);
 const auth = getAuth();
@@ -54,16 +55,19 @@ export const usePasswordlessSignin = () => {
   }, []);
 };
 
-export const useValidateBirthday = () => {
-  const [dayValue, setDayValue] = useState('');
-  const [monthValue, setMonthValue] = useState('');
-  const [yearValue, setYearValue] = useState('');
+export const useValidateBirthday = (dob?:string) => {
 
+  let formattedDate = formattedBirthday(dob);
+  let [month, day, year] = formattedDate !== 'Invalid Date'
+    ? formattedDate.replace(',', '').split(' ')
+    : ['', '', ''];
+  const [dayValue, setDayValue] = useState(day);
+  const [monthValue, setMonthValue] = useState(month);
+  const [yearValue, setYearValue] = useState(year);
   const [birthdayValid, setBirthdayValid] = useState<boolean>(false);
-
+  const [isValueModified,setIsValueModified]=useState(false)
   function validateBirthday() {
     const { year, month, day } = extractDateValues(yearValue, monthValue, dayValue);
-
     // Check if the date exists
     const isValidDate = isExists(year, month, day);
 
@@ -77,7 +81,6 @@ export const useValidateBirthday = () => {
       isBefore(new Date(year, month, day), maxDate) || isEqual(new Date(year, month, day), maxDate);
 
     const isWithinRange = isValidDate && isAfterMinDate && isBeforeMaxDate;
-
     setBirthdayValid(isWithinRange);
   }
 
@@ -90,17 +93,20 @@ export const useValidateBirthday = () => {
     switch (inputType) {
       case 'day':
         setDayValue(value);
+        setIsValueModified(true)
         break;
       case 'month':
         setMonthValue(value);
+        setIsValueModified(true)
         break;
       case 'year':
         setYearValue(value);
+        setIsValueModified(true)
         break;
       default:
         break;
     }
   }
 
-  return { birthdayValid, inputChangeHandler, yearValue, monthValue, dayValue };
+  return { birthdayValid, inputChangeHandler, yearValue, monthValue, dayValue,isValueModified };
 };
