@@ -9,5 +9,6 @@ export const useUserInfo = () => {
     displayName: userInfo?.displayName,
     premiumStatus: userInfo?.premiumStatus,
     gems: userInfo?.gems,
+    isBadgeAllowed: userInfo?.premiumStatus === 'Premium' || userInfo?.premiumStatus === 'Platinum'
   };
 };

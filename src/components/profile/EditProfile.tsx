@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectUser } from '@/redux/selectors';
 import {
-  BadgeProps, isPremiumOrPlatinumUser,
+  BadgeProps,
   ProfileImage,
 } from '@/components/profile/shared/UserDetails';
 import { Pencil } from 'lucide-react';
@@ -26,6 +26,7 @@ import {
 } from '@/components/onboarding/personalize/birthday/Birthday';
 import { isExists } from 'date-fns';
 import toast from 'react-hot-toast';
+import { useUserInfo } from '@/hooks/useUserInfo';
 
 interface EditProfileProps {
   showModal: boolean;
@@ -46,7 +47,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ showModal, setShowModal }) =>
   const bio = useField('text', userInfo?.bio, { required: false });
   const { birthdayValid,inputChangeHandler,isValueModified:isDobModified,yearValue, monthValue, dayValue } =
     useValidateBirthday(userInfo?.birthday);
-
+  const { isBadgeAllowed } = useUserInfo();
   const [isSaveEnabled, setIsSaveEnabled] = useState(false);
   let data;
   useEffect(() => {
@@ -116,7 +117,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ showModal, setShowModal }) =>
               </div>
             </div>
             <div className="relative p-4 flex-auto mx-10">
-              {isPremiumOrPlatinumUser() &&
+              {isBadgeAllowed &&
               <div className="justify-start text-pure-white">Background
                 <CustomBackground badgeSelection={handleBadgeSelection}
                                   selectedBadge={selectedBadge}

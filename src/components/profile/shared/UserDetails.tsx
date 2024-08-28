@@ -1,8 +1,6 @@
 import Image from 'next/image';
 import UserImg from '@/assets/user.png';
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { selectUser } from '@/redux/selectors';
 import { useUserInfo } from '@/hooks/useUserInfo';
 
 export interface BadgeProps {
@@ -40,6 +38,7 @@ export const ProfileImage: React.FC<ProfileImageProps> = ({
                                                           }) => {
   const imageSize = size ? size : 100;
   const shadowColor = badge?.color || 'transparent';
+  const { isBadgeAllowed } = useUserInfo();
 
   return (
     <Image
@@ -48,13 +47,15 @@ export const ProfileImage: React.FC<ProfileImageProps> = ({
       height={imageSize}
       alt="profile-pic"
       className="rounded-full"
-      style={{ boxShadow: `0 0 0 ${isPremiumOrPlatinumUser() ? '4px' : '0'} ${shadowColor}` }}
+      style={{ boxShadow: `0 0 0 ${isBadgeAllowed ? '4px' : '0'} ${shadowColor}` }}
     />
   );
 };
 
 export const Badge: React.FC<BadgeProps> = ({ badge, size }) => {
-  if (!badge || !isPremiumOrPlatinumUser()) return null;
+  const { isBadgeAllowed } = useUserInfo();
+
+  if (!badge || !isBadgeAllowed) return null;
   const badgeSize = size ? size : 4;
   return (
     <span
@@ -120,7 +121,7 @@ export const formattedBirthday = (timestamp: any) => {
     : 'Invalid Date';
 };
 
-export const isPremiumOrPlatinumUser = () => {
-  const { premiumStatus } = useUserInfo();
-  return (premiumStatus === 'Premium' || premiumStatus === 'Platinum');
-};
+// export const isPremiumOrPlatinumUser = () => {
+//   const { isBadgeAllowed } = useUserInfo();
+//   return (premiumStatus === 'Premium' || premiumStatus === 'Platinum');
+// };
