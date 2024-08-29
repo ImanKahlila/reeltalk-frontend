@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 
@@ -28,8 +28,9 @@ interface IBirthdayProps {
 }
 
 const Birthday = (props: IBirthdayProps) => {
-  const { user,personalize } = props;
+  const { user } = props;
   const { push } = useRouter();
+  const [displayName,setDisplayName]= useState(getFirstName(user.displayName))
 
   const { birthdayValid, inputChangeHandler, yearValue, monthValue, dayValue } =
     useValidateBirthday();
@@ -44,6 +45,7 @@ const Birthday = (props: IBirthdayProps) => {
       setDoc(
         docRef,
         {
+          displayName: displayName,
           birthday: Timestamp.fromDate(birthday),
         },
         { merge: true },
@@ -70,9 +72,11 @@ const Birthday = (props: IBirthdayProps) => {
       <div className="mx-auto mt-14 max-w-[343px] md:max-w-[536px]">
         <Header user={user} personalize="birthday"/>
         <input
-          className='min-w-full mt-4 h-9 p-2 flex gap-2 bg-second-surface justify-between text-medium-emphasis border border-primary rounded'
-          disabled placeholder={getFirstName(user.displayName)}/>
-        <Inputs inputChangeHandler={inputChangeHandler} />
+          className="min-w-full mt-4 h-9 p-2 flex gap-2 bg-second-surface justify-between text-medium-emphasis border border-primary rounded"
+          value={displayName}
+          onChange={(e) => setDisplayName(e.target.value)} />
+        <Inputs inputChangeHandler={inputChangeHandler}
+                isOnboardingPage={true} />
 
         <MemoizedCarousel />
       </div>

@@ -2,6 +2,7 @@ import React from 'react';
 
 import { BirthdayComboBox } from '@/components/onboarding/personalize/birthday/BirthdayComboBox';
 import { daysOfMonth, monthsOfYear } from '@/lib/inputsData';
+import { formattedBirthday } from '@/components/profile/shared/UserDetails';
 
 // Values for Birthday Inputs
 export type Keys = { value: string; label: string }[];
@@ -12,18 +13,27 @@ for (let year = 2024; year >= 1923; year--) {
 
 interface IInputsProps {
   inputChangeHandler: (inputType: string, value: string) => void;
+  isOnboardingPage?:boolean
+  dob?:string
 }
 
 const Inputs = (props: IInputsProps) => {
-  const { inputChangeHandler } = props;
+  const { inputChangeHandler,isOnboardingPage,dob } = props;
+  let formattedDate = formattedBirthday(dob);
+
+  let [month, day, year] = formattedDate !== 'Invalid Date'
+    ? formattedDate.replace(',', '').split(' ')
+    : ['Invalid', '', ''];
   return (
-    <form className='mx-auto mt-4 flex gap-2 text-high-emphasis'>
+    <form className='mx-auto flex gap-2 text-high-emphasis'>
       <BirthdayComboBox
         placeholder={'Day'}
         keys={daysOfMonth}
         inputMode='numeric'
         inputChangeHandler={inputChangeHandler}
         inputType='day'
+        value={day}
+        isOnboardingPage={isOnboardingPage}
       />
       <BirthdayComboBox
         placeholder={'Month'}
@@ -31,6 +41,8 @@ const Inputs = (props: IInputsProps) => {
         inputMode='text'
         inputChangeHandler={inputChangeHandler}
         inputType='month'
+        value={month}
+        isOnboardingPage={isOnboardingPage}
       />
       <BirthdayComboBox
         placeholder={'Year'}
@@ -38,6 +50,8 @@ const Inputs = (props: IInputsProps) => {
         inputMode='numeric'
         inputChangeHandler={inputChangeHandler}
         inputType='year'
+        value={year}
+        isOnboardingPage={isOnboardingPage}
       />
     </form>
   );
