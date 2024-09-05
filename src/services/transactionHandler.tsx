@@ -1,17 +1,7 @@
 import axios from 'axios';
-import { GEM, SUBSCRIPTION } from '@/components/profile/Constants';
+import { SUBSCRIPTION } from '@/components/profile/Constants';
+import { PlanChosen } from '@/components/commonInterfaces';
 
-interface PlanChosen {
-  type: typeof SUBSCRIPTION| typeof GEM;
-  name?: 'Premiere' | 'Platinum' | 'Basic';
-  billing?: 'Monthly' | 'Annual';
-  total?: number;
-  monthly?: number;
-  description: string;
-  gems?: number;
-  price?: number;
-  discount?: string;
-}
 
 export const handleSuccessfulTransaction = async (planChosen: PlanChosen, idToken: string): Promise<void> => {
 
