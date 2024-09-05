@@ -213,6 +213,9 @@ const COUNTRIES = [
 const  SUBSCRIPTION = "Subscription";
 const  GEM = "Gem";
 
+const PREMIERE = "Premiere";
+const PLATINUM ="Platinum"
+
 interface SubscriptionTier {
   type: typeof SUBSCRIPTION;
   name: string;
@@ -233,7 +236,7 @@ interface GemBundle {
 const SUBSCRIPTION_TIERS: SubscriptionTier[] = [
   {
     type: SUBSCRIPTION,
-    name: 'Premiere',
+    name: PREMIERE,
     billing: 'Monthly',
     total: 4.99,
     monthly: 4.99,
@@ -241,7 +244,7 @@ const SUBSCRIPTION_TIERS: SubscriptionTier[] = [
   },
   {
     type: SUBSCRIPTION,
-    name: 'Platinum',
+    name: PLATINUM,
     billing: 'Annual',
     total: 49.99,
     monthly: 4.16,
@@ -274,4 +277,4 @@ const GEM_BUNDLES: GemBundle[] = [
 ];
 
 
-export {COUNTRIES,ACHIEVEMENT_CRITERIA,SUBSCRIPTION_TIERS,GEM_BUNDLES,SUBSCRIPTION, GEM}
+export {COUNTRIES,ACHIEVEMENT_CRITERIA,SUBSCRIPTION_TIERS,GEM_BUNDLES,SUBSCRIPTION, GEM, PREMIERE, PLATINUM}

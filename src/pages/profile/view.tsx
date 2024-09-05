@@ -60,10 +60,11 @@ export default function ProfilePage() {
                 className="text-medium-emphasis md:text-[16px]">{userInfo?.bio}</p>
             </div>
             <div className="flex space-x-2 cursor-pointer mt-2"
-                 onClick={() => setShowEditProfile(true)}>
+                 >
               <div
                 // href="/profile/edit"
                 className="min-w-[170px] rounded-lg border-2 bg-high-emphasis p-2 text-center tracking-[0.08px] text-black"
+                onClick={() => setShowEditProfile(true)}
               >
                 <span>Edit Profile</span>
               </div>

@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 import { selectUser } from '@/redux/selectors';
+import { PLATINUM, PREMIERE } from '@/components/profile/Constants';
 
 export const useUserInfo = () => {
   const userInfo = useSelector(selectUser);
@@ -9,6 +10,6 @@ export const useUserInfo = () => {
     displayName: userInfo?.displayName,
     premiumStatus: userInfo?.premiumStatus,
     gems: userInfo?.gems,
-    isBadgeAllowed: userInfo?.premiumStatus === 'Premium' || userInfo?.premiumStatus === 'Platinum'
+    isBadgeAllowed: userInfo?.premiumStatus === PREMIERE || userInfo?.premiumStatus === PLATINUM
   };
 };

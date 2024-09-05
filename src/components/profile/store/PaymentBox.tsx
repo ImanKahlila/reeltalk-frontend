@@ -194,7 +194,9 @@ const PaymentBox = () => {
           await handleSuccessfulTransaction(planChosen, idToken);
           if(user?.uid)
             dispatch(fetchUserProfile(user?.uid,idToken));
-          resetSelectedPlan();
+          //TO-DO: Temporarily commenting this as planChosen is not passed
+        // to child component
+          // resetSelectedPlan();
           resetFormValues();
           setShowModal(true);
       }
@@ -225,7 +227,6 @@ const PaymentBox = () => {
       color: '#fff',
     },
   };
-
 
   return (
     <div className="mt-2 flex flex-col bg-second-surface rounded-xl border-transparent p-2 text-high-emphasis">
@@ -427,7 +428,7 @@ const PaymentBox = () => {
         </button>
 
         {showModal ? (
-          <Modal showModal={showModal} setShowModal={setShowModal} />
+          <Modal showModal={showModal} setShowModal={setShowModal} planChosen={planChosen}/>
         ) : null}
       </form>
     </div>
