@@ -14,13 +14,16 @@ export interface BadgeProps {
   size?: number;
 }
 
-export const UserImageWithBadge = () => {
-  const { imageUrl, badge } = useUserInfo();
-
+export const UserImageWithBadge: React.FC<BadgeProps> = ({
+                                                           badge,
+                                                           size,
+                                                         }) => {
+  const { imageUrl,badge: savedBadge } = useUserInfo();
+  const chosenBadge= badge?badge:savedBadge
   return (
-    <div className="relative h-[100px] w-[100px]">
-      <ProfileImage imageUrl={imageUrl} badge={badge} />
-      <Badge badge={badge} size={5} />
+    <div className={`relative h-[${size}px] w-[${size}px]`}>
+      <ProfileImage imageUrl={imageUrl} badge={chosenBadge} size={size} />
+      <Badge badge={chosenBadge} size={size ? size / 5 : 20} />
     </div>
   );
 };
@@ -47,29 +50,36 @@ export const ProfileImage: React.FC<ProfileImageProps> = ({
       height={imageSize}
       alt="profile-pic"
       className="rounded-full"
-      style={{ boxShadow: `0 0 0 ${isBadgeAllowed ? '4px' : '0'} ${shadowColor}` }}
+      style={{ boxShadow: `0 0 0 ${isBadgeAllowed ? '4px' : '0px'} ${shadowColor}` }}
     />
   );
 };
 
 export const Badge: React.FC<BadgeProps> = ({ badge, size }) => {
-  const { isBadgeAllowed } = useUserInfo();
+  // const { isBadgeAllowed } = useUserInfo();
 
-  if (!badge || !isBadgeAllowed) return null;
-  const badgeSize = size ? size : 4;
+  // if (!badge || !isBadgeAllowed) return null;
+  if (!badge ) return null;
+
+  const badgeSize = size || 10;
+
   return (
     <span
-      className={`absolute w-${badgeSize} h-${badgeSize}  ${
+      className={`absolute w-[${badgeSize}px] h-[${badgeSize}px] ${
         badge.position === 'top'
           ? '-top-1 left-1/2 transform -translate-x-1/2 -translate-y-1/2'
-          : 'bottom-2 right-2 transform translate-x-1/2 translate-y-1/2'
+          : 'bottom-2 right-2.5 transform translate-x-1/2 translate-y-1/2'
       }`}
     >
-  <img src={badge.emoji} alt="badge" />
-
+      <img
+        src={badge.emoji}
+        alt="badge"
+        className="w-[150%] h-[150%] object-contain"
+      />
     </span>
   );
 };
+
 export const Name = () => {
   const { displayName } = useUserInfo();
 
@@ -120,8 +130,3 @@ export const formattedBirthday = (timestamp: any) => {
     })
     : 'Invalid Date';
 };
-
-// export const isPremiumOrPlatinumUser = () => {
-//   const { isBadgeAllowed } = useUserInfo();
-//   return (premiumStatus === 'Premium' || premiumStatus === 'Platinum');
-// };
