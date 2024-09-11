@@ -107,6 +107,13 @@ const NavigationLinks = () => {
       >
         <Link href={'/discussions'}>Discussions</Link>
       </li>
+      <li
+        className={`hidden text-base  text-secondary lg:block ${
+          router.pathname == '/list' ? 'font-medium' : 'font-normal'
+        }`}
+      >
+        <Link href={'/list'}>List</Link>
+      </li>
     </ul>
   );
 };
