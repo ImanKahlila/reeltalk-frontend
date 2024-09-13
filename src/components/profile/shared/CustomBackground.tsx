@@ -4,8 +4,6 @@ import {
 } from '@/components/profile/shared/UserDetails';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
-import { selectUser } from '@/redux/selectors';
 import { useUserContext } from '@/lib/context';
 import { useUserInfo } from '@/hooks/useUserInfo';
 import Link from 'next/link';
@@ -19,9 +17,7 @@ interface CustomBackgroundProps {
 const CustomBackground: React.FC<CustomBackgroundProps> = ({ badgeSelection, selectedBadge, layout }) => {
   const { idToken } = useUserContext();
   const { isBadgeAllowed } = useUserInfo();
-  const userInfo = useSelector(selectUser);
   const [badges ,setBadges]= useState<BadgeProps['badge'][]>([])
-  const imageUrl = userInfo?.imageUrl;
   useEffect(() => {
     const fetchBadges = async () => {
       const response = await axios.get(
@@ -44,14 +40,14 @@ const CustomBackground: React.FC<CustomBackgroundProps> = ({ badgeSelection, sel
       }
     >
       {
-        badges.map((badge: BadgeProps['badge']) => (
+        badges.length>0 && badges.map((badge: BadgeProps['badge']) => (
           <div className={`relative w-14 h-14 mb-2 ${isBadgeAllowed?'cursor-pointer':'cursor-not-allowed'}`}
-               key={badge.badgeId} onClick={() => badgeSelection(badge)}>
+               key={badge?.badgeId} onClick={() => badgeSelection(badge)}>
             <UserImageWithBadge  badge={badge} size={50}/>
             {/*<ProfileImage imageUrl={imageUrl} badge={badge} size={50}/>*/}
             {/*<Badge badge={badge}/>*/}
             {
-              isBadgeAllowed && (selectedBadge?.badgeId === badge.badgeId) &&
+              isBadgeAllowed && (selectedBadge?.badgeId === badge?.badgeId) &&
               <svg
                 className="top-0 right-0 absolute  w-4 h-4 bg-dark-green rounded-full">
                 <path
