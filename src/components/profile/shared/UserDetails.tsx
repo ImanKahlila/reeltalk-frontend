@@ -4,7 +4,7 @@ import React from 'react';
 import { useUserInfo } from '@/hooks/useUserInfo';
 
 export interface BadgeProps {
-  badge: {
+  badge?: {
     badgeId: string;
     emoji: string;
     name: string;
