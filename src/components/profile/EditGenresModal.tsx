@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { useUserContext } from '@/lib/context';
 import Genres from '@/components/onboarding/top-genres/Genres';
 import {
@@ -7,7 +6,7 @@ import {
 } from '@/components/onboarding/top-genres/TopGenres.hooks';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectUser } from '@/redux/selectors';
-import { setProfile } from '@/services/api';
+import { getGenres, setProfile } from '@/services/api';
 import { fetchUserProfile } from '@/redux/userActions';
 import { AppDispatch } from '@/redux/store';
 
@@ -25,7 +24,7 @@ type GenreArray = Genre[];
 
 const EditGenreModal: React.FC<ModalProps> = ({ showModal, setShowModal }) => {
   const userInfo = useSelector(selectUser);
-  const [initialGenres, setInitialGenres] = useState([]);
+  const [initialGenres, setGenres] = useState([]);
   const [isChanged, setIsChanged] = useState<boolean>(false);
   const dispatch: AppDispatch = useDispatch();
   const { idToken } = useUserContext();
@@ -47,23 +46,8 @@ const EditGenreModal: React.FC<ModalProps> = ({ showModal, setShowModal }) => {
   }, [filteredGenres, userInfo?.favoriteGenres, top3Genres]);
   useEffect(() => {
     const fetchPossibleGenres = async () => {
-      try {
-        const response = await axios.get(
-          'https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/movies/getPossibleGenres',
-          // 'http://localhost:8080/api/movies/getPossibleGenres',
-          {
-            withCredentials: true,
-            headers: {
-              Authorization: `Bearer ${idToken}`,
-            },
-          },
-        );
-        setInitialGenres(response?.data.data.genres);
-      } catch (error: any) {
-        console.log(error.message);
-      }
+        setGenres(await getGenres(idToken));
     };
-
     fetchPossibleGenres();
   }, []);
 
