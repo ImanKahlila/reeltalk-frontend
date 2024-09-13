@@ -43,7 +43,7 @@ const CustomBackground: React.FC<CustomBackgroundProps> = ({ badgeSelection, sel
         badges.length>0 && badges.map((badge: BadgeProps['badge']) => (
           <div className={`relative w-14 h-14 mb-2 ${isBadgeAllowed?'cursor-pointer':'cursor-not-allowed'}`}
                key={badge?.badgeId} onClick={() => badgeSelection(badge)}>
-            <UserImageWithBadge  badge={badge} size={50}/>
+            <UserImageWithBadge  badge={badge} size={50} displayBadges={true}/>
             {/*<ProfileImage imageUrl={imageUrl} badge={badge} size={50}/>*/}
             {/*<Badge badge={badge}/>*/}
             {

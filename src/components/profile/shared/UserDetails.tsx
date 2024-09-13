@@ -12,18 +12,20 @@ export interface BadgeProps {
     position: 'top' | 'bottom-right';
   };
   size?: number;
+  displayBadges?: boolean;
 }
 
 export const UserImageWithBadge: React.FC<BadgeProps> = ({
                                                            badge,
                                                            size,
+                                                           displayBadges
                                                          }) => {
   const { imageUrl,badge: savedBadge } = useUserInfo();
   const chosenBadge= badge?badge:savedBadge
   return (
     <div className={`relative h-[${size}px] w-[${size}px]`}>
-      <ProfileImage imageUrl={imageUrl} badge={chosenBadge} size={size} />
-      <Badge badge={chosenBadge} size={size ? size / 5 : 20} />
+      <ProfileImage imageUrl={imageUrl} badge={chosenBadge} size={size} displayBadges={displayBadges}/>
+      <Badge badge={chosenBadge} size={size ? size / 5 : 20} displayBadges={displayBadges}/>
     </div>
   );
 };
@@ -32,12 +34,14 @@ interface ProfileImageProps {
   imageUrl: string;
   badge?: BadgeProps['badge'];
   size?: number;
+  displayBadges?: boolean;
 }
 
 export const ProfileImage: React.FC<ProfileImageProps> = ({
                                                             imageUrl,
                                                             badge,
                                                             size,
+  displayBadges
                                                           }) => {
   const imageSize = size ? size : 100;
   const shadowColor = badge?.color || 'transparent';
@@ -50,16 +54,17 @@ export const ProfileImage: React.FC<ProfileImageProps> = ({
       height={imageSize}
       alt="profile-pic"
       className="rounded-full"
-      style={{ boxShadow: `0 0 0 ${isBadgeAllowed ? '4px' : '0px'} ${shadowColor}` }}
+      style={{ boxShadow: `0 0 0 ${isBadgeAllowed || displayBadges ? '4px' : '0px'} ${shadowColor}` }}
     />
   );
 };
 
-export const Badge: React.FC<BadgeProps> = ({ badge, size }) => {
-  // const { isBadgeAllowed } = useUserInfo();
+export const Badge: React.FC<BadgeProps> = ({ badge, size,displayBadges }) => {
+  const { isBadgeAllowed } = useUserInfo();
 
-  // if (!badge || !isBadgeAllowed) return null;
-  if (!badge ) return null;
+  if (!badge || !isBadgeAllowed&& !displayBadges)
+   return null;
+  // if (!badge ) return null;
 
   const badgeSize = size || 10;
 
