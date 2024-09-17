@@ -11,12 +11,14 @@ import Link from 'next/link';
 interface CustomBackgroundProps {
   badgeSelection: (badge: BadgeProps['badge']) => void;
   selectedBadge: BadgeProps['badge'];
-  layout?: 'grid' | 'single-line'; // Added a layout prop
+  layout?: 'grid' | 'single-line';
+  size?: number;
 }
 
-const CustomBackground: React.FC<CustomBackgroundProps> = ({ badgeSelection, selectedBadge, layout }) => {
+const CustomBackground: React.FC<CustomBackgroundProps> = ({ badgeSelection, selectedBadge, layout,size }) => {
   const { idToken } = useUserContext();
   const { isBadgeAllowed } = useUserInfo();
+  const imageSize= size||50;
   const [badges ,setBadges]= useState<BadgeProps['badge'][]>([])
   useEffect(() => {
     const fetchBadges = async () => {
@@ -43,9 +45,7 @@ const CustomBackground: React.FC<CustomBackgroundProps> = ({ badgeSelection, sel
         badges.length>0 && badges.map((badge: BadgeProps['badge']) => (
           <div className={`relative w-14 h-14 mb-2 ${isBadgeAllowed?'cursor-pointer':'cursor-not-allowed'}`}
                key={badge?.badgeId} onClick={() => badgeSelection(badge)}>
-            <UserImageWithBadge  badge={badge} size={50} displayBadges={true}/>
-            {/*<ProfileImage imageUrl={imageUrl} badge={badge} size={50}/>*/}
-            {/*<Badge badge={badge}/>*/}
+            <UserImageWithBadge  badge={badge} size={imageSize} displayBadges={true}/>
             {
               isBadgeAllowed && (selectedBadge?.badgeId === badge?.badgeId) &&
               <svg
@@ -60,15 +60,17 @@ const CustomBackground: React.FC<CustomBackgroundProps> = ({ badgeSelection, sel
           </div>
 
         ))}
-    {!isBadgeAllowed && <div
-      className="absolute right-6 p-2 rounded-lg mb-4 opacity-100">
-      <Link
-        href={`/profile/store`}
-        className={`rounded-lg bg-pure-white bg-opacity-100 opacity-100 p-2 text-center text-secondary tracking-[0.08px] cursor-allowed`}
-      >
-        <span>Unlock Premium</span>
-      </Link>
-    </div>}
+      {!isBadgeAllowed &&
+        <div
+          className="absolute right-6 p-2 rounded-lg mb-4">
+          <Link
+            href={`/profile/store`}
+            className={`rounded-lg bg-pure-white px-4 py-2 mr-6 text-center m-1 text-sm text-secondary tracking-[0.08px] cursor-allowed`}
+          >
+            <span>Unlock Premium</span>
+          </Link>
+        </div>
+      }
     </div>
   )
 }

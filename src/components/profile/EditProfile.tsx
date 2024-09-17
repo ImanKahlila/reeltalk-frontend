@@ -107,29 +107,25 @@ const EditProfile: React.FC<EditProfileProps> = ({ showModal, setShowModal }) =>
         return (
           <div className="w-[825px]">
             <div
-              className="flex flex-col items-center justify-center p-5 mt-4 rounded ">
-              <h3 className="text-high-emphasis">Edit your profile</h3>
-              <div className="relative w-20 h-20 mt-4">
-                <ProfileImage imageUrl={imageUrl} />
+              className="flex flex-col items-center justify-center p-5 mt-4 rounded">
+              <h3 className="text-high-emphasis text-xl">Edit your profile</h3>
+              <div className="relative w-16 h-16 mt-4">
+                <ProfileImage imageUrl={imageUrl} size={60} />
+                {/*TO-DO: Add functionality to update photo  */}
                 <Pencil
-                  className="absolute bottom-0 right-0 rounded-full text-xs bg-pure-white p-1" />
-              </div>
-               {/*TO-DO: Add functionality to update photo  */}
-              <div className="text-sm underline text-medium-emphasis">
-                Change Photo
+                  className="absolute bottom-0 right-0 rounded-full text-xxs bg-pure-white p-1" />
               </div>
             </div>
             <div className="relative px-4 flex-auto mx-10">
-
               <div
-                className={`rounded justify-start text-pure-white  ${!isBadgeAllowed ? 'bg-black bg-opacity-60 opacity-50' : ''}`}>
+                className={`rounded justify-start text-pure-white pt-1 ${!isBadgeAllowed ? 'bg-black bg-opacity-60 opacity-50' : ''}`}>
                 <label className="mx-2">
                   Background
                 </label>
                 <div className="mx-4 flex flex-row">
                   <CustomBackground badgeSelection={handleBadgeSelection}
                                     selectedBadge={selectedBadge}
-                                    layout="single-line" />
+                                    layout="single-line" size={40}/>
 
 
                 </div>
@@ -146,7 +142,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ showModal, setShowModal }) =>
                     id="user-name"
                     value={userName.value}
                     onChange={userName.onChange}
-                    className="px-3 py-2 rounded-md bg-secondary text-medium-emphasis placeholder-disabled focus:outline-none"
+                    className="px-3 py-2 rounded-lg bg-secondary text-medium-emphasis placeholder-disabled focus:outline-none"
                     placeholder="User Name"
                   />
                 </div>
@@ -157,7 +153,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ showModal, setShowModal }) =>
                     helps us recommend localized content</label>
 
                   <input
-                    className="px-3 py-2 rounded-md bg-secondary text-medium-emphasis placeholder-disabled focus:outline-none"
+                    className="px-3 py-2 rounded-lg bg-secondary text-medium-emphasis placeholder-disabled focus:outline-none"
                     placeholder="Your location"
                     value={searchKey}
                     onChange={handleInputChange}
@@ -189,7 +185,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ showModal, setShowModal }) =>
                     id="display-name"
                     value={displayName.value}
                     onChange={displayName.onChange}
-                    className="px-3 py-2 rounded-md bg-secondary text-medium-emphasis placeholder-disabled focus:outline-none"
+                    className="px-3 py-2 rounded-lg bg-secondary text-medium-emphasis placeholder-disabled focus:outline-none"
                     placeholder="Display Name"
                   />
                 </div>
@@ -204,7 +200,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ showModal, setShowModal }) =>
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col m-2">
+              <div className="flex flex-col ">
                 <label
                   className="block text-sm text-pure-white">Bio</label>
                 <label className="block text-xs mb-1 text-medium-emphasis">Who
@@ -213,12 +209,13 @@ const EditProfile: React.FC<EditProfileProps> = ({ showModal, setShowModal }) =>
                   id="bio"
                   value={bio.value}
                   onChange={bio.onChange}
-                  className="px-3 py-2 rounded-md bg-secondary text-medium-emphasis placeholder-disabled focus:outline-none"
+                  className="px-3 py-2 rounded-lg bg-secondary text-medium-emphasis placeholder-disabled focus:outline-none"
                   placeholder="Bio"
                   data-maxlength="200"
+                  rows={4}
                 />
                 <label
-                  className={`block text-xs mb-1 ${isLimitExceeded ? 'text-red-500' : 'text-medium-emphasis'}`}
+                  className={`block text-xs mt-2 mb-1 ${isLimitExceeded ? 'text-red-500' : 'text-medium-emphasis'}`}
                 >
                   Character Limitation: {bio.length}/{maxLength}
                 </label>
@@ -229,7 +226,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ showModal, setShowModal }) =>
               className="flex flex-col items-center justify-end p-2 rounded-lg mx-10 mb-4">
               <Link
                 href={`/profile/view`}
-                className={`min-w-[300px] rounded-lg bg-primary p-2 text-center tracking-[0.08px] text-black ${!isSaveEnabled || isLimitExceeded? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`min-w-[250px] rounded-lg bg-primary p-2 text-center tracking-[0.08px] text-black ${!isSaveEnabled || isLimitExceeded? 'opacity-50 cursor-not-allowed' : ''}`}
                 onClick={isSaveEnabled ? handleSave : undefined}
               >
                 <span>Done</span>
@@ -246,10 +243,10 @@ const EditProfile: React.FC<EditProfileProps> = ({ showModal, setShowModal }) =>
           <div className="relative max-w-6xl">
             {/*content*/}
             <div
-              className="border-0 rounded-lg relative flex flex-col bg-second-surface">
+              className="border-0 rounded-2xl relative flex flex-col bg-second-surface">
               {/*header*/}
               <button
-                className="absolute top-0 right-0 mt-2 mr-2 text-medium-emphasis text-xl"
+                className="absolute top-0 right-4 mt-2 mr-2 text-medium-emphasis text-2xl"
                 onClick={() => setShowModal(false)}
               >
                 x

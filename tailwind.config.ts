@@ -20,6 +20,9 @@ const config: Config = {
       backgroundColor: {
         'primary-rgba': 'rgba(32, 32, 32, 0.8)', // Customize with your desired RGBA values
       },
+      fontSize: {
+        'xxs': '0.25rem',
+      },
       colors: {
         primary: '#FFA724',
         secondary: '#222',
