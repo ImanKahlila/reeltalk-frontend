@@ -1,29 +1,29 @@
 import React from 'react';
-import { useRetrieveRecommendedLists } from '@/components/list/RecommendedList.hooks';
+import RecommendedList from '@/components/list/RecommendedList'; 
+import { useRetrieveRecommendedLists } from '@/components/list/RecommendedList.hooks'; 
 
-const RecommendedListsComponent: React.FC = () => {
-  const { recommendedLists, fetchingRecommendedLists } = useRetrieveRecommendedLists();
+const ListHomePage = () =>{
+    const { recommendedLists, fetchingRecommendedLists } = useRetrieveRecommendedLists();
 
-  if (fetchingRecommendedLists) {
-    return <div>Loading...</div>;
-  }
+    if (fetchingRecommendedLists) {
+      return <div>Loading...</div>;
+    }
 
-  return (
-    <div>
-      <h2 className='text-white'>Recommended Lists</h2>
-      {recommendedLists.length > 0 ? (
-        <ul>
-          {recommendedLists.map((list) => (
-            <li key={list.id}>
-              <strong>{list.name}</strong> - Genres: {list.genres.join(', ')}
-            </li>
+    return (
+        <section className='mx-auto flex max-w-[1120px] flex-col gap-4 p-4 '>
+        <h1 className='text-pure-white'>Recommended for you</h1>
+        <div className='flex flex-wrap gap-3'>
+          {recommendedLists.map((list: any) => (
+            <RecommendedList
+              key={list.listId}
+              title={list.name}
+              imageUrl={list.coverPhoto}
+              createdBy={list.ownerProfile.displayName || 'Anonymous'}
+            />
           ))}
-        </ul>
-      ) : (
-        <div className='text-white'>No recommended lists found.</div>
-      )}
-    </div>
-  );
+        </div>
+      </section>
+    );
 };
 
-export default RecommendedListsComponent;
+export default ListHomePage;
