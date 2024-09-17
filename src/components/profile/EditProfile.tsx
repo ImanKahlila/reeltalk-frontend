@@ -111,9 +111,11 @@ const EditProfile: React.FC<EditProfileProps> = ({ showModal, setShowModal }) =>
               <h3 className="text-high-emphasis text-xl">Edit your profile</h3>
               <div className="relative w-16 h-16 mt-4">
                 <ProfileImage imageUrl={imageUrl} size={60} />
-                {/*TO-DO: Add functionality to update photo  */}
-                <Pencil
-                  className="absolute bottom-0 right-0 rounded-full text-xxs bg-pure-white p-1" />
+                {/*TO-DO: Add functionality to update photo */}
+                <div
+                  className="absolute bottom-1 right-2 flex items-center justify-center w-4 h-4 bg-pure-white rounded-full">
+                  <Pencil className="w-2 h-2 text-gray-600" />
+                </div>
               </div>
             </div>
             <div className="relative px-4 flex-auto mx-10">
