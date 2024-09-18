@@ -144,7 +144,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ showModal, setShowModal }) =>
                     id="user-name"
                     value={userName.value}
                     onChange={userName.onChange}
-                    className="px-3 py-2 rounded-lg bg-secondary text-medium-emphasis placeholder-disabled focus:outline-none"
+                    className="px-3 py-2 rounded-lg bg-secondary text-high-emphasis placeholder-disabled focus:outline-none"
                     placeholder="User Name"
                   />
                 </div>
@@ -155,7 +155,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ showModal, setShowModal }) =>
                     helps us recommend localized content</label>
 
                   <input
-                    className="px-3 py-2 rounded-lg bg-secondary text-medium-emphasis placeholder-disabled focus:outline-none"
+                    className="px-3 py-2 rounded-lg bg-secondary text-high-emphasis placeholder-disabled focus:outline-none"
                     placeholder="Your location"
                     value={searchKey}
                     onChange={handleInputChange}
@@ -187,7 +187,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ showModal, setShowModal }) =>
                     id="display-name"
                     value={displayName.value}
                     onChange={displayName.onChange}
-                    className="px-3 py-2 rounded-lg bg-secondary text-medium-emphasis placeholder-disabled focus:outline-none"
+                    className="px-3 py-2 rounded-lg bg-secondary text-high-emphasis placeholder-disabled focus:outline-none"
                     placeholder="Display Name"
                   />
                 </div>
@@ -211,7 +211,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ showModal, setShowModal }) =>
                   id="bio"
                   value={bio.value}
                   onChange={bio.onChange}
-                  className="px-3 py-2 rounded-lg bg-secondary text-medium-emphasis placeholder-disabled focus:outline-none"
+                  className="px-3 py-2 rounded-lg bg-secondary text-high-emphasis placeholder-disabled focus:outline-none"
                   placeholder="Bio"
                   data-maxlength="200"
                   rows={4}
