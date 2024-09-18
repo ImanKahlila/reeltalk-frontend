@@ -4,7 +4,7 @@ import React from 'react';
 import { useUserInfo } from '@/hooks/useUserInfo';
 
 export interface BadgeProps {
-  badge: {
+  badge?: {
     badgeId: string;
     emoji: string;
     name: string;
@@ -12,15 +12,23 @@ export interface BadgeProps {
     position: 'top' | 'bottom-right';
   };
   size?: number;
+  displayBadges?: boolean;
 }
 
-export const UserImageWithBadge = () => {
-  const { imageUrl, badge } = useUserInfo();
+export const UserImageWithBadge: React.FC<BadgeProps> = ({
+                                                           badge,
+                                                           size = 100, // Default size if not provided
+                                                           displayBadges
+                                                         }) => {
+  const { imageUrl, badge: savedBadge } = useUserInfo();
+  const chosenBadge = badge || savedBadge;
 
   return (
-    <div className="relative h-[100px] w-[100px]">
-      <ProfileImage imageUrl={imageUrl} badge={badge} />
-      <Badge badge={badge} size={5} />
+    <div className="relative" style={{ width: size, height: size }}>
+      <ProfileImage imageUrl={imageUrl} badge={chosenBadge} size={size} displayBadges={displayBadges} />
+      {chosenBadge && (
+        <Badge badge={chosenBadge} size={size ? size / 4 : 20} displayBadges={displayBadges} />
+      )}
     </div>
   );
 };
@@ -29,47 +37,59 @@ interface ProfileImageProps {
   imageUrl: string;
   badge?: BadgeProps['badge'];
   size?: number;
+  displayBadges?: boolean;
 }
 
 export const ProfileImage: React.FC<ProfileImageProps> = ({
                                                             imageUrl,
                                                             badge,
-                                                            size,
+                                                            size = 100, // Default size if not provided
+                                                            displayBadges
                                                           }) => {
-  const imageSize = size ? size : 100;
   const shadowColor = badge?.color || 'transparent';
   const { isBadgeAllowed } = useUserInfo();
 
   return (
     <Image
       src={imageUrl && imageUrl !== '' ? imageUrl : UserImg}
-      width={imageSize}
-      height={imageSize}
+      width={size}
+      height={size}
       alt="profile-pic"
       className="rounded-full"
-      style={{ boxShadow: `0 0 0 ${isBadgeAllowed ? '4px' : '0'} ${shadowColor}` }}
+      style={{
+        boxShadow: `0 0 0 ${isBadgeAllowed || displayBadges ? '4px' : '0px'} ${shadowColor}`,
+      }}
     />
   );
 };
 
-export const Badge: React.FC<BadgeProps> = ({ badge, size }) => {
+export const Badge: React.FC<BadgeProps> = ({ badge, size = 20, displayBadges }) => {
   const { isBadgeAllowed } = useUserInfo();
 
-  if (!badge || !isBadgeAllowed) return null;
-  const badgeSize = size ? size : 4;
+  if (!badge || (!isBadgeAllowed && !displayBadges)) {
+    return null;
+  }
+
+  const badgeSize = size || 20;
+
   return (
     <span
-      className={`absolute w-${badgeSize} h-${badgeSize}  ${
+      className={`absolute ${
         badge.position === 'top'
-          ? '-top-1 left-1/2 transform -translate-x-1/2 -translate-y-1/2'
-          : 'bottom-2 right-2 transform translate-x-1/2 translate-y-1/2'
+          ? 'top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2'
+          : 'bottom-0 right-0'
       }`}
+      style={{ width: badgeSize, height: badgeSize }}
     >
-  <img src={badge.emoji} alt="badge" />
-
+      <img
+        src={badge.emoji}
+        alt="badge"
+        className="w-full h-full object-contain"
+      />
     </span>
   );
 };
+
 export const Name = () => {
   const { displayName } = useUserInfo();
 
@@ -120,8 +140,3 @@ export const formattedBirthday = (timestamp: any) => {
     })
     : 'Invalid Date';
 };
-
-// export const isPremiumOrPlatinumUser = () => {
-//   const { isBadgeAllowed } = useUserInfo();
-//   return (premiumStatus === 'Premium' || premiumStatus === 'Platinum');
-// };

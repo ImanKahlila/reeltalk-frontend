@@ -41,6 +41,8 @@ const EditProfile: React.FC<EditProfileProps> = ({ showModal, setShowModal }) =>
   const badge:BadgeProps['badge'] = userInfo?.badge;
   const [selectedBadge,setSelectedBadge]=useState<BadgeProps['badge']>(badge);
   const displayName = useField('text', userInfo?.displayName, { required: true });
+  const userName = useField('text', userInfo?.name, { required: true });
+
   const {selectedLocation,handleLocationSelect,searchKey,locations,handleInputChange} = useLocationHandler();
 
   // const location = useField('text', userInfo?.location, { required: true });
@@ -49,10 +51,13 @@ const EditProfile: React.FC<EditProfileProps> = ({ showModal, setShowModal }) =>
     useValidateBirthday(userInfo?.birthday);
   const { isBadgeAllowed } = useUserInfo();
   const [isSaveEnabled, setIsSaveEnabled] = useState(false);
+  const maxLength = 200;
+  const isLimitExceeded = bio.length > maxLength;
   let data;
   useEffect(() => {
     // Check if any of the values have changed
     const isChanged =
+      userName.value!== userInfo?.name ||
       displayName.value !== userInfo?.displayName ||
       selectedLocation !== userInfo?.location ||
       bio.value !== userInfo?.bio || isDobModified ||
@@ -66,9 +71,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ showModal, setShowModal }) =>
     setSelectedBadge(badge)
   }
   const handleSave=async () => {
-    console.log("yearValue, monthValue, dayValue",yearValue, monthValue, dayValue);
     const { year, month, day } = extractDateValues(yearValue, monthValue, dayValue);
-    console.log("year, month, day",year, month, day);
     if (!birthdayValid || !isExists(year, month, day))
     {
       toast.error('Birthday date is invalid.');
@@ -102,45 +105,57 @@ const EditProfile: React.FC<EditProfileProps> = ({ showModal, setShowModal }) =>
   }
   const renderContent = () => {
         return (
-          <>
+          <div className="w-[825px]">
             <div
-              className="flex flex-col items-center justify-center p-5 mt-4 rounded ">
-              <h3 className="text-high-emphasis">Edit your profile</h3>
-              <div className="relative w-20 h-20 mt-4">
-                <ProfileImage imageUrl={imageUrl} />
-                <Pencil
-                  className="absolute bottom-0 right-0 rounded-full text-xs bg-pure-white p-1" />
-              </div>
-               {/*TO-DO: Add functionality to update photo  */}
-              <div className="text-sm underline text-medium-emphasis">
-                Change Photo
+              className="flex flex-col items-center justify-center p-5 mt-4 rounded">
+              <h3 className="text-high-emphasis text-xl">Edit your profile</h3>
+              <div className="relative w-16 h-16 mt-4">
+                <ProfileImage imageUrl={imageUrl} size={60} />
+                {/*TO-DO: Add functionality to update photo */}
+                <div
+                  className="absolute bottom-1 right-2 flex items-center justify-center w-4 h-4 bg-pure-white rounded-full">
+                  <Pencil className="w-2 h-2 text-gray-600" />
+                </div>
               </div>
             </div>
-            <div className="relative p-4 flex-auto mx-10">
-              {isBadgeAllowed &&
-              <div className="justify-start text-pure-white">Background
-                <CustomBackground badgeSelection={handleBadgeSelection}
-                                  selectedBadge={selectedBadge}
-                                  layout="single-line" />
+            <div className="relative px-4 flex-auto mx-10">
+              <div
+                className={`rounded justify-start text-pure-white pt-1 ${!isBadgeAllowed ? 'bg-black bg-opacity-60 opacity-50' : ''}`}>
+                <label className="mx-2">
+                  Background
+                </label>
+                <div className="mx-4 flex flex-row">
+                  <CustomBackground badgeSelection={handleBadgeSelection}
+                                    selectedBadge={selectedBadge}
+                                    layout="single-line" size={40}/>
+
+
+                </div>
               </div>
-              }
-              <div className="flex flex-row space-x-20">
-                <div className="flex flex-col">
-                  <label className="block text-sm mb-1 text-pure-white">Display
-                    Name</label>
+
+              <div className="flex flex-row space-x-10 mt-2">
+                <div className="flex flex-col w-1/2">
+                  <label className="block text-sm mb-1 text-pure-white">
+                    User Name
+                  </label>
+                  <label className="block text-xs mb-1 text-medium-emphasis">This
+                    user name will show on your profile</label>
                   <input
-                    id="display-name"
-                    value={displayName.value}
-                    onChange={displayName.onChange}
-                    className="px-3 py-2 rounded-md bg-secondary text-medium-emphasis placeholder-disabled focus:outline-none"
-                    placeholder="Display Name"
+                    id="user-name"
+                    value={userName.value}
+                    onChange={userName.onChange}
+                    className="px-3 py-2 rounded-lg bg-secondary text-medium-emphasis placeholder-disabled focus:outline-none"
+                    placeholder="User Name"
                   />
                 </div>
-                <div className="flex flex-col">
+                <div className="flex flex-col w-1/2">
                   <label
                     className="block text-sm mb-1 text-pure-white">Location</label>
+                  <label className="block text-xs mb-1 text-medium-emphasis">This
+                    helps us recommend localized content</label>
+
                   <input
-                    className="px-3 py-2 rounded-md bg-secondary text-medium-emphasis placeholder-disabled focus:outline-none"
+                    className="px-3 py-2 rounded-lg bg-secondary text-medium-emphasis placeholder-disabled focus:outline-none"
                     placeholder="Your location"
                     value={searchKey}
                     onChange={handleInputChange}
@@ -151,7 +166,8 @@ const EditProfile: React.FC<EditProfileProps> = ({ showModal, setShowModal }) =>
                       <ScrollArea
                         className="bg-second-surface mt-0 p-0 rounded text-pure-white h-[30px] overflow-auto scroll-smooth">
                         {locations.results.map((location, index) => (
-                          <li key={index} className="p-2 cursor-pointer" onClick={() => handleLocationSelect(location)}>
+                          <li key={index} className="p-2 cursor-pointer"
+                              onClick={() => handleLocationSelect(location)}>
                             {location}
                           </li>
                         ))}
@@ -159,38 +175,66 @@ const EditProfile: React.FC<EditProfileProps> = ({ showModal, setShowModal }) =>
                     </ul>
                   ) : ''}
                 </div>
-
               </div>
-              <div className="flex flex-row space-x-20 mt-5">
-                <div className="flex flex-col">
-                  <label
-                    className="block text-sm m-1 text-pure-white">Bio</label>
-                  <textarea
-                    id="bio"
-                    value={bio.value}
-                    onChange={bio.onChange}
-                    className="px-3 py-2 rounded-md bg-secondary text-medium-emphasis placeholder-disabled focus:outline-none"
-                    placeholder="Bio"
+
+              <div className="flex flex-row space-x-10 mt-2">
+                <div className="flex flex-col w-1/2">
+                  <label className="block text-sm mb-1 text-pure-white">
+                    Display Name (Optional)
+                  </label>
+                  <label className="block text-xs mb-1 text-medium-emphasis">This does not change your user name</label>
+                  <input
+                    id="display-name"
+                    value={displayName.value}
+                    onChange={displayName.onChange}
+                    className="px-3 py-2 rounded-lg bg-secondary text-medium-emphasis placeholder-disabled focus:outline-none"
+                    placeholder="Display Name"
                   />
                 </div>
-                <div className="flex flex-col">
+                <div className="flex flex-col w-1/2">
                   <label
                     className="block text-sm mb-1 text-pure-white">Birthday</label>
-                  <Inputs inputChangeHandler={inputChangeHandler} dob={userInfo?.birthday}/>
+                  <label className="block text-xs mb-1 text-medium-emphasis">This helps us recommend age-appropriate content</label>
+
+                  <div>
+                  <Inputs inputChangeHandler={inputChangeHandler}
+                          dob={userInfo?.birthday} />
+                  </div>
                 </div>
-            </div>
+              </div>
+              <div className="flex flex-col ">
+                <label
+                  className="block text-sm text-pure-white">Bio</label>
+                <label className="block text-xs mb-1 text-medium-emphasis">Who
+                  are you?</label>
+                <textarea
+                  id="bio"
+                  value={bio.value}
+                  onChange={bio.onChange}
+                  className="px-3 py-2 rounded-lg bg-secondary text-medium-emphasis placeholder-disabled focus:outline-none"
+                  placeholder="Bio"
+                  data-maxlength="200"
+                  rows={4}
+                />
+                <label
+                  className={`block text-xs mt-2 mb-1 ${isLimitExceeded ? 'text-red-500' : 'text-medium-emphasis'}`}
+                >
+                  Character Limitation: {bio.length}/{maxLength}
+                </label>
+
+              </div>
             </div>
             <div
               className="flex flex-col items-center justify-end p-2 rounded-lg mx-10 mb-4">
               <Link
                 href={`/profile/view`}
-                className={`min-w-[300px] rounded-lg bg-primary p-2 text-center tracking-[0.08px] text-black ${!isSaveEnabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`min-w-[250px] rounded-lg bg-primary p-2 text-center tracking-[0.08px] text-black ${!isSaveEnabled || isLimitExceeded? 'opacity-50 cursor-not-allowed' : ''}`}
                 onClick={isSaveEnabled ? handleSave : undefined}
               >
-                <span>Save</span>
+                <span>Done</span>
               </Link>
             </div>
-          </>
+          </div>
         )
   };
   return (
@@ -201,10 +245,10 @@ const EditProfile: React.FC<EditProfileProps> = ({ showModal, setShowModal }) =>
           <div className="relative max-w-6xl">
             {/*content*/}
             <div
-              className="border-0 rounded-lg relative flex flex-col bg-second-surface">
+              className="border-0 rounded-2xl relative flex flex-col bg-second-surface">
               {/*header*/}
               <button
-                className="absolute top-0 right-0 mt-2 mr-2 text-medium-emphasis text-xl"
+                className="absolute top-0 right-4 mt-2 mr-2 text-medium-emphasis text-2xl"
                 onClick={() => setShowModal(false)}
               >
                 x

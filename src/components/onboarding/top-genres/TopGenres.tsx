@@ -27,7 +27,7 @@ const TopGenres = (props: ITopGenres) => {
   const { user, initialGenres } = props;
   const { push } = useRouter();
 
-  const { genres, filteredGenres, totalSelected, setFilteredGenres, toggleSelectedGenre } =
+  const { genres,top3Genres, filteredGenres, totalSelected, setFilteredGenres, toggleSelectedGenre } =
     useGetGenres(initialGenres);
 
   const inputChangeHandler = debounce(e => {
@@ -37,7 +37,7 @@ const TopGenres = (props: ITopGenres) => {
 
   function pageSubmitHandler() {
     if (user) {
-      const top3Genres = genres.filter(genre => genre.selected === true).map(({ name, id, emoji }) => ({ name, id, emoji }));
+      // const top3Genres = genres.filter(genre => genre.selected === true).map(({ name, id, emoji }) => ({ name, id, emoji }));
 
       const docRef = doc(db, 'users', user!.uid);
       logEvent(analytics, 'genre_selected', { fav_genres: top3Genres }); // Google Analytics

@@ -1,30 +1,30 @@
 import {
-  Badge,
   BadgeProps,
-  ProfileImage,
+  UserImageWithBadge,
 } from '@/components/profile/shared/UserDetails';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
-import { selectUser } from '@/redux/selectors';
 import { useUserContext } from '@/lib/context';
+import { useUserInfo } from '@/hooks/useUserInfo';
+import Link from 'next/link';
 
 interface CustomBackgroundProps {
   badgeSelection: (badge: BadgeProps['badge']) => void;
   selectedBadge: BadgeProps['badge'];
-  layout?: 'grid' | 'single-line'; // Added a layout prop
+  layout?: 'grid' | 'single-line';
+  size?: number;
 }
 
-const CustomBackground: React.FC<CustomBackgroundProps> = ({ badgeSelection, selectedBadge, layout }) => {
+const CustomBackground: React.FC<CustomBackgroundProps> = ({ badgeSelection, selectedBadge, layout,size }) => {
   const { idToken } = useUserContext();
-  const userInfo = useSelector(selectUser);
+  const { isBadgeAllowed } = useUserInfo();
+  const imageSize= size||50;
   const [badges ,setBadges]= useState<BadgeProps['badge'][]>([])
-  const imageUrl = userInfo?.imageUrl;
   useEffect(() => {
     const fetchBadges = async () => {
       const response = await axios.get(
-        `https://us-central1-reeltalk-app.cloudfunctions.net/backend/config/badges`,
-        // `http://localhost:8080/config/badges`,
+        `https://us-central1-reeltalk-app.cloudfunctions.net/backend/profile/badges`,
+        // `http://localhost:8080/profile/badges`,
         {
           headers: { Authorization: `Bearer ${idToken}` },
         },
@@ -38,17 +38,16 @@ const CustomBackground: React.FC<CustomBackgroundProps> = ({ badgeSelection, sel
       className={
         layout === 'grid'
           ? 'grid grid-cols-3 gap-2 mx-10 justify-items-center'
-          : 'flex flex-row space-x-6 mt-4 justify-start'
+          : 'flex flex-row space-x-2 mt-2 justify-start'
       }
     >
       {
-        badges.map((badge: BadgeProps['badge']) => (
-          <div className="relative w-14 h-14 mb-6 cursor-pointer"
-               key={badge.badgeId} onClick={() => badgeSelection(badge)}>
-            <ProfileImage imageUrl={imageUrl} badge={badge} size={50}/>
-            <Badge badge={badge}/>
+        badges.length>0 && badges.map((badge: BadgeProps['badge']) => (
+          <div className={`relative w-14 h-14 mb-2 ${isBadgeAllowed?'cursor-pointer':'cursor-not-allowed'}`}
+               key={badge?.badgeId} onClick={() => badgeSelection(badge)}>
+            <UserImageWithBadge  badge={badge} size={imageSize} displayBadges={true}/>
             {
-              (selectedBadge?.badgeId === badge.badgeId) &&
+              isBadgeAllowed && (selectedBadge?.badgeId === badge?.badgeId) &&
               <svg
                 className="top-0 right-0 absolute  w-4 h-4 bg-dark-green rounded-full">
                 <path
@@ -61,6 +60,17 @@ const CustomBackground: React.FC<CustomBackgroundProps> = ({ badgeSelection, sel
           </div>
 
         ))}
+      {!isBadgeAllowed &&
+        <div
+          className="absolute right-6 p-2 rounded-lg mb-4">
+          <Link
+            href={`/profile/store`}
+            className={`rounded-lg bg-pure-white px-4 py-2 mr-6 text-center m-1 text-sm text-secondary tracking-[0.08px] cursor-allowed`}
+          >
+            <span>Unlock Premium</span>
+          </Link>
+        </div>
+      }
     </div>
   )
 }
