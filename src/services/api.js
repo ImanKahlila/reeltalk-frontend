@@ -1,4 +1,5 @@
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const BASE_URL = 'https://us-central1-reeltalk-app.cloudfunctions.net/backend';
 // const BASE_URL = 'http://localhost:8080/';
@@ -21,8 +22,8 @@ export const getGenres = async (idToken) => {
     return response?.data?.data?.genres || [];
   } catch (error) {
     console.error('Error fetching genres:', error.message);
-    return null;
-  }
+    toast.error("Failed to load genres. Please try again.");
+    return [];  }
 };
 
 export const setProfile = async (data, idToken) => {
@@ -31,6 +32,7 @@ export const setProfile = async (data, idToken) => {
       `${BASE_URL}${SET_PROFILE}`,
       data,
       {
+        withCredentials: true,
         headers: { Authorization: `Bearer ${idToken}` },
       }
     );
