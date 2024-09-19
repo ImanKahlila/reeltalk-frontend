@@ -14,7 +14,6 @@ import {
   useValidateBirthday
 } from '@/components/onboarding/personalize/birthday/Birthday.hooks';
 import Link from 'next/link';
-import axios from 'axios';
 import { fetchUserProfile } from '@/redux/userActions';
 import { useUserContext } from '@/lib/context';
 import { AppDispatch } from '@/redux/store';
@@ -27,6 +26,7 @@ import {
 import { isExists } from 'date-fns';
 import toast from 'react-hot-toast';
 import { useUserInfo } from '@/hooks/useUserInfo';
+import { setProfile } from '@/services/api';
 
 interface EditProfileProps {
   showModal: boolean;
@@ -89,17 +89,8 @@ const EditProfile: React.FC<EditProfileProps> = ({ showModal, setShowModal }) =>
       },
       'bio':bio.value
     }
-    // Update user profile with the selected badge
-    const response = await axios.post(
-      `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/setProfile`,
-      // `http://localhost:8080/api/user/setProfile`,
-      data, {
-        headers: { Authorization: `Bearer ${idToken}` },
-      },
-    );
-    if (response.status !== 200) {
-      throw new Error('Failed to update user profile');
-    }
+    await setProfile(data,idToken)
+
     if(user?.uid)
       dispatch(fetchUserProfile(user?.uid,idToken));    setShowModal(false)
   }
@@ -155,18 +146,18 @@ const EditProfile: React.FC<EditProfileProps> = ({ showModal, setShowModal }) =>
                     helps us recommend localized content</label>
 
                   <input
-                    className="px-3 py-2 rounded-lg bg-secondary text-high-emphasis placeholder-disabled focus:outline-none"
+                    className={`px-3 py-2 ${selectedLocation !== null?'rounded':'rounded-t-lg'} bg-secondary text-high-emphasis placeholder-disabled focus:outline-none`}
                     placeholder="Your location"
                     value={searchKey}
                     onChange={handleInputChange}
                   />
                   {locations && locations.results.length > 0 && selectedLocation === null ? (
                     <ul
-                      className="bg-second-surface mt-0 p-0 rounded text-pure-white relative z-10">
+                      className="bg-third-surface mt-0 p-0 rounded-b text-pure-white relative z-10">
                       <ScrollArea
-                        className="bg-second-surface mt-0 p-0 rounded text-pure-white h-[30px] overflow-auto scroll-smooth">
+                        className="bg-third-surface mt-0 p-0 rounded-b text-pure-white h-[34px] overflow-auto scroll-smooth">
                         {locations.results.map((location, index) => (
-                          <li key={index} className="p-2 cursor-pointer"
+                          <li key={index} className="p-1 cursor-pointer"
                               onClick={() => handleLocationSelect(location)}>
                             {location}
                           </li>
