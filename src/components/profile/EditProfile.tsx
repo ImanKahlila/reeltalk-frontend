@@ -26,7 +26,7 @@ import {
 import { isExists } from 'date-fns';
 import toast from 'react-hot-toast';
 import { useUserInfo } from '@/hooks/useUserInfo';
-import { setProfile } from '@/services/api';
+import axios from 'axios';
 
 interface EditProfileProps {
   showModal: boolean;
@@ -89,8 +89,17 @@ const EditProfile: React.FC<EditProfileProps> = ({ showModal, setShowModal }) =>
       },
       'bio':bio.value
     }
-    await setProfile(data,idToken)
-
+    // Update user profile with the selected badge
+    const response = await axios.post(
+      `https://us-central1-reeltalk-app.cloudfunctions.net/backend/api/user/setProfile`,
+      // `http://localhost:8080/api/user/setProfile`,
+      data, {
+        headers: { Authorization: `Bearer ${idToken}` },
+      },
+    );
+    if (response.status !== 200) {
+      throw new Error('Failed to update user profile');
+    }
     if(user?.uid)
       dispatch(fetchUserProfile(user?.uid,idToken));    setShowModal(false)
   }
