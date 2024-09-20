@@ -1,29 +1,78 @@
-import React from 'react';
-import RecommendedList from '@/components/list/RecommendedList'; 
-import { useRetrieveRecommendedLists } from '@/components/list/RecommendedList.hooks'; 
+import React, { useEffect, useState } from 'react';
+import ListTile from '@/components/list/ListTile';
+import { getRecentlyViewedLists, getRecommendedLists } from '@/services/api';
+import { useUserContext } from '@/lib/context';
 
-const ListHomePage = () =>{
-    const { recommendedLists, fetchingRecommendedLists } = useRetrieveRecommendedLists();
+interface List {
+  listId: string;
+  name: string;
+  coverPhoto: string;
+  ownerProfile: {
+    displayName: string;
+  };
+}
 
-    if (fetchingRecommendedLists) {
-      return <div>Loading...</div>;
+const ListHomePage: React.FC = () => {
+  const [recommendedLists, setRecommendedLists] = useState<List[]>([]);
+  const [recentlyViewedLists, setRecentlyViewedLists] = useState<List[]>([]);
+
+  const { idToken } = useUserContext();
+
+  useEffect(() => {
+    const fetchLists = async () => {
+      setRecommendedLists(await getRecommendedLists(idToken));
+      // setRecentlyViewedLists(await getRecentlyViewedLists(idToken));
+    };
+
+    if (idToken) {
+      fetchLists();
     }
+  }, [idToken]);
 
-    return (
-        <section className='mx-auto flex max-w-[1120px] flex-col gap-4 p-4 '>
-        <h1 className='text-pure-white'>Recommended for you</h1>
-        <div className='flex flex-wrap gap-3'>
-          {recommendedLists.map((list: any) => (
-            <RecommendedList
-              key={list.listId}
-              title={list.name}
-              imageUrl={list.coverPhoto}
-              createdBy={list.ownerProfile.displayName || 'Anonymous'}
-            />
-          ))}
+
+  return (
+    <section
+      className='mx-auto flex max-w-[1120px] flex-col gap-4 px-4 py-12 md:px-0 md:flex-row-reverse md:justify-between'>
+      <div className="flex flex-col">
+        <div>
+          <div className="flex flex-row justify-between">
+          <h1 className="text-pure-white text-lg mb-2">Recommended for you</h1>
+          <button className="text-primary mr-7">More</button>
+          </div>
+          <div className="grid grid-cols-3 md:grid-cols-7 gap-x-4">
+            {recommendedLists.map((list: any) => (
+              <ListTile
+                key={list.listId}
+                title={list.name}
+                imageUrl={list.coverPhoto}
+                createdBy={list.ownerProfile.displayName || 'Anonymous'}
+              />
+            ))}
+          </div>
         </div>
-      </section>
-    );
+        <div className="bg-second-surface p-2">
+          <div className="flex flex-row justify-between">
+            <h1 className="text-pure-white text-lg mb-2">Recently Viewed</h1>
+            <button className="text-primary mr-7">More</button>
+          </div>
+          <div className="grid grid-cols-3 md:grid-cols-7 gap-x-4">
+            {recommendedLists.map((list: any) => (
+              <ListTile
+                key={list.listId}
+                title={list.name}
+                imageUrl={list.coverPhoto}
+                createdBy={list.ownerProfile.displayName || 'Anonymous'}
+              />
+            ))}
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+  );
+
+
 };
 
 export default ListHomePage;
