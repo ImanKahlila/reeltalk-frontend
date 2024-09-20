@@ -1,7 +1,7 @@
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
-const BASE_URL = 'https://us-central1-reeltalk-app.cloudfunctions.net/backend';
+const BASE_URL = 'https://us-central1-reeltalk-app.cloudfunctions.net/backend/';
 // const BASE_URL = 'http://localhost:8080/';
 
 
