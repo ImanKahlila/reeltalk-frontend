@@ -47,7 +47,7 @@ export function BirthdayComboBox({
           aria-expanded={open}
           // className='w-[200px] justify-between text-medium-emphasis border border-primary'
           className={` justify-between border ${isOnboardingPage?'w-[200px]' +
-            ' border-primary':'border-none'} ${inputValue
+            ' border-primary':'h-8 border-none'} ${inputValue
            ? 'text-high-emphasis' : 'text-medium-emphasis'}`}
         >
           {inputValue

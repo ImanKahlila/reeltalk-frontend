@@ -43,6 +43,7 @@ export const useField = (type, initialValue = '', validation = {}) => {
     onChange,
     errors,
     isValidInput,
+    length: value.length,
     reset
   };
 };

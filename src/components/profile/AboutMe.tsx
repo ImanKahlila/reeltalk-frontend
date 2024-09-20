@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Pencil } from 'lucide-react';
 import TopUserMovies from '@/components/profile/TopUserMovies';
 import TopUserShows from '@/components/profile/TopUserShows';
 import CheckIconSVG from '@/components/Icons/CheckIcon';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { ACHIEVEMENT_CRITERIA } from '@/components/profile/Constants';
+import EditGenresModal from '@/components/profile/EditGenresModal';
 
 export const AboutMe = () => {
 
   const { userInfo,isLoading } = useSelector((state: RootState) => state.user);
-
+  const [showEditGenre,setShowEditGenre]=useState(false);
+  const handleEditGenre=()=>{
+    setShowEditGenre(!showEditGenre);
+  }
   const ProfileAchievements = () => {
     const { userInfo } = useSelector((state: RootState) => state.user);
     const [userAchievements, setUserAchievements] = useState<any>([]);
@@ -20,6 +24,7 @@ export const AboutMe = () => {
     const [strengthPercentage, setStrengthPercentage] = useState(0);
     const [currentRequirementIndex, setCurrentRequirementIndex] = useState(0);
     const [isAllRequirementMet, setIsAllRequirementMet] = useState(false);
+
     useEffect(() => {
       if (!userInfo) return;
 
@@ -206,9 +211,12 @@ export const AboutMe = () => {
           <div className='w-full max-w-[372px]'>
             <div className='mb-8'>
               <div className='mb-8'>
+                <div className="flex flex-row space-x-4">
                 <h2 className='mb-3 font-medium tracking-eight text-high-emphasis'>
                   Favorite genres
                 </h2>
+                <Pencil className="text-medium-emphasis mt-1" size={16} onClick={handleEditGenre}/>
+                </div>
                 <p className='mb-2 tracking-eight text-medium-emphasis'>
                   {userInfo?.favoriteGenres?.map((genre:any, index:number, array:any) => (
                     <span key={index}>
@@ -235,6 +243,7 @@ export const AboutMe = () => {
               </div>
             </div>
           </div>
+          {showEditGenre && <EditGenresModal showModal={showEditGenre} setShowModal={setShowEditGenre}/>}
         </>
       )}
     </div>
