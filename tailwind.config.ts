@@ -24,7 +24,7 @@ const config: Config = {
         'xxs': '0.25rem',
       },
       colors: {
-        primary: '#FFA724',
+        primary: '#FFCC01',
         secondary: '#222',
         gray: '#6d6d6d',
         'pure-white': '#fff',
