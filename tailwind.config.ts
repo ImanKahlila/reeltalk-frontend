@@ -28,7 +28,7 @@ const config: Config = {
         secondary: '#222',
         gray: '#6d6d6d',
         'pure-white': '#fff',
-        'high-emphasis': 'rgba(255, 255, 255, 0.92)',
+        'high-emphasis': 'rgba(217, 217, 217, 100%)',
         'medium-emphasis': 'rgba(255, 255, 255, 0.6)',
         'first-surface': 'rgba(255, 255, 255, 0.08)',
         'second-surface': '#3D3D3D',
