@@ -15,13 +15,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      # Install dependencies (you can use npm or yarn)
-      - name: Install dependencies
-        run: npm install
+      # # Install dependencies (you can use npm or yarn)
+      # - name: Install dependencies
+      #   run: npm install
 
-      # Build the Next.js project
-      - name: Build project
-        run: npm run build
+      # # Build the Next.js project
+      # - name: Build project
+      #   run: npm run build
 
       # Deploy to Vercel using the API token stored in GitHub Secrets
       - name: Deploy to Vercel
