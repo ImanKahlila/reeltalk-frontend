@@ -27,8 +27,7 @@ jobs:
       # Step 4: Build the Next.js project with environment variables
       - name: Build project
         env:
-          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}
         run: npm run build
 
       # Step 5: Deploy to Vercel using the API token stored in GitHub Secrets
