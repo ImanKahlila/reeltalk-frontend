@@ -1,6 +1,6 @@
 name: Deploy to Vercel
 
-# Trigger the workflow on push to the 'main' branch
+# Trigger the workflow on push to any branch
 on:
   push:
     branches:
@@ -11,23 +11,47 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Check out the repository's code
+      # Step 1: Check out the repository's code
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      # # Install dependencies (you can use npm or yarn)
-      # - name: Install dependencies
-      #   run: npm install
+      # Step 2: Install dependencies (can use npm or yarn)
+      - name: Install dependencies
+        run: npm install
 
-      # # Build the Next.js project
-      # - name: Build project
-      #   run: npm run build
+      # Step 3: Build the Next.js project
+      - name: Build project
+        run: npm run build
 
-      # Deploy to Vercel using the API token stored in GitHub Secrets
+      # Step 4: Deploy to Vercel using the API token stored in GitHub Secrets
       - name: Deploy to Vercel
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
           curl -X POST https://api.vercel.com/v1/deployments \
             -H "Authorization: Bearer $VERCEL_TOKEN" \
-            -d "{\"name\":\"reeltalk-web\",\"gitSource\":{\"type\":\"github\",\"repoId\":\"reel-talk/reeltalk-web\"}}"
+            -H "Content-Type: application/json" \
+            -d '{
+              "name": "reeltalk-web",
+              "gitSource": {
+                "type": "github",
+                "repoId": "reel-talk/reeltalk-web"
+              }
+            }' \
+            -o deploy_result.json
+
+      # Step 5: Check deployment status
+      - name: Check Deployment Status
+        run: |
+          DEPLOY_URL=$(jq -r '.url' deploy_result.json)
+          DEPLOY_STATE=$(jq -r '.readyState' deploy_result.json)
+
+          echo "Deployment URL: $DEPLOY_URL"
+          echo "Deployment State: $DEPLOY_STATE"
+
+          if [ "$DEPLOY_STATE" != "READY" ]; then
+            echo "Deployment failed!"
+            exit 1
+          else
+            echo "Deployment successful! URL: $DEPLOY_URL"
+          fi
