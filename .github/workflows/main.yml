@@ -1,10 +1,9 @@
 name: Deploy to Vercel
 
-# Trigger the workflow on push to any branch
 on:
   push:
     branches:
-      - "**"  # Wildcard to trigger on any branch
+      - "**"  # Trigger on any branch
 
 jobs:
   deploy:
@@ -15,15 +14,23 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      # Step 2: Install dependencies (can use npm or yarn)
+      # Step 2: Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'  # Set your Node.js version
+
+      # Step 3: Install dependencies
       - name: Install dependencies
         run: npm install
 
-      # Step 3: Build the Next.js project
+      # Step 4: Build the Next.js project with environment variables
       - name: Build project
+        env:
+          NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}
         run: npm run build
 
-      # Step 4: Deploy to Vercel using the API token stored in GitHub Secrets
+      # Step 5: Deploy to Vercel using the API token stored in GitHub Secrets
       - name: Deploy to Vercel
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
@@ -40,7 +47,7 @@ jobs:
             }' \
             -o deploy_result.json
 
-      # Step 5: Check deployment status
+      # Step 6: Check deployment status
       - name: Check Deployment Status
         run: |
           DEPLOY_URL=$(jq -r '.url' deploy_result.json)
