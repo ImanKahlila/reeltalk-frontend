@@ -10,70 +10,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Check out the repository's code
+      # Check out the repository's code
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      # Step 2: Set up Node.js 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 'v18.17.0'
-
-      # Step 3: Install dependencies
+      # Install dependencies
       - name: Install dependencies
         run: npm install
 
-      # Step 4: Build the Next.js project with environment variables
+      # Build the Next.js project, including Stripe Publishable Key
       - name: Build project
         env:
-          NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}
+          NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}  # Pass Stripe key to build
         run: npm run build
 
-      # Step 5: Deploy to Vercel using the API token stored in GitHub Secrets
+      # Deploy to Vercel using Vercel CLI and API token
       - name: Deploy to Vercel
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
-          # Run deployment request and save response
-          RESPONSE=$(curl -X POST https://api.vercel.com/v1/deployments \
-            -H "Authorization: Bearer $VERCEL_TOKEN" \
-            -H "Content-Type: application/json" \
-            -d '{
-              "name": "reeltalk-web",
-              "gitSource": {
-                "type": "github",
-                "repoId": "reel-talk/reeltalk-web"
-              }
-            }')
-
-          # Print raw response for debugging
-          echo "Response from Vercel API:"
-          echo "$RESPONSE"
-
-          # Save response to deploy_result.json for jq to process
-          echo "$RESPONSE" > deploy_result.json
-
-      # # Step 6: Check deployment status
-      # - name: Check Deployment Status
-      #   run: |
-      #     # Check if the deploy_result.json exists and has content
-      #     if [ ! -s deploy_result.json ]; then
-      #       echo "Deployment result is empty or missing!"
-      #       cat deploy_result.json
-      #       exit 1
-      #     fi
-
-      #     # Parse the result to get the URL and readyState
-      #     DEPLOY_URL=$(jq -r '.url' deploy_result.json)
-      #     DEPLOY_STATE=$(jq -r '.readyState' deploy_result.json)
-
-      #     echo "Deployment URL: $DEPLOY_URL"
-      #     echo "Deployment State: $DEPLOY_STATE"
-
-      #     if [ "$DEPLOY_STATE" != "READY" ]; then
-      #       echo "Deployment failed!"
-      #       exit 1
-      #     else
-      #       echo "Deployment successful! URL: $DEPLOY_URL"
-      #     fi
+          npx vercel --prod --token ${{ secrets.VERCEL_TOKEN }}
