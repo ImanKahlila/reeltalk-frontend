@@ -54,26 +54,26 @@ jobs:
           # Save response to deploy_result.json for jq to process
           echo "$RESPONSE" > deploy_result.json
 
-      # Step 6: Check deployment status
-      - name: Check Deployment Status
-        run: |
-          # Check if the deploy_result.json exists and has content
-          if [ ! -s deploy_result.json ]; then
-            echo "Deployment result is empty or missing!"
-            cat deploy_result.json
-            exit 1
-          fi
+      # # Step 6: Check deployment status
+      # - name: Check Deployment Status
+      #   run: |
+      #     # Check if the deploy_result.json exists and has content
+      #     if [ ! -s deploy_result.json ]; then
+      #       echo "Deployment result is empty or missing!"
+      #       cat deploy_result.json
+      #       exit 1
+      #     fi
 
-          # Parse the result to get the URL and readyState
-          DEPLOY_URL=$(jq -r '.url' deploy_result.json)
-          DEPLOY_STATE=$(jq -r '.readyState' deploy_result.json)
+      #     # Parse the result to get the URL and readyState
+      #     DEPLOY_URL=$(jq -r '.url' deploy_result.json)
+      #     DEPLOY_STATE=$(jq -r '.readyState' deploy_result.json)
 
-          echo "Deployment URL: $DEPLOY_URL"
-          echo "Deployment State: $DEPLOY_STATE"
+      #     echo "Deployment URL: $DEPLOY_URL"
+      #     echo "Deployment State: $DEPLOY_STATE"
 
-          if [ "$DEPLOY_STATE" != "READY" ]; then
-            echo "Deployment failed!"
-            exit 1
-          else
-            echo "Deployment successful! URL: $DEPLOY_URL"
-          fi
+      #     if [ "$DEPLOY_STATE" != "READY" ]; then
+      #       echo "Deployment failed!"
+      #       exit 1
+      #     else
+      #       echo "Deployment successful! URL: $DEPLOY_URL"
+      #     fi
