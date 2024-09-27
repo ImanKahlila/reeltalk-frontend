@@ -1,32 +1,21 @@
-name: Deploy to Vercel
-
+name: GitHub Actions Vercel Preview Deployment
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 on:
   push:
-    branches:
-      - "**"  # Trigger on any branch
-
+    branches-ignore:
+      - main
 jobs:
-  deploy:
+  Deploy-Preview:
     runs-on: ubuntu-latest
-
     steps:
-      # Check out the repository's code
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      # Install dependencies
-      - name: Install dependencies
-        run: npm install
-
-      # Build the Next.js project, including Stripe Publishable Key
-      - name: Build project
-        env:
-          NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}  # Pass Stripe key to build
-        run: npm run build
-
-      # Deploy to Vercel using Vercel CLI and API token
-      - name: Deploy to Vercel
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-        run: |
-          npx vercel --prod --token ${{ secrets.VERCEL_TOKEN }}
+      - uses: actions/checkout@v2
+      - name: Install Vercel CLI
+        run: npm install --global vercel@canary
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Build Project Artifacts
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Deploy Project Artifacts to Vercel
+        run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
