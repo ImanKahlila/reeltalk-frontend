@@ -73,7 +73,7 @@ const ListHomePage: React.FC = () => {
   }, [recommendedLists, recentlyViewedLists]);
 
   return (
-    <section className="mx-auto flex max-w-[1120px] flex-col gap-4 px-4 py-12 md:px-0 md:flex-row-reverse md:justify-between">
+    <section className="mx-auto flex max-w-[1070px] flex-col gap-4 px-4 py-12 md:px-0 md:flex-row-reverse md:justify-between">
       <div className="flex flex-col">
         {listSections.map((section, idx) => (
           <ListSection
