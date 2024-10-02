@@ -24,11 +24,11 @@ const config: Config = {
         'xxs': '0.25rem',
       },
       colors: {
-        primary: '#FFA724',
+        primary: '#FFCC01',
         secondary: '#222',
         gray: '#6d6d6d',
         'pure-white': '#fff',
-        'high-emphasis': 'rgba(255, 255, 255, 0.92)',
+        'high-emphasis': '#D9D9D9',
         'medium-emphasis': 'rgba(255, 255, 255, 0.6)',
         'first-surface': 'rgba(255, 255, 255, 0.08)',
         'second-surface': '#3D3D3D',
