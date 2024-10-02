@@ -22,6 +22,7 @@
     "@reduxjs/toolkit": "^2.2.6",
     "@stripe/react-stripe-js": "^2.7.3",
     "@stripe/stripe-js": "^4.1.0",
+    "@tailwindcss/line-clamp": "^0.4.4",
     "@types/antd": "^1.0.0",
     "aos": "^2.3.4",
     "axios": "^1.6.0",
