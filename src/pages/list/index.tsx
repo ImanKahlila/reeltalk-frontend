@@ -58,7 +58,7 @@ const ListHomePage: React.FC = () => {
           </div>
           <div
             className="grid grid-cols-3 md:grid-cols-7 gap-x-6 md:gap-x-8 pl-2">
-            //TODO: Replace with recently viewed list
+            {/*TODO: Replace with recently viewed list*/}
             {recommendedLists.map((list: any) => (
               <ListTile
                 key={list.listId}
@@ -75,7 +75,7 @@ const ListHomePage: React.FC = () => {
             <button className="text-primary mr-7">More</button>
           </div>
           <div className="grid grid-cols-3 md:grid-cols-7 gap-x-6 md:gap-x-8">
-            //TODO: Replace with My list
+            {/*TODO: Replace with My list*/}
             {recommendedLists.map((list: any) => (
               <ListTile
                 key={list.listId}
@@ -92,7 +92,7 @@ const ListHomePage: React.FC = () => {
             <button className="text-primary mr-7">More</button>
           </div>
           <div className="grid grid-cols-3 md:grid-cols-7 gap-x-6 md:gap-x-8">
-            //TODO: Replace with TOP 10 list
+            {/*TODO: Replace with TOP 10 list*/}
             {recommendedLists.map((list: any) => (
               <ListTile
                 key={list.listId}
