@@ -75,8 +75,8 @@ const ListHomePage: React.FC = () => {
   const listSections = useMemo(() => {
     return [
       { title: 'Recommended for you', lists: recommendedLists, showCreatedBy: true },
-      { title: 'Recently Viewed', lists: recommendedLists, showLastUpdated: true ,className: ' bg-second-surface p-2', tileSize:'small'}, //// Replace recommendedLists with actual Recently viewed Lists data
-      { title: 'My Lists', lists: recommendedLists ,showType: true}, // Replace
+      { title: 'Recently viewed', lists: recommendedLists, showLastUpdated: true ,className: ' bg-second-surface p-2', tileSize:'small'}, //// Replace recommendedLists with actual Recently viewed Lists data
+      { title: 'My lists', lists: recommendedLists ,showType: true}, // Replace
       // recommendedLists with actual My Lists data
       { title: 'Top 10', lists: recommendedLists, showCreatedBy: true }, // Replace recommendedLists with Top 10 data
     ];
