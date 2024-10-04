@@ -7,9 +7,10 @@ interface List {
   listId: string;
   name: string;
   coverPhoto: string;
+  type: string
   ownerProfile: {
     displayName: string;
-    isPublic?: boolean;
+    showType?: boolean;
   };
 }
 
@@ -17,13 +18,13 @@ interface ListSectionProps {
   title: string;
   lists: List[];
   showLastUpdated?: boolean;
-  createdByFallback?: boolean;
-  isPublicFallback?:boolean;
+  showCreatedBy?: boolean;
+  showType?:boolean;
   className?: string;
   tileSize?:'large' | 'small'
 }
 
-const ListSection: React.FC<ListSectionProps> = ({ title, lists, showLastUpdated = false, createdByFallback = false ,isPublicFallback= false, className,tileSize='large'}) => (
+const ListSection: React.FC<ListSectionProps> = ({ title, lists, showLastUpdated = false, showCreatedBy = false ,showType= false, className,tileSize='large'}) => (
   <div className={`${tileSize === 'small' ? 'pb-2' : 'pb-4'}`}>
     <div className={`${className || ''}`}>
       <div
@@ -39,9 +40,9 @@ const ListSection: React.FC<ListSectionProps> = ({ title, lists, showLastUpdated
           key={list.listId}
           title={list.name}
           imageUrl={list.coverPhoto}
-          createdBy={createdByFallback ? list.ownerProfile.displayName || 'Anonymous' : undefined}
-          showLastUpdated={showLastUpdated}
-          isPublic={isPublicFallback}
+          createdBy={showCreatedBy ? list.ownerProfile.displayName || 'Anonymous' : undefined}
+          lastUpdated={showLastUpdated}
+          type={showType?list.type:''}
           tileSize={tileSize}
         />
       ))}
@@ -73,11 +74,11 @@ const ListHomePage: React.FC = () => {
   // Memoize sections to avoid re-renders
   const listSections = useMemo(() => {
     return [
-      { title: 'Recommended for you', lists: recommendedLists, createdByFallback: true },
+      { title: 'Recommended for you', lists: recommendedLists, showCreatedBy: true },
       { title: 'Recently Viewed', lists: recommendedLists, showLastUpdated: true ,className: ' bg-second-surface p-2', tileSize:'small'}, //// Replace recommendedLists with actual Recently viewed Lists data
-      { title: 'My Lists', lists: recommendedLists ,isPublicFallback: true}, // Replace
+      { title: 'My Lists', lists: recommendedLists ,showType: true}, // Replace
       // recommendedLists with actual My Lists data
-      { title: 'Top 10', lists: recommendedLists, createdByFallback: true }, // Replace recommendedLists with Top 10 data
+      { title: 'Top 10', lists: recommendedLists, showCreatedBy: true }, // Replace recommendedLists with Top 10 data
     ];
   }, [recommendedLists, recentlyViewedLists]);
 
@@ -90,8 +91,8 @@ const ListHomePage: React.FC = () => {
             title={section.title}
             lists={section.lists}
             showLastUpdated={section.showLastUpdated}
-            createdByFallback={section.createdByFallback}
-            isPublicFallback={section.isPublicFallback}
+            showCreatedBy={section.showCreatedBy}
+            showType={section.showType}
             className={section.className}
           />
         ))}

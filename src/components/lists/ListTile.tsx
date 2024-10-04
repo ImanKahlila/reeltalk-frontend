@@ -1,16 +1,17 @@
 import React from 'react';
 import Image from 'next/image';
+import CircleEllipsis from '@/components/Icons/CircleEllipsis';
 
 interface ListProps {
   title: string;
   imageUrl: string;
   createdBy?: string;
-  showLastUpdated?: boolean;
-  isPublic?:boolean;
+  lastUpdated?: boolean;
+  type?:string;
   tileSize?: 'small' | 'large';
 }
 
-const ListTile: React.FC<ListProps> = ({ title, imageUrl, createdBy,showLastUpdated,isPublic, tileSize }) => {
+const ListTile: React.FC<ListProps> = ({ title, imageUrl, createdBy,lastUpdated,type, tileSize }) => {
   const defaultTileClass = 'w-[146.5px] h-[289.82px]';
   const defaultImageHeightClass = 'h-[216.82px]';
 
@@ -28,13 +29,11 @@ const ListTile: React.FC<ListProps> = ({ title, imageUrl, createdBy,showLastUpda
           className="object-cover"
           sizes="(max-width: 767px) 100vw, 96px"
         />
-        <Image
-          src={imageUrl}
-          alt={title}
-          fill
-          className="object-cover"
-          sizes='(max-width: 767px) 100vw, 96px'
-        />
+        {type && <div
+          className="absolute top-1 left-1">
+          <CircleEllipsis
+          />
+        </div>}
       </div>
       <div className="text-sm text-left">
         <h3
@@ -42,10 +41,11 @@ const ListTile: React.FC<ListProps> = ({ title, imageUrl, createdBy,showLastUpda
         {createdBy && <p
           className="my-1 text-medium-emphasis min-h-[40px]">By {createdBy}</p>}
         {/* TODO: Add last updated data*/}
-        {showLastUpdated &&
+        {lastUpdated &&
           <p className="my-1 text-medium-emphasis">Updated {} ago</p>}
-        {isPublic && <p
-          className="my-1 text-medium-emphasis">{isPublic ? 'Public' : 'Private'}</p>}
+        {type && <p
+          className="my-1 text-medium-emphasis">{type.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+        </p>}
       </div>
     </div>
   );
