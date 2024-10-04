@@ -49,7 +49,7 @@ const MobileMenu = ({ isOpen, toggleMobileMenu }: ComponentProps) => {
         <li>
           <Link
             className='text-base font-normal tracking-wide'
-            href={'/list'}
+            href={'/lists'}
             onClick={toggleMobileMenu}
           >
             List

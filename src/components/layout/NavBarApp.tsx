@@ -88,31 +88,31 @@ const NavigationLinks = () => {
       </Link>
       <li
         className={`hidden text-base  text-secondary lg:block ${
-          router.pathname == '/browse' ? 'font-medium' : 'font-normal'
+          router.pathname == '/browse' ? 'underline underline-offset-4' : ''
         }`}
       >
         <Link href={'/'}>Browse</Link>
       </li>
       <li
         className={`hidden text-base  text-secondary lg:block ${
-          router.pathname == '/community' ? 'font-medium' : 'font-normal'
+          router.pathname == '/community' ? 'underline underline-offset-4' : ''
         }`}
       >
         <Link href={'/community'}>Community</Link>
       </li>
       <li
         className={`hidden text-base  text-secondary lg:block ${
-          router.pathname == '/discussions' ? 'font-medium' : 'font-normal'
+          router.pathname == '/discussions' ? 'underline underline-offset-4' : ''
         }`}
       >
         <Link href={'/discussions'}>Discussions</Link>
       </li>
       <li
-        className={`hidden text-base  text-secondary lg:block ${
-          router.pathname == '/list' ? 'font-medium' : 'font-normal'
+        className={`hidden text-base text-secondary lg:block ${
+          router.pathname == '/lists' ? 'underline underline-offset-4' : ''
         }`}
       >
-        <Link href={'/list'}>List</Link>
+        <Link href={'/lists'}>Lists</Link>
       </li>
     </ul>
   );

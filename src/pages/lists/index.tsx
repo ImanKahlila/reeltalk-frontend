@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import ListTile from '@/components/list/ListTile';
+import ListTile from '@/components/lists/ListTile';
 import { getRecentlyViewedLists, getRecommendedLists } from '@/services/api';
 import { useUserContext } from '@/lib/context';
 
