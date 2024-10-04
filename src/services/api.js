@@ -7,6 +7,9 @@ const BASE_URL = 'https://us-central1-reeltalk-app.cloudfunctions.net/backend/';
 
 const SET_PROFILE = 'api/user/setProfile';
 const GET_GENRES = 'api/movies/getPossibleGenres';
+const GET_RECOMMENDED_LISTS = 'api/lists/recommended';
+const GET_RECENTLY_VIEWED_LISTS = 'api/lists/recently-viewed-lists';
+
 
 export const getGenres = async (idToken) => {
   try {
@@ -41,4 +44,40 @@ export const setProfile = async (data, idToken) => {
     console.error('Error setting profile:', error);
     throw error;
   }
+};
+
+export const getRecommendedLists = async (idToken) => {
+  try {
+    const response = await axios.get(
+      `${BASE_URL}${GET_RECOMMENDED_LISTS}`,
+      {
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+        },
+      }
+    );
+    return response?.data.data || [];
+  } catch (error) {
+    console.error('Error fetching recommended lists:', error.message);
+    toast.error("Failed to recommended lists. Please try again.");
+    return [];  }
+};
+
+export const getRecentlyViewedLists = async (idToken) => {
+  try {
+    const response = await axios.get(
+      `${BASE_URL}${GET_RECENTLY_VIEWED_LISTS}`,
+      {
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+        },
+      }
+    );
+    return response?.data.data || [];
+  } catch (error) {
+    console.error('Error fetching recently viewed lists:', error.message);
+    toast.error("Failed to recently viewed lists. Please try again.");
+    return [];  }
 };

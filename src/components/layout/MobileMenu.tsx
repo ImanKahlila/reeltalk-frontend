@@ -46,6 +46,15 @@ const MobileMenu = ({ isOpen, toggleMobileMenu }: ComponentProps) => {
             Discussions
           </Link>
         </li>
+        <li>
+          <Link
+            className='text-base font-normal tracking-wide'
+            href={'/lists'}
+            onClick={toggleMobileMenu}
+          >
+            List
+          </Link>
+        </li>
         <li className='text-base font-normal text-secondary'>
           <button
             onClick={() => {
