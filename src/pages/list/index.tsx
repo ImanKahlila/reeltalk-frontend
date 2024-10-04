@@ -19,16 +19,22 @@ interface ListSectionProps {
   showLastUpdated?: boolean;
   createdByFallback?: boolean;
   isPublicFallback?:boolean;
+  className?: string;
+  tileSize?:'large' | 'small'
 }
 
-const ListSection: React.FC<ListSectionProps> = ({ title, lists, showLastUpdated = false, createdByFallback = false ,isPublicFallback= false}) => (
-  <div className="pb-4">
-    <div className="flex flex-row justify-between">
+const ListSection: React.FC<ListSectionProps> = ({ title, lists, showLastUpdated = false, createdByFallback = false ,isPublicFallback= false, className,tileSize='large'}) => (
+  <div className={`${tileSize === 'small' ? 'pb-2' : 'pb-4'}`}>
+    <div className={`${className || ''}`}>
+      <div
+        className="flex flex-col items-start p-0 w-full max-w-screen-xl mx-auto h-auto">
+    <div className="flex flex-row justify-between w-full">
       <h1 className="text-pure-white text-lg mb-2">{title}</h1>
-      <button className="text-primary mr-7">More</button>
+        <a className="text-primary mr-7">More</a>
     </div>
-    <div className="grid grid-cols-3 md:grid-cols-7 gap-x-6 md:gap-x-8">
-      {lists.map(list => (
+    <div
+      className="grid grid-cols-3 md:grid-cols-7 gap-x-6 md:gap-x-8 overflow-hidden">
+      {lists.slice(0, 7).map((list) => (
         <ListTile
           key={list.listId}
           title={list.name}
@@ -36,9 +42,12 @@ const ListSection: React.FC<ListSectionProps> = ({ title, lists, showLastUpdated
           createdBy={createdByFallback ? list.ownerProfile.displayName || 'Anonymous' : undefined}
           showLastUpdated={showLastUpdated}
           isPublic={isPublicFallback}
+          tileSize={tileSize}
         />
       ))}
     </div>
+  </div>
+  </div>
   </div>
 );
 
@@ -65,7 +74,7 @@ const ListHomePage: React.FC = () => {
   const listSections = useMemo(() => {
     return [
       { title: 'Recommended for you', lists: recommendedLists, createdByFallback: true },
-      { title: 'Recently Viewed', lists: recommendedLists, showLastUpdated: true }, //// Replace recommendedLists with actual Recently viewed Lists data
+      { title: 'Recently Viewed', lists: recommendedLists, showLastUpdated: true ,className: ' bg-second-surface p-2', tileSize:'small'}, //// Replace recommendedLists with actual Recently viewed Lists data
       { title: 'My Lists', lists: recommendedLists ,isPublicFallback: true}, // Replace
       // recommendedLists with actual My Lists data
       { title: 'Top 10', lists: recommendedLists, createdByFallback: true }, // Replace recommendedLists with Top 10 data
@@ -73,7 +82,7 @@ const ListHomePage: React.FC = () => {
   }, [recommendedLists, recentlyViewedLists]);
 
   return (
-    <section className="mx-auto flex max-w-[1070px] flex-col gap-4 px-4 py-12 md:px-0 md:flex-row-reverse md:justify-between">
+    <section className="mx-auto flex max-w-[1100px] flex-col gap-4 px-4 py-12 md:px-0 md:flex-row-reverse md:justify-between">
       <div className="flex flex-col">
         {listSections.map((section, idx) => (
           <ListSection
@@ -83,6 +92,7 @@ const ListHomePage: React.FC = () => {
             showLastUpdated={section.showLastUpdated}
             createdByFallback={section.createdByFallback}
             isPublicFallback={section.isPublicFallback}
+            className={section.className}
           />
         ))}
       </div>
