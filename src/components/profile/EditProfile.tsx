@@ -148,32 +148,36 @@ const EditProfile: React.FC<EditProfileProps> = ({ showModal, setShowModal }) =>
                     placeholder="User Name"
                   />
                 </div>
-                <div className="flex flex-col w-1/2">
+                <div className="flex flex-col w-1/2 relative">
                   <label
                     className="block text-sm mb-1 text-pure-white">Location</label>
                   <label className="block text-xs mb-1 text-medium-emphasis">This
                     helps us recommend localized content</label>
 
                   <input
-                    className={`px-3 py-2 ${selectedLocation !== null?'rounded':'rounded-t-lg'} bg-secondary text-high-emphasis placeholder-disabled focus:outline-none`}
+                    className={`px-3 py-2 ${selectedLocation !== null ? 'rounded' : 'rounded-t-lg'} bg-secondary text-high-emphasis placeholder-disabled focus:outline-none`}
                     placeholder="Your location"
                     value={searchKey}
                     onChange={handleInputChange}
                   />
                   {locations && locations.results.length > 0 && selectedLocation === null ? (
                     <ul
-                      className="bg-third-surface mt-0 p-0 rounded-b text-pure-white relative z-10">
+                      className="absolute top-full left-0 w-full bg-third-surface mt-0 p-0 text-pure-white z-50 shadow-lg">
                       <ScrollArea
-                        className="bg-third-surface mt-0 p-0 rounded-b text-pure-white h-[34px] overflow-auto scroll-smooth">
+                        className="bg-third-surface mt-0 p-0 rounded-b text-pure-white h-[161px] overflow-auto scroll-smooth">
                         {locations.results.map((location, index) => (
-                          <li key={index} className="p-1 cursor-pointer"
+                          <li key={index}
+                              className="p-1 cursor-pointer border-b border-b-white border-opacity-10"
                               onClick={() => handleLocationSelect(location)}>
-                            {location}
+                            <div className="ml-2">
+                              {location}
+                            </div>
                           </li>
                         ))}
                       </ScrollArea>
                     </ul>
-                  ) : ''}
+                  ) : null}
+
                 </div>
               </div>
 
