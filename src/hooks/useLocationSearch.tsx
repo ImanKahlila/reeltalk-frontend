@@ -11,8 +11,8 @@ type ResponseData = {
   results: string[];
 };
 
-const backend_URL = 'https://us-central1-reeltalk-app.cloudfunctions.net/backend';
-// const backend_URL = 'http://localhost:8080';
+// const backend_URL = 'https://us-central1-reeltalk-app.cloudfunctions.net/backend';
+const backend_URL = 'http://localhost:8080';
 
 const useLocationSearch = (initialKey: string) => {
   const [errorFetching, setErrorFetching] = useState(false);

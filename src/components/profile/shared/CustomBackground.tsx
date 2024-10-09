@@ -23,8 +23,8 @@ const CustomBackground: React.FC<CustomBackgroundProps> = ({ badgeSelection, sel
   useEffect(() => {
     const fetchBadges = async () => {
       const response = await axios.get(
-        `https://us-central1-reeltalk-app.cloudfunctions.net/backend/profile/badges`,
-        // `http://localhost:8080/profile/badges`,
+        // `https://us-central1-reeltalk-app.cloudfunctions.net/backend/profile/badges`,
+        `http://localhost:8080/profile/badges`,
         {
           headers: { Authorization: `Bearer ${idToken}` },
         },
