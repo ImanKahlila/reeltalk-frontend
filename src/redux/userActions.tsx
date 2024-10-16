@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { AppDispatch } from './store';
 import { setError, setLoading, setUserInfo } from './userReducer';
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import { getRecommendedLists } from '@/services/api';
 
 export const fetchUserProfile = (userId: string, idToken: string) => async (
   dispatch: AppDispatch
@@ -26,3 +28,9 @@ export const fetchUserProfile = (userId: string, idToken: string) => async (
     dispatch(setLoading(false));
   }
 };
+export const fetchRecommendedLists = createAsyncThunk(
+  'lists/fetchRecommendedLists',
+  async (idToken: string) => {
+    return await getRecommendedLists(idToken);
+  }
+);
