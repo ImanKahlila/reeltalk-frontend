@@ -109,7 +109,7 @@ const NavigationLinks = () => {
       </li>
       <li
         className={`hidden text-base text-secondary lg:block ${
-          router.pathname == '/lists' ? 'underline underline-offset-4' : ''
+          router.pathname.startsWith('/lists')  ? 'underline underline-offset-4' : ''
         }`}
       >
         <Link href={'/lists'}>Lists</Link>
