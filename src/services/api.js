@@ -1,102 +1,74 @@
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { useDispatch } from 'react-redux';
 
 const BASE_URL = 'https://us-central1-reeltalk-app.cloudfunctions.net/backend/';
 // const BASE_URL = 'http://localhost:8080/';
 
 
-const SET_PROFILE = 'api/user/setProfile';
-const GET_GENRES = 'api/movies/getPossibleGenres';
-const GET_RECOMMENDED_LISTS = 'api/lists/recommended';
-const GET_RECENTLY_VIEWED_LISTS = 'api/lists/recently-viewed-lists';
-const GET_POPULAR_SEARCHES = 'movies/popular-searches';
 
-
-export const getGenres = async (idToken) => {
-  try {
-    const response = await axios.get(
-      `${BASE_URL}${GET_GENRES}`,
-      {
-        withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${idToken}`,
-        },
-      }
-    );
-    return response?.data?.data?.genres || [];
-  } catch (error) {
-    console.error('Error fetching genres:', error.message);
-    toast.error("Failed to load genres. Please try again.");
-    return [];  }
+const ENDPOINTS = {
+  SET_PROFILE: 'api/user/setProfile',
+  GET_GENRES: 'api/movies/getPossibleGenres',
+  GET_RECOMMENDED_LISTS: 'api/lists/recommended',
+  GET_RECENTLY_VIEWED_LISTS: 'api/lists/recently-viewed-lists',
+  GET_MY_LISTS:'api/lists/',
+  GET_TRENDING_LISTS:'api/lists/trending',
+  GET_POPULAR_SEARCHES: 'movies/popular-searches',
 };
 
-export const setProfile = async (data, idToken) => {
-  try {
-    const response = await axios.post(
-      `${BASE_URL}${SET_PROFILE}`,
-      data,
-      {
-        withCredentials: true,
-        headers: { Authorization: `Bearer ${idToken}` },
-      }
-    );
-    return response.data;
-  } catch (error) {
-    console.error('Error setting profile:', error);
-    throw error;
+const axiosInstance = axios.create({
+  baseURL: BASE_URL,
+  withCredentials: true,
+});
+
+const handleApiError = (error, fallbackMessage) => {
+  const dispatch = useDispatch();
+
+  console.error(error.message);
+  if (error.response?.status === 401) {
+    // dispatch(logout());
+    toast.error("Session expired. Please log in again.");
+  } else {
+    console.error('Error fetching data:', error.message);
+    toast.error("Failed to fetch data. Please try again.");
   }
 };
 
-export const getRecommendedLists = async (idToken) => {
+const apiGet = async (url, idToken, returnFullData=false) => {
   try {
-    const response = await axios.get(
-      `${BASE_URL}${GET_RECOMMENDED_LISTS}`,
-      {
-        withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${idToken}`,
-        },
-      }
-    );
-    return response?.data.data || [];
-  } catch (error) {
-    console.error('Error fetching recommended lists:', error.message);
-    toast.error("Failed to recommended lists. Please try again.");
-    return [];  }
+    const response = await axiosInstance.get(url, {
+      headers: { Authorization: `Bearer ${idToken}` }
+    });
+    if (returnFullData) {
+      return response?.data || [];
+    }
+    return response?.data?.data || [];  } catch (error) {
+    return handleApiError(error, `Failed to fetch data from ${url}`);
+  }
 };
 
-export const getRecentlyViewedLists = async (idToken) => {
+const apiPost = async (url, data, idToken) => {
   try {
-    const response = await axios.get(
-      `${BASE_URL}${GET_RECENTLY_VIEWED_LISTS}`,
-      {
-        withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${idToken}`,
-        },
-      }
-    );
-    return response?.data.data || [];
+    const response = await axiosInstance.post(url, data, {
+      headers: { Authorization: `Bearer ${idToken}` }
+    });
+    return response?.data;
   } catch (error) {
-    console.error('Error fetching recently viewed lists:', error.message);
-    toast.error("Failed to recently viewed lists. Please try again.");
-    return [];  }
+    return handleApiError(error, `Failed to post data to ${url}`);
+  }
 };
 
-export const getPopularSearches = async (idToken) => {
-  try {
-    const response = await axios.get(
-      `${BASE_URL}${GET_POPULAR_SEARCHES}`,
-      {
-        withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${idToken}`,
-        },
-      }
-    );
-    return response.data || [];
-  } catch (error) {
-    console.error('Error fetching recently viewed lists:', error.message);
-    toast.error("Failed to recently viewed lists. Please try again.");
-    return [];  }
-};
+export const getGenres = (idToken) => apiGet(ENDPOINTS.GET_GENRES, idToken);
+
+export const setProfile = (data, idToken) => apiPost(ENDPOINTS.SET_PROFILE, data, idToken);
+
+export const getRecommendedLists = (idToken) => apiGet(ENDPOINTS.GET_RECOMMENDED_LISTS, idToken);
+
+export const getRecentlyViewedLists = (idToken) => apiGet(ENDPOINTS.GET_RECENTLY_VIEWED_LISTS, idToken);
+
+export const getMyLists = (idToken) => apiGet(ENDPOINTS.GET_MY_LISTS, idToken);
+
+export const getTrendingLists = (idToken) => apiGet(ENDPOINTS.GET_TRENDING_LISTS, idToken);
+
+export const getPopularSearches = (idToken) => apiGet(ENDPOINTS.GET_POPULAR_SEARCHES, idToken,true);

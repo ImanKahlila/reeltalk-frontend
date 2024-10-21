@@ -2,6 +2,7 @@ import { createSelector } from 'reselect';
 import { RootState } from '@/redux/store';
 
 const selectUserInfo = (state: RootState) => state.user.userInfo;
+const selectListsState = (state: RootState) => state.lists;
 
 // Memoized user selector
 export const selectUser = createSelector(
@@ -9,13 +10,33 @@ export const selectUser = createSelector(
   userInfo => userInfo
 );
 
-// Selector to get the lists state from the Redux store
-const selectListsState = (state: RootState) => state.lists;
-
-// Selector to get recommended lists from the lists state
+// Memoized lists selector
 export const selectRecommendedLists = createSelector(
   [selectListsState],
-  listsState => listsState.recommendedLists
+  (listsState) => listsState.recommendedLists
 );
 
+export const selectRecentlyViewedLists = createSelector(
+  [selectListsState],
+  (listsState) => listsState.recentlyViewedLists
+);
 
+export const selectMyLists = createSelector(
+  [selectListsState],
+  (listsState) => listsState.myLists
+);
+
+export const selectTrendingLists = createSelector(
+  [selectListsState],
+  (listsState) => listsState.trendingLists
+);
+
+export const selectIsLoading = createSelector(
+  [selectListsState],
+  (listsState) => listsState.isLoading
+);
+
+export const selectListsError = createSelector(
+  [selectListsState],
+  (listsState) => listsState.error
+);
