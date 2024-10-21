@@ -1,9 +1,8 @@
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { useDispatch } from 'react-redux';
 
-const BASE_URL = 'https://us-central1-reeltalk-app.cloudfunctions.net/backend/';
-// const BASE_URL = 'http://localhost:8080/';
+// const BASE_URL = 'https://us-central1-reeltalk-app.cloudfunctions.net/backend/';
+const BASE_URL = 'http://localhost:8081/';
 
 
 
@@ -22,12 +21,9 @@ const axiosInstance = axios.create({
   withCredentials: true,
 });
 
-const handleApiError = (error, fallbackMessage) => {
-  const dispatch = useDispatch();
-
+const handleApiError = (error) => {
   console.error(error.message);
   if (error.response?.status === 401) {
-    // dispatch(logout());
     toast.error("Session expired. Please log in again.");
   } else {
     console.error('Error fetching data:', error.message);
@@ -44,7 +40,7 @@ const apiGet = async (url, idToken, returnFullData=false) => {
       return response?.data || [];
     }
     return response?.data?.data || [];  } catch (error) {
-    return handleApiError(error, `Failed to fetch data from ${url}`);
+    return handleApiError(error);
   }
 };
 
@@ -55,7 +51,7 @@ const apiPost = async (url, data, idToken) => {
     });
     return response?.data;
   } catch (error) {
-    return handleApiError(error, `Failed to post data to ${url}`);
+    return handleApiError(error);
   }
 };
 
