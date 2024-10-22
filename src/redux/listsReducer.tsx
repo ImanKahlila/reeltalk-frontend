@@ -15,6 +15,7 @@ export interface List {
     showType?: boolean;
     imageUrl?: string;
   };
+  lastUpdated:string;
   genres: {
     emoji: string;
     name: string;

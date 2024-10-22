@@ -24,6 +24,7 @@ interface List {
     displayName: string;
     showType?: boolean;
   };
+  lastUpdated:string;
 }
 
 interface ListSectionProps {
@@ -65,7 +66,7 @@ const ListSection: React.FC<ListSectionProps> = ({
               title={list.name}
               imageUrl={list.coverPhoto}
               createdBy={showCreatedBy ? list.ownerProfile?.displayName || 'Anonymous' : undefined}
-              lastUpdated={showLastUpdated}
+              lastUpdated={showLastUpdated? list.lastUpdated: ''}
               type={showType ? list.type : ''}
               tileSize={tileSize}
             />
