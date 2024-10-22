@@ -1,8 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, getAuth, onIdTokenChanged } from 'firebase/auth';
-
-import { setCookie, destroyCookie } from 'nookies';
-
+import { parseCookies, setCookie, destroyCookie } from 'nookies';
 import app from '@/firebase/firebase-config';
 
 export const UserContext = createContext<{ user: User | null; idToken: string }>({
@@ -20,8 +18,13 @@ interface ComponentProps {
 
 export const UserContextProvider = ({ children }: ComponentProps) => {
   const auth = getAuth(app);
+
+  // Get token from cookies initially on load
+  const cookies = parseCookies();
+  const initialToken = cookies.idToken || '';
+
   const [user, setUser] = useState<User | null>(null);
-  const [idToken, setIdToken] = useState('');
+  const [idToken, setIdToken] = useState(initialToken);
 
   useEffect(() => {
     const unsubscribe = onIdTokenChanged(auth, async user => {
