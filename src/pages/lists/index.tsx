@@ -1,8 +1,16 @@
 import React, { useEffect, useMemo } from 'react';
 import ListTile from '@/components/lists/ListTile';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchRecommendedLists } from '@/redux/userActions';
-import { selectRecommendedLists } from '@/redux/selectors';
+import {
+  fetchMyLists,
+  fetchRecentlyViewedLists,
+  fetchRecommendedLists, fetchTrendingLists,
+} from '@/redux/listsReducer';
+import {
+  selectMyLists,
+  selectRecentlyViewedLists,
+  selectRecommendedLists, selectTrendingLists,
+} from '@/redux/selectors';
 import { AppDispatch } from '@/redux/store';
 import Link from 'next/link';
 import { useUserContext } from '@/lib/context';
@@ -16,6 +24,7 @@ interface List {
     displayName: string;
     showType?: boolean;
   };
+  lastUpdated:string;
 }
 
 interface ListSectionProps {
@@ -56,8 +65,8 @@ const ListSection: React.FC<ListSectionProps> = ({
               key={list.listId}
               title={list.name}
               imageUrl={list.coverPhoto}
-              createdBy={showCreatedBy ? list.ownerProfile.displayName || 'Anonymous' : undefined}
-              lastUpdated={showLastUpdated}
+              createdBy={showCreatedBy ? list.ownerProfile?.displayName || 'Anonymous' : undefined}
+              lastUpdated={showLastUpdated? list.lastUpdated: ''}
               type={showType ? list.type : ''}
               tileSize={tileSize}
             />
@@ -71,19 +80,26 @@ const ListSection: React.FC<ListSectionProps> = ({
 const ListHomePage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const recommendedLists = useSelector(selectRecommendedLists);
+  const recentlyViewedLists = useSelector(selectRecentlyViewedLists);
+  const myLists = useSelector(selectMyLists);
+  const trendingLists = useSelector(selectTrendingLists);
+
   const { idToken } = useUserContext();
 
   useEffect(() => {
     dispatch(fetchRecommendedLists(idToken));
+    dispatch(fetchRecentlyViewedLists(idToken));
+    dispatch(fetchMyLists(idToken));
+    dispatch(fetchTrendingLists(idToken));
   }, [dispatch]);
 
   // Memoize sections to avoid re-renders
   const listSections = useMemo(() => {
     return [
       { title: 'Recommended for you', lists: recommendedLists, showCreatedBy: true, moreLink: '/lists/recommended' },
-      { title: 'Recently viewed', lists: recommendedLists, showLastUpdated: true, className: 'bg-second-surface p-2', tileSize: 'small', moreLink: '/lists/recommended' },
-      { title: 'My lists', lists: recommendedLists, showType: true, moreLink: '/lists/recommended' },
-      { title: 'Top 10', lists: recommendedLists, showCreatedBy: true, moreLink: '/lists/recommended' },
+      { title: 'Recently viewed', lists: recentlyViewedLists, showLastUpdated: true, className: 'bg-second-surface p-2', tileSize: 'small', moreLink: '/lists/recommended' },
+      { title: 'My lists', lists: myLists, showType: true, moreLink: '/lists/recommended' },
+      { title: 'Top 10', lists: trendingLists, showCreatedBy: true, moreLink: '/lists/recommended' },
     ];
   }, [recommendedLists]);
 

@@ -1,12 +1,13 @@
 import React from 'react';
 import Image from 'next/image';
 import CircleEllipsis from '@/components/Icons/CircleEllipsis';
+import { formatTimeAgo } from '@/lib/utils';
 
 interface ListProps {
   title: string;
   imageUrl: string;
   createdBy?: string;
-  lastUpdated?: boolean;
+  lastUpdated?: string;
   type?:string;
   tileSize?: 'small' | 'large';
 }
@@ -42,7 +43,7 @@ const ListTile: React.FC<ListProps> = ({ title, imageUrl, createdBy,lastUpdated,
           className="my-1 text-medium-emphasis min-h-[40px]">By {createdBy}</p>}
         {/* TODO: Add last updated data*/}
         {lastUpdated &&
-          <p className="my-1 text-medium-emphasis">Updated {} ago</p>}
+          <p className="my-1 text-medium-emphasis">Updated {formatTimeAgo(lastUpdated)}</p>}
         {type && <p
           className="my-1 text-medium-emphasis">{type.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
         </p>}

@@ -1,6 +1,7 @@
 import React from 'react';
 import MovieTile from '@/components/lists/MovieTile';
 import { List } from '@/redux/listsReducer';
+import { formatTimeAgo } from '@/lib/utils';
 
 const ListContent: React.FC<{ list: List ,index:number}> = ({ list,index }) => {
   return (
@@ -38,7 +39,7 @@ const ListContent: React.FC<{ list: List ,index:number}> = ({ list,index }) => {
           <a className="ml-2 text-high-emphasis">{list.ownerProfile.displayName}</a>
           <div className="text-medium-emphasis">
             <span className="mx-1">•</span>
-            <a>Updated {} ago</a>
+            <a>Updated {formatTimeAgo(list.lastUpdated)}</a>
             <span className="mx-1">•</span>
             <a>{list.contentList?.length || 0} titles</a>
           </div>
