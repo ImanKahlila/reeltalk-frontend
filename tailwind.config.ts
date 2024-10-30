@@ -20,15 +20,12 @@ const config: Config = {
       backgroundColor: {
         'primary-rgba': 'rgba(32, 32, 32, 0.8)', // Customize with your desired RGBA values
       },
-      fontSize: {
-        'xxs': '0.25rem',
-      },
       colors: {
-        primary: '#FFCC01',
+        primary: '#FFA724',
         secondary: '#222',
         gray: '#6d6d6d',
         'pure-white': '#fff',
-        'high-emphasis': '#D9D9D9',
+        'high-emphasis': 'rgba(255, 255, 255, 0.92)',
         'medium-emphasis': 'rgba(255, 255, 255, 0.6)',
         'first-surface': 'rgba(255, 255, 255, 0.08)',
         'second-surface': '#3D3D3D',

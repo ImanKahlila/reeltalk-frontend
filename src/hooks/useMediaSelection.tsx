@@ -75,6 +75,9 @@ const useMediaSelection = (mediaType: 'movies' | 'series') => {
   const [media, setMedia] = useState<Media>([]);
   const [floaterSelection, setFloaterSelection] = useState<FloaterSelection>([]);
 
+  function setInitialSelections(initialSelections: FloaterSelection) {
+    setFloaterSelection(initialSelections);
+  }
   // Function to add a media selection
   function addSelectionHandler(
     id: string,
@@ -122,7 +125,7 @@ const useMediaSelection = (mediaType: 'movies' | 'series') => {
       return output;
     });
   }
-  return { media, floaterSelection, addSelectionHandler, removeSelectionHandler, errorFetching };
+  return { media,setInitialSelections, floaterSelection, addSelectionHandler, removeSelectionHandler, errorFetching };
 };
 
 export default useMediaSelection;

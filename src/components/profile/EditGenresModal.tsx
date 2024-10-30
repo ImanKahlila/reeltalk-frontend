@@ -24,7 +24,7 @@ type GenreArray = Genre[];
 
 const EditGenreModal: React.FC<ModalProps> = ({ showModal, setShowModal }) => {
   const userInfo = useSelector(selectUser);
-  const [initialGenres, setGenres] = useState([]);
+  const [initialGenres, setInitialGenres] = useState<any>(undefined);
   const [isChanged, setIsChanged] = useState<boolean>(false);
   const dispatch: AppDispatch = useDispatch();
   const { idToken } = useUserContext();
@@ -33,7 +33,7 @@ const EditGenreModal: React.FC<ModalProps> = ({ showModal, setShowModal }) => {
     useGetGenres(initialGenres,userInfo?.favoriteGenres);
 
   const arraysHaveSameIds = (arr1: GenreArray, arr2: GenreArray): boolean => {
-    const getIds = (arr: GenreArray) => arr.map((genre) => genre.id).sort();
+    const getIds = (arr: GenreArray) => arr?.map((genre) => genre.id).sort();
     return JSON.stringify(getIds(arr1)) === JSON.stringify(getIds(arr2));
   };
 
@@ -46,7 +46,8 @@ const EditGenreModal: React.FC<ModalProps> = ({ showModal, setShowModal }) => {
   }, [filteredGenres, userInfo?.favoriteGenres, top3Genres]);
   useEffect(() => {
     const fetchPossibleGenres = async () => {
-        setGenres(await getGenres(idToken));
+        const genresData: any=await getGenres(idToken)
+        setInitialGenres(genresData?.genres)
     };
     fetchPossibleGenres();
   }, []);

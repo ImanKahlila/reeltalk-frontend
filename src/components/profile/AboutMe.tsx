@@ -8,14 +8,17 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { ACHIEVEMENT_CRITERIA } from '@/components/profile/Constants';
 import EditGenresModal from '@/components/profile/EditGenresModal';
+import EditMoviesModal from '@/components/profile/EditMoviesModal';
 
 export const AboutMe = () => {
 
   const { userInfo,isLoading } = useSelector((state: RootState) => state.user);
-  const [showEditGenre,setShowEditGenre]=useState(false);
-  const handleEditGenre=()=>{
-    setShowEditGenre(!showEditGenre);
-  }
+  const [showEditGenre,setShowEditGenre] = useState(false);
+  const [showEditMovies,setShowEditMovies] = useState(false);
+
+  const handleEditGenre = () => setShowEditGenre(!showEditGenre);
+
+  const handleEditMovies= () => setShowEditMovies(!showEditMovies);
   const ProfileAchievements = () => {
     const { userInfo } = useSelector((state: RootState) => state.user);
     const [userAchievements, setUserAchievements] = useState<any>([]);
@@ -227,8 +230,10 @@ export const AboutMe = () => {
                   ))}
                 </p>
               </div>
-
+              <div className="flex flex-row space-x-4">
               <h2 className='mb-3 font-medium tracking-eight text-high-emphasis'>Top 5 Movies</h2>
+              <Pencil className="text-medium-emphasis mt-1" size={16} onClick={handleEditMovies}/>
+              </div>
               <div className='flex space-x-2'>
                 {userInfo?.favoriteMovies?.map((movie: any) => (
                   <TopUserMovies key={movie?.id} poster={movie?.poster} />
@@ -244,6 +249,7 @@ export const AboutMe = () => {
             </div>
           </div>
           {showEditGenre && <EditGenresModal showModal={showEditGenre} setShowModal={setShowEditGenre}/>}
+          {showEditMovies && <EditMoviesModal showModal={showEditMovies} setShowModal={setShowEditMovies}/>}
         </>
       )}
     </div>

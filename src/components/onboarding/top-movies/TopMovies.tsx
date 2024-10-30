@@ -11,7 +11,7 @@ import FloatingSelection from '../shared/FloatingSelection';
 
 // Util
 import useMediaSelection from '../../../hooks/useMediaSelection';
-import { FloaterSelection } from '../../../hooks/useMediaSelection';
+import { FloaterSelection } from '@/hooks/useMediaSelection';
 import { logEvent } from 'firebase/analytics';
 
 // Firebase
@@ -22,9 +22,10 @@ const db = getFirestore(app);
 
 interface ITopMovies {
   user: User;
+  showSuggestions?: boolean;
 }
 
-const TopMovies = ({ user }: ITopMovies) => {
+const TopMovies = ({ user , showSuggestions = true}: ITopMovies) => {
   const { push } = useRouter();
   const [mediaToShow, setMediaToShow] = useState(8);
 
@@ -83,7 +84,7 @@ const TopMovies = ({ user }: ITopMovies) => {
       />
 
       {/* Suggested Movies */}
-      <SuggestedMedia
+      {showSuggestions && (<><SuggestedMedia
         media={media}
         mediaToShow={mediaToShow}
         addSelectionHandler={addSelectionHandler}
@@ -102,7 +103,7 @@ const TopMovies = ({ user }: ITopMovies) => {
         onPageSubmit={onPageSubmitHandler}
         valid={floaterSelection.length === 5}
       />
-
+</>)}
       <FloatingSelection
         floaterSelection={floaterSelection}
         removeSelectionHandler={removeSelectionHandler}

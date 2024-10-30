@@ -7,6 +7,7 @@ const BASE_URL = 'https://us-central1-reeltalk-app.cloudfunctions.net/backend/';
 
 
 const ENDPOINTS = {
+  GET_PROFILE:'api/user/profile/',
   SET_PROFILE: 'api/user/setProfile',
   GET_GENRES: 'api/movies/getPossibleGenres',
   GET_RECOMMENDED_LISTS: 'api/lists/recommended',
@@ -31,8 +32,11 @@ const handleApiError = (error: any) => {
   }
 };
 
-const apiGet = async (url: string, idToken: string, returnFullData: boolean = false): Promise< []> => {
+const apiGet = async (url: string, idToken: string, param?:string, returnFullData: boolean = false): Promise< []> => {
   try {
+    if (param) {
+      url = `${url}${param}`;
+    }
     const response: AxiosResponse = await axiosInstance.get(url, {
       headers: { Authorization: `Bearer ${idToken}` },
     });
@@ -60,6 +64,8 @@ const apiPost = async (url: string, data: any, idToken: string): Promise< null> 
 
 export const getGenres = (idToken: string) => apiGet(ENDPOINTS.GET_GENRES, idToken);
 
+export const getProfile = (idToken: string, param: string) => apiGet(ENDPOINTS.GET_PROFILE, idToken,param);
+
 export const setProfile = (data: any, idToken: string) => apiPost(ENDPOINTS.SET_PROFILE, data, idToken);
 
 export const getRecommendedLists = (idToken: string) => apiGet(ENDPOINTS.GET_RECOMMENDED_LISTS, idToken);
@@ -70,4 +76,4 @@ export const getMyLists = (idToken: string) => apiGet(ENDPOINTS.GET_MY_LISTS, id
 
 export const getTrendingLists = (idToken: string) => apiGet(ENDPOINTS.GET_TRENDING_LISTS, idToken);
 
-export const getPopularSearches = (idToken: string) => apiGet(ENDPOINTS.GET_POPULAR_SEARCHES, idToken, true);
+export const getPopularSearches = (idToken: string) => apiGet(ENDPOINTS.GET_POPULAR_SEARCHES, idToken,undefined, true);

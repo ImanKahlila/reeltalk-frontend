@@ -15,7 +15,7 @@ export const useGetGenres = (initialGenres: Genre,favoriteGenre?:Genre) => {
   // Tracks number of selected genres
   const totalSelected = calculateTotalSelected(genres);
   const top3Genres = genres
-    .filter(genre => genre.selected)
+    ?.filter(genre => genre.selected)
     .map(({ name, id, emoji }) => ({ name, id, emoji }))
   function toggleSelectedGenre(id: string, newVal: boolean) {
     if (totalSelected < 5 || !newVal) {
@@ -28,7 +28,7 @@ export const useGetGenres = (initialGenres: Genre,favoriteGenre?:Genre) => {
 
   useEffect(() => {
     async function retrieveGenres() {
-      let genres = initialGenres.map(genre => {
+      let genres = initialGenres?.map(genre => {
         const isSelected = favoriteGenre?.some((fav) => fav.id === genre.id) ?? false;
         return { ...genre, selected: isSelected };      });
       setGenres(genres);
@@ -50,7 +50,7 @@ export const useGetGenres = (initialGenres: Genre,favoriteGenre?:Genre) => {
 
 // Helper
 const calculateTotalSelected = (genres: Genre) => {
-  return genres.reduce((accumulator, currentValue) => {
+  return genres?.reduce((accumulator, currentValue) => {
     return currentValue.selected ? accumulator + 1 : accumulator;
   }, 0);
 };
