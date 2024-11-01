@@ -78,7 +78,7 @@ const TopMovies = ({ user , showSuggestions = true}: ITopMovies) => {
 
       {/* Header */}
       <Header
-        titleType={'movie'}
+        titleType={MediaTypes.MOVIES}
         addSelectionHandler={addSelectionHandler}
         removeSelectionHandler={removeSelectionHandler}
         floaterSelection={floaterSelection}
