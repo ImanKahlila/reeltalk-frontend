@@ -16,3 +16,12 @@ export interface PlanChosen {
   price?: number;
   discount?: string;
 }
+
+export enum MediaTypes {
+  MOVIES = 'movie',
+  TV_SERIES = 'tvSeries'
+}
+
+export interface MediaType {
+  type?: MediaTypes;
+}

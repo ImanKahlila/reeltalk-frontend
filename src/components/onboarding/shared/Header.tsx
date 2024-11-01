@@ -6,6 +6,7 @@ import SearchIcon from '@/components/layout/SearchIcon';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import SearchOption from './SearchOption';
 import { FloaterSelection } from '@/hooks/useMediaSelection';
+import { MediaTypes } from '@/components/commonInterfaces';
 
 interface HeaderProps {
   addSelectionHandler: (
@@ -18,7 +19,7 @@ interface HeaderProps {
   selectedLength: number;
   removeSelectionHandler: (id: string, newVal: boolean, isApi: boolean) => void;
   floaterSelection: FloaterSelection;
-  titleType: 'movie' | 'tvSeries' | null; // passing null will return movies and tvSeries
+  titleType: MediaTypes | null; // passing null will return movies and tvSeries
 }
 
 const Header = ({ addSelectionHandler, selectedLength, titleType, floaterSelection, removeSelectionHandler }: HeaderProps) => {
@@ -43,7 +44,7 @@ const Header = ({ addSelectionHandler, selectedLength, titleType, floaterSelecti
   };
 
   return (
-    <header className='mx-auto mt-10 max-w-[600px] px-4 text-center'>
+    <header className='mx-auto mt-1 max-w-[600px] px-4 text-center'>
       <h1 className='text-[28px] font-medium tracking-[-0.42px] text-high-emphasis'>
         {`Select your top 5 ${titleType === 'movie' ? 'movies' : 'shows'}`}
       </h1>

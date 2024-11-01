@@ -2,45 +2,49 @@ import React, { useEffect, useState } from 'react';
 import { useUserContext } from '@/lib/context';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectUser } from '@/redux/selectors';
-import {  setProfile } from '@/services/api';
+import { setProfile } from '@/services/api';
 import { fetchUserProfile } from '@/redux/userActions';
 import { AppDispatch } from '@/redux/store';
 import Header from '@/components/onboarding/shared/Header';
 import useMediaSelection, { FloaterSelection } from '@/hooks/useMediaSelection';
 import MediaSelection from '@/components/onboarding/shared/MediaSelection';
+import { MediaTypes } from '@/components/commonInterfaces';
 
 interface ModalProps {
   showModal: boolean;
   setShowModal: (value: boolean) => void;
+  type: MediaTypes;
 }
 
-const EditMoviesModal: React.FC<ModalProps> = ({ showModal, setShowModal }) => {
+const EditMediaModal: React.FC<ModalProps> = ({ showModal, setShowModal ,type}) => {
   const dispatch: AppDispatch = useDispatch();
   const { idToken } = useUserContext();
   const userInfo = useSelector(selectUser);
   const [isChanged, setIsChanged] = useState(false);
 
   const {  floaterSelection, addSelectionHandler, removeSelectionHandler, setInitialSelections } =
-    useMediaSelection('movies');
-
+    useMediaSelection(type);
+  const isMovies=type===MediaTypes.MOVIES
+  const initialData= isMovies?userInfo?.favoriteMovies:userInfo?.favoriteShows
   useEffect(() => {
     // Initialize floaterSelection with favoriteMovies if available
     if (userInfo?.favoriteMovies) {
-      setInitialSelections(userInfo.favoriteMovies);
+      setInitialSelections(initialData);
     }
   }, []);
 
   async function handleChange() {
-    await setProfile({ favoriteMovies: floaterSelection }, idToken);
+    const data= isMovies?{ favoriteMovies: floaterSelection }:{ favoriteShows: floaterSelection }
+        await setProfile(data, idToken);
     if (userInfo?.uid) dispatch(fetchUserProfile(userInfo?.uid, idToken));
     setShowModal(false);
   }
 
   useEffect(() => {
-    const hasChanged = floaterSelection.length !== userInfo?.favoriteMovies.length ||
-      floaterSelection.some((movie, index) => movie.id !== userInfo.favoriteMovies[index]?.id);
+    const hasChanged = floaterSelection.length !== initialData.length ||
+      floaterSelection.some((movie, index) => movie.id !== initialData[index]?.id);
     setIsChanged(hasChanged);
-  }, [userInfo?.favoriteMovies, floaterSelection]);
+  }, [floaterSelection]);
 
 
   // Placeholder tracker, tracks how many placeholders needed for selectionFloater
@@ -65,7 +69,7 @@ const EditMoviesModal: React.FC<ModalProps> = ({ showModal, setShowModal }) => {
             x
           </button>
           <Header
-            titleType={'movie'}
+            titleType={type}
             addSelectionHandler={addSelectionHandler}
             removeSelectionHandler={removeSelectionHandler}
             floaterSelection={floaterSelection}
@@ -109,4 +113,4 @@ const EditMoviesModal: React.FC<ModalProps> = ({ showModal, setShowModal }) => {
   );
 };
 
-export default EditMoviesModal;
+export default EditMediaModal;
