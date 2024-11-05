@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useUserContext } from '@/lib/context';
 
 import axios from 'axios';
+import { MediaTypes } from '@/components/commonInterfaces';
 
 export type Media = {
   id: string;
@@ -21,7 +22,7 @@ export type FloaterSelection = {
 const backend_URL = 'https://us-central1-reeltalk-app.cloudfunctions.net/backend';
 // const backend_URL = 'http://localhost:8080';
 
-const useMediaSelection = (mediaType: 'movies' | 'series') => {
+const useMediaSelection = (mediaType: MediaTypes) => {
   const { idToken } = useUserContext();
   const [errorFetching, setErrorFetching] = useState(false);
 
@@ -30,7 +31,7 @@ const useMediaSelection = (mediaType: 'movies' | 'series') => {
       try {
         let response;
         let mediaArray: Media;
-        if (mediaType === 'movies') {
+        if (mediaType === MediaTypes.MOVIES) {
           response = await axios.get(`${backend_URL}/api/movies/getPossibleFilms`, {
             withCredentials: true,
             headers: {

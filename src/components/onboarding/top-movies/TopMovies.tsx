@@ -15,9 +15,11 @@ import { FloaterSelection } from '@/hooks/useMediaSelection';
 import { logEvent } from 'firebase/analytics';
 
 // Firebase
-import { getFirestore, setDoc, doc } from 'firebase/firestore';
+import { doc, getFirestore, setDoc } from 'firebase/firestore';
 import app, { analytics } from '@/firebase/firebase-config';
 import { User } from 'firebase/auth';
+import { MediaTypes } from '@/components/commonInterfaces';
+
 const db = getFirestore(app);
 
 interface ITopMovies {
@@ -30,7 +32,7 @@ const TopMovies = ({ user , showSuggestions = true}: ITopMovies) => {
   const [mediaToShow, setMediaToShow] = useState(8);
 
   const { media, floaterSelection, addSelectionHandler, removeSelectionHandler, errorFetching } =
-    useMediaSelection('movies');
+    useMediaSelection(MediaTypes.MOVIES);
 
   // Placeholder tracker, tracks how many placeholders needed for selectionFloater
   const selectionPlaceholder: FloaterSelection = Array.from(
@@ -76,7 +78,7 @@ const TopMovies = ({ user , showSuggestions = true}: ITopMovies) => {
 
       {/* Header */}
       <Header
-        titleType={'movie'}
+        titleType={MediaTypes.MOVIES}
         addSelectionHandler={addSelectionHandler}
         removeSelectionHandler={removeSelectionHandler}
         floaterSelection={floaterSelection}

@@ -10,14 +10,17 @@ import SuggestedMedia from '../shared/SuggestedMedia';
 import FloatingSelection from '../shared/FloatingSelection';
 
 // Util
-import useMediaSelection from '../../../hooks/useMediaSelection';
-import { FloaterSelection } from '../../../hooks/useMediaSelection';
+import useMediaSelection, {
+  FloaterSelection,
+} from '../../../hooks/useMediaSelection';
 import { logEvent } from 'firebase/analytics';
 
 // Firebase
-import { getFirestore, setDoc, doc } from 'firebase/firestore';
+import { doc, getFirestore, setDoc } from 'firebase/firestore';
 import app, { analytics } from '@/firebase/firebase-config';
 import { User } from 'firebase/auth';
+import { MediaTypes } from '@/components/commonInterfaces';
+
 const db = getFirestore(app);
 
 interface ITopShowsProps {
@@ -29,7 +32,7 @@ const TopShows = ({ user }: ITopShowsProps) => {
   const [mediaToShow, setMediaToShow] = useState(8);
 
   const { media, floaterSelection, addSelectionHandler, removeSelectionHandler, errorFetching } =
-    useMediaSelection('series');
+    useMediaSelection(MediaTypes.TV_SERIES);
 
   // Placeholder tracker, tracks how many placeholders needed for selectionFloater
   const selectionPlaceholder: FloaterSelection = Array.from(
@@ -75,8 +78,9 @@ const TopShows = ({ user }: ITopShowsProps) => {
 
       {/* Header */}
       <Header
-        titleType={'tvSeries'} // Determines what type of media will be queried, 'movies' | 'tvSeries'
-        addSelectionHandler={addSelectionHandler}removeSelectionHandler={removeSelectionHandler}
+        titleType={MediaTypes.TV_SERIES} // Determines what type of media will be queried,
+        // 'movies' | 'tvSeries'
+        addSelectionHandler={addSelectionHandler} removeSelectionHandler={removeSelectionHandler}
         floaterSelection={floaterSelection}
         selectedLength={floaterSelection.length}
       />

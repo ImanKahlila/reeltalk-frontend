@@ -1,19 +1,20 @@
-import { useState, useRef } from 'react';
+import { useRef, useState } from 'react';
 import axios, { AxiosResponse, CancelTokenSource } from 'axios';
 import toast from 'react-hot-toast';
 import { useUserContext } from '@/lib/context';
+import { MediaTypes } from '@/components/commonInterfaces';
 
 const backend_URL = 'https://us-central1-reeltalk-app.cloudfunctions.net/backend';
 // const backend_URL = 'http://localhost:8080';
 
-const useMediaSearch = (titleType: 'movie' | 'tvSeries' | null) => {
+const useMediaSearch = (titleType: MediaTypes | null) => {
   const [queryMedia, setQueryMedia] = useState<any[]>([]);
   const [fetching, setFetching] = useState(false);
   const { idToken } = useUserContext();
   const cancelTokenSource = useRef<CancelTokenSource | null>(null);
 
   const retrievePopularMedia = async () => {
-    const mediaEndPoint = titleType==="movie"?"popular-movies":"popular-shows";
+    const mediaEndPoint = titleType===MediaTypes.MOVIES?"popular-movies":"popular-shows";
     try {
       const response = await axios.get(`${backend_URL}/movies/${mediaEndPoint}`, {
         withCredentials: true,
