@@ -4,8 +4,8 @@ import toast from 'react-hot-toast';
 import { useUserContext } from '@/lib/context';
 import { MediaTypes } from '@/components/commonInterfaces';
 
-// const backend_URL = 'https://us-central1-reeltalk-app.cloudfunctions.net/backend';
-const backend_URL = 'http://localhost:8080';
+const backend_URL = 'https://us-central1-reeltalk-app.cloudfunctions.net/backend';
+// const backend_URL = 'http://localhost:8080';
 
 const useMediaSearch = (titleType: MediaTypes | null) => {
   const [queryMedia, setQueryMedia] = useState<any[]>([]);
