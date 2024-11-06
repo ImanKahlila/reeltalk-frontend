@@ -11,10 +11,10 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 
 import { useUserContext } from '@/lib/context';
 import ChevronIcon from './ChevronIcon';
-import SearchIcon from './SearchIcon';
 import { persistor } from '@/redux/store';
 import { logout } from '@/redux/userReducer';
 import { useDispatch } from 'react-redux';
+import SearchComboBox from '@/components/onboarding/shared/SearchComboBox';
 
 // Variables
 const auth = getAuth(app);
@@ -35,20 +35,7 @@ const NavBarApp = ({ onToggleMobileMenu, isOpen }: ComponentProps) => {
         <NavigationLinks />
 
         {/* Search Input */}
-        <form className='hidden h-[34px] w-[351px] items-center gap-[10px] rounded-lg bg-[#00000014] p-[6px] pl-6 lg:flex'>
-          <button
-            type='submit'
-            className='flex h-full cursor-pointer items-center border-none bg-transparent  outline-none'
-            aria-label='Search'
-          >
-            <SearchIcon />
-          </button>
-          <input
-            className='w-full border-none bg-transparent text-base text-secondary'
-            type='text'
-            placeholder='Search'
-          />
-        </form>
+        <SearchComboBox titleType={null}/>
 
         {/* Desktop Buttons */}
         {user ? (
