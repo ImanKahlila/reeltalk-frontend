@@ -25,7 +25,7 @@ const Genres = (props: IGenresProps) => {
     md:max-w-[896px] md:gap-6 md:px-2`}
       >
         <AnimatePresence>
-          {filteredGenres.map(genre => (
+          {filteredGenres?.map(genre => (
             <Genre
               key={genre.id}
               name={genre.name}

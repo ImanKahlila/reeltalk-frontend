@@ -1,7 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit';
 import userReducer from './userReducer';
 import { persistStore, persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
+import storage from 'redux-persist/lib/storage'; // Default storage is localStorage
+import listsReducer from '@/redux/listsReducer';
 import {
   FLUSH,
   PAUSE,
@@ -11,17 +12,24 @@ import {
   REHYDRATE
 } from 'redux-persist';
 
-const persistConfig = {
-  key: 'root',
+const userPersistConfig = {
+  key: 'user',
+  storage,
+};
+const listsPersistConfig = {
+  key: 'lists',
   storage,
 };
 
-const persistedReducer = persistReducer(persistConfig, userReducer);
+const persistedUserReducer = persistReducer(userPersistConfig, userReducer);
+const persistedListsReducer = persistReducer(listsPersistConfig, listsReducer);
 
 const store = configureStore({
   reducer: {
-    user: persistedReducer,
-  }, middleware: (getDefaultMiddleware) =>
+    user: persistedUserReducer,
+    lists: persistedListsReducer,
+  },
+  middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],

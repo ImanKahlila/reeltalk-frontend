@@ -11,16 +11,16 @@ interface ComponentProps {
   director: string;
   creator: string;
   id: string;
-  addSelectionHandler: (
+  addSelectionHandler?: (
     id: string,
     title: string,
     poster: string,
     isApi: boolean,
     newVal?: boolean,
   ) => void;
-  removeSelectionHandler: (id: string, newVal: boolean, isApi: boolean) => void;
-  floaterSelection: FloaterSelection;
-  selectedLength: number; //Number of medias selected so far
+  removeSelectionHandler?: (id: string, newVal: boolean, isApi: boolean) => void;
+  floaterSelection?: FloaterSelection;
+  selectedLength?: number; //Number of medias selected so far
   maxSelection: number; // Maximum title selections allowed
 }
 
@@ -42,7 +42,7 @@ const SearchOption = ({
   const placeholderUrl = '/Onboarding/placeholder-image-on-error.png';
 
   useEffect(() => {
-    setIsSelected(floaterSelection?.some(e => e.id === id));
+    setIsSelected(floaterSelection?.some(e => e.id === id) ?? false);
   }, [floaterSelection, id]);
 
   const handleImageLoad = () => {
@@ -51,8 +51,8 @@ const SearchOption = ({
   };
 
   const selectMovieHandler = () => {
-    if (selectedLength < maxSelection && !isSelected) {
-      addSelectionHandler(id, title, posterUrl, true);
+    if ((selectedLength ?? 0) < maxSelection && !isSelected) {
+      addSelectionHandler?.(id, title, posterUrl, true);
       setIsSelected(true);
       toast.success(
         <div>
@@ -96,6 +96,7 @@ const SearchOption = ({
         </h2>
         <p className="tracking-[0.08px] text-gray">{director || creator}</p>
       </div>
+      {maxSelection>1 &&
       <div className="mt-4 flex items-center justify-end ml-auto">
         {isSelected ? (
           <span
@@ -117,7 +118,7 @@ const SearchOption = ({
 </span>
 
         )}
-      </div>
+      </div>}
     </div>
   );
 };

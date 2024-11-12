@@ -8,14 +8,19 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { ACHIEVEMENT_CRITERIA } from '@/components/profile/Constants';
 import EditGenresModal from '@/components/profile/EditGenresModal';
+import EditMediaModal from '@/components/profile/EditMediaModal';
+import { MediaTypes } from '../commonInterfaces';
 
 export const AboutMe = () => {
 
   const { userInfo,isLoading } = useSelector((state: RootState) => state.user);
-  const [showEditGenre,setShowEditGenre]=useState(false);
-  const handleEditGenre=()=>{
-    setShowEditGenre(!showEditGenre);
-  }
+  const [showEditGenre,setShowEditGenre] = useState(false);
+  const [showEditMedia,setShowEditMedia] = useState(false);
+  const [mediaType,setMediaType]=useState<MediaTypes>(MediaTypes.MOVIES);
+
+  const handleEditGenre = () => setShowEditGenre(!showEditGenre);
+
+  const handleEditMovies= (type:MediaTypes) => {setShowEditMedia(!showEditMedia); setMediaType(type)}
   const ProfileAchievements = () => {
     const { userInfo } = useSelector((state: RootState) => state.user);
     const [userAchievements, setUserAchievements] = useState<any>([]);
@@ -24,7 +29,6 @@ export const AboutMe = () => {
     const [strengthPercentage, setStrengthPercentage] = useState(0);
     const [currentRequirementIndex, setCurrentRequirementIndex] = useState(0);
     const [isAllRequirementMet, setIsAllRequirementMet] = useState(false);
-
     useEffect(() => {
       if (!userInfo) return;
 
@@ -212,13 +216,15 @@ export const AboutMe = () => {
             <div className='mb-8'>
               <div className='mb-8'>
                 <div className="flex flex-row space-x-4">
-                <h2 className='mb-3 font-medium tracking-eight text-high-emphasis'>
-                  Favorite genres
-                </h2>
-                <Pencil className="text-medium-emphasis mt-1" size={16} onClick={handleEditGenre}/>
+                  <h2
+                    className='mb-3 font-medium tracking-eight text-high-emphasis'>
+                    Favorite genres
+                  </h2>
+                  <Pencil className='text-medium-emphasis mt-1' size={16}
+                          onClick={handleEditGenre} />
                 </div>
                 <p className='mb-2 tracking-eight text-medium-emphasis'>
-                  {userInfo?.favoriteGenres?.map((genre:any, index:number, array:any) => (
+                  {userInfo?.favoriteGenres?.map((genre: any, index: number, array: any) => (
                     <span key={index}>
                       {genre.name}
                       {index < array.length - 2 ? ', ' : ''}
@@ -227,15 +233,27 @@ export const AboutMe = () => {
                   ))}
                 </p>
               </div>
-
-              <h2 className='mb-3 font-medium tracking-eight text-high-emphasis'>Top 5 Movies</h2>
-              <div className='flex space-x-2'>
+              <div className="flex flex-row space-x-4">
+                <h2
+                  className='mb-3 font-medium tracking-eight text-high-emphasis'>Top
+                  5 Movies</h2>
+                <Pencil className="text-medium-emphasis mt-1" size={16}
+                        onClick={()=>handleEditMovies(MediaTypes.MOVIES)} />
+              </div>
+              <div className="flex space-x-2">
                 {userInfo?.favoriteMovies?.map((movie: any) => (
                   <TopUserMovies key={movie?.id} poster={movie?.poster} />
                 ))}
               </div>
 
-              <h2 className='mb-3 font-medium tracking-eight text-high-emphasis'>Top 5 TV shows</h2>
+
+              <div className='flex flex-row space-x-4'>
+                <h2
+                  className='mb-3 font-medium tracking-eight text-high-emphasis'>Top
+                  5 TV shows</h2>
+                <Pencil className='text-medium-emphasis mt-1' size={16}
+                        onClick={()=>handleEditMovies(MediaTypes.TV_SERIES)} />
+              </div>
               <div className='flex space-x-2'>
                 {userInfo?.favoriteShows?.map((show: any) => (
                   <TopUserShows key={show?.id} poster={show?.poster} />
@@ -243,7 +261,11 @@ export const AboutMe = () => {
               </div>
             </div>
           </div>
-          {showEditGenre && <EditGenresModal showModal={showEditGenre} setShowModal={setShowEditGenre}/>}
+          {showEditGenre && <EditGenresModal showModal={showEditGenre}
+                                             setShowModal={setShowEditGenre} />}
+          {showEditMedia && <EditMediaModal showModal={showEditMedia}
+                                            setShowModal={setShowEditMedia}
+                                            type={mediaType} />}
         </>
       )}
     </div>
