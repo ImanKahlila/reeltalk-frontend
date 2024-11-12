@@ -28,7 +28,7 @@
     "**/*.ts",
     "**/*.tsx",
     "tailwind.config.js"
-  ],
+, "src/components/home/Popular.tsx"  ],
   "exclude": [
     "node_modules"
   ]
